@@ -28,13 +28,16 @@ return new class extends Migration
 
             $table->date('booking_date');
             $table->decimal('total_amount', 8, 2);
-            $table->enum('payment_status',['pending','paid','failed'])->default('pendinng');
+            $table->enum('payment_status', ['pending', 'paid', 'failed'])
+                ->default('pending');
 
-            $table->enum('booking_status',[
+
+            $table->enum('booking_status', [
                 'pending',
                 'confirmed',
                 'cancelled',
-                'completed'
+                'completed',
+                'expired'
             ])->default('pending');
             $table->timestamps();
         });
