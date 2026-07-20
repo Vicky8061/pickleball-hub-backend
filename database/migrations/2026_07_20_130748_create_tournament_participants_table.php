@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('court_images', function (Blueprint $table) {
+        Schema::create('tournament_participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('court_id')
-                ->constrained('courts')
-                ->onDelete('cascade');
-            $table->string('image');
-            $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('court_images');
+        Schema::dropIfExists('tournament_participants');
     }
 };
