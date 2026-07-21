@@ -24,8 +24,9 @@ return new class extends Migration
 
             $table->tinyInteger('rating');
             $table->text('review')->nullable();
-            $table->unique(['user_id', 'court_id']);
+            
             $table->timestamps();
+            $table->unique(['user_id', 'court_id']);
         });
     }
 
