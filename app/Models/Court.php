@@ -12,7 +12,7 @@ class Court extends Model
 
     protected $fillable = [
         'owner_id',
-        'court_name',
+        'name',
         'description',
         'address',
         'latitude',

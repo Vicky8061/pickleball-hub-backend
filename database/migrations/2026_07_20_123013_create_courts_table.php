@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('longitude',10, 7)->nullable();
 
             $table->decimal('price_per_hour', 8, 2);
+            $table->enum('court_type', ['Indoor', 'Outdoor']);
 
             $table->time('opening_time');
             $table->time('closing_time');
