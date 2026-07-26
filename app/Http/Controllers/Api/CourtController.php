@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourtRequest;
 use App\Http\Requests\UpdateCourtRequest;
+use App\Http\Resources\CourtResource;
 use Illuminate\Http\Request;
 use App\Models\Court;
 
@@ -20,7 +21,7 @@ class CourtController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'Courts fetched Successfuly',
-            'data'=> $courts,
+            'data'=> CourtResource::collection($courts),
         ],200);
     }
 
@@ -46,7 +47,7 @@ class CourtController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Court created successfully.',
-            'data' => $court
+            'data' => new CourtResource($court->load('owner','images')),
         ], 201);
     }
 
@@ -67,7 +68,7 @@ class CourtController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'Court details fetchec successfuly',
-            'data'=> $court
+            'data'=> new CourtResource($court),
         ],200);
         
     }
@@ -89,7 +90,7 @@ class CourtController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'Court Updated Successfuly',
-            'data'=> $court
+            'data'=> new CourtResource($court->load('owner','images')),
         ],200);
     }
 
