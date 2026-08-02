@@ -14,6 +14,8 @@ class Booking extends Model
         'court_id',
         'time_slot_id',
         'booking_date',
+        'total_amount',
+        'payment_status',
         'booking_status',
     ];
 
@@ -27,7 +29,7 @@ class Booking extends Model
         return $this->belongsTo(Court::class);
     }
 
-    public Function timeSlot()
+    public function timeSlot()
     {
         return $this->belongsTo(TimeSlot::class);
     }
