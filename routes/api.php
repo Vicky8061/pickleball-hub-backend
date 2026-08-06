@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\TournamentController;
 
 // Public Routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -53,9 +54,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
 
+    Route::apiResource('tournaments', TournamentController::class);
+
+    //user Tournaments APIs
+    Route::post('/tournaments/{tournament}/join', [TournamentController::class, 'joinTournament']);
+    Route::delete('/tournaments/{tournament}/leave', [TournamentController::class, 'leaveTournament']);
+    Route::prefix('user')->group(function () {
+        Route::get('/my-tournaments', [TournamentController::class, 'myJoinedTournaments']);
+    });
+
     // Owner Booking APIs
     Route::prefix('owner')->group(function () {
         Route::get('/bookings', [BookingController::class, 'ownerBookings']);
         Route::put('/bookings/{booking}', [BookingController::class, 'update']);
+        Route::get('/tournaments', [TournamentController::class, 'myTournaments']);
     });
 });
