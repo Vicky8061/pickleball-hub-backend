@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CourtImageController;
 use App\Http\Controllers\Api\TimeSlotController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\OwnerDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TournamentController;
@@ -68,5 +69,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/bookings', [BookingController::class, 'ownerBookings']);
         Route::put('/bookings/{booking}', [BookingController::class, 'update']);
         Route::get('/tournaments', [TournamentController::class, 'myTournaments']);
+        Route::get('/dashboard', [OwnerDashboardController::class, 'index']);
     });
 });
