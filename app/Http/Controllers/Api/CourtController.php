@@ -14,15 +14,68 @@ class CourtController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courts = Court::with('owner')->latest()->get();
+        $query = Court::with([
+            'owner',
+            'images',
+        ]);
+
+        //Search by court name
+        if($request->filled('search')){
+            $query->where('name','like','%' . $request->search . '%');
+        }
+
+        //filter by court type
+        if($request->filled('court_type')){
+            $query->where('court_type',$request->court_type);
+        }
+
+        //filter by status
+        if($request->filled('status')){
+            $query->where('status',$request->status);
+        }
+
+        //Filter by city/address
+        if($request->filled('city')){
+            $query->where('address','like','%'. $request->city . '%');
+        }
+
+        //price range
+        if($request->filled('price_min')){
+            $query->where('price_per_hour', '>=', $request->price_min);
+        }
+        if($request->filled('price_max')){
+            $query->where('price_per_hour','<=',$request->price_max);
+        }
+
+        //Sorting
+        switch($request->sort){
+            case 'price_low':
+                $query->orderBy('price_per_hour');
+                break;
+            case 'price_high':
+                $query->orderByDesc('price_per_hour');
+                break;
+            case 'latest':
+            default:
+                $query->latest();
+                break;
+        }
+
+        $courts = $query->paginate(10);
 
         return response()->json([
-            'success'=>true,
-            'message'=>'Courts fetched Successfuly',
+            'success'=> true,
+            'message'=> 'Courts fetched successfuly',
             'data'=> CourtResource::collection($courts),
-        ],200);
+            'pagination'=>[
+                'current_page'=> $courts->currentPage(),
+                'last_page'=> $courts->lastPage(),
+                'per_page'=> $courts->perPage(),
+                'total'=> $courts->total(),
+            ]
+        ],200); 
     }
 
     /**
