@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\TimeSlotController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\OwnerDashboardController;
+use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\AdminUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TournamentController;
@@ -71,4 +73,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/tournaments', [TournamentController::class, 'myTournaments']);
         Route::get('/dashboard', [OwnerDashboardController::class, 'index']);
     });
+});
+
+//Admin
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+
+    Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+
+    //user Management
+    Route::apiResource('users',AdminUserController::class);
+    
+
 });
