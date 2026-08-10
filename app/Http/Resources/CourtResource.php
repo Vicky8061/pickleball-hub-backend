@@ -33,6 +33,12 @@ class CourtResource extends JsonResource
             'images'=> CourtImageResource::collection(
                 $this->whenLoaded('images')
             ),
+            'time_slots'=> TimeSlotResource::collection(
+                $this->whenLoaded('timeSlots')
+            ),
+            'reviews'=> ReviewResource::collection(
+                $this->whenLoaded('reviews')
+            ),
             'created_at'=>$this->created_at,
             'updated_at'=>$this->updated_at,
         ];

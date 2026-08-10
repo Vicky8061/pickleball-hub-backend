@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminCourtController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\CourtController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\OwnerDashboardController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AdminOwnerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TournamentController;
@@ -81,7 +83,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/dashboard', [AdminDashboardController::class, 'index']);
 
     //user Management
-    Route::apiResource('users',AdminUserController::class);
-    
+    Route::apiResource('users', AdminUserController::class);
 
+    //owner Management
+    Route::apiResource('owners', AdminOwnerController::class);
+
+    //Court Management
+    Route::apiResource('courts', AdminCourtController::class);
+    Route::patch('/courts/{court}/status', [AdminCourtController::class, 'updateStatus']);
 });

@@ -20,7 +20,7 @@ class CourtImageController extends Controller
             'success'=> true,
             'message'=> 'Court images fetched successfuly',
             'data'=> $court->images
-        ],);
+        ],200);
     }
 
     /**

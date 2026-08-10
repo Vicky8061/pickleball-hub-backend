@@ -83,4 +83,28 @@ class AdminUserController extends Controller
             'data'=> new UserResource($user)
         ],200);
     }
+    public function destroy(User $user){
+        if($user->role !== 'user'){
+            return response()->json([
+                'success'=>false,
+                'message'=>'User not found',
+            ],404);
+        }
+
+        //Already blocked user
+        if($user->status == 'blocked'){
+            return response()->json([
+                'success'=>false,
+                'message'=>'User is already blocked',
+            ],400);
+        }
+        $user->update([
+            'status'=> 'blocked'
+        ]);
+        return response()->json([
+            'success'=>true,
+            'message'=>'User blocked Successfuly',
+            'data'=> new UserResource($user)
+        ],200);
+    }
 }

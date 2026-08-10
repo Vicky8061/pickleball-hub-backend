@@ -23,15 +23,15 @@ class UpdateCourtRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
-            'address' => 'required|string|max:255',
+            'address' => 'sometimes|string|max:255',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'price_per_hour' => 'required|numeric|min:0',
-            'court_type' => 'required|in:Indoor,Outdoor',
-            'opening_time' => 'required|date_format:H:i',
-            'closing_time' => 'required|date_format:H:i',
+            'price_per_hour' => 'sometimes|numeric|min:0',
+            'court_type' => 'sometimes|in:Indoor,Outdoor',
+            'opening_time' => 'sometimes|date_format:H:i',
+            'closing_time' => 'sometimes|date_format:H:i',
             'status' => 'sometimes|in:active,inactive',
         ];
     }
