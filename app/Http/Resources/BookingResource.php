@@ -30,6 +30,7 @@ class BookingResource extends JsonResource
                 $this->whenLoaded('timeSlot')
             ),
             'created_at'=>  $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
