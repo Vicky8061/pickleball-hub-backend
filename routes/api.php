@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\OwnerDashboardController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AdminOwnerController;
+use App\Http\Controllers\Api\AdminReviewController;
 use App\Http\Controllers\Api\AdminTournamentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -71,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Owner Booking APIs
-    Route::prefix('owner')->group(function () {
+    Route::prefix('owner')->middleware('owner')->group(function () {
         Route::get('/bookings', [BookingController::class, 'ownerBookings']);
         Route::put('/bookings/{booking}', [BookingController::class, 'update']);
         Route::get('/tournaments', [TournamentController::class, 'myTournaments']);
@@ -101,6 +102,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     //Tournament Management
     Route::apiResource('tournaments', AdminTournamentController::class)
     ->only(['index','show','update','destroy']);
+
+    //Review Management
+    Route::apiResource('reviews',AdminReviewController::class)
+    ->only(['index','show','destroy']);
 });
 
 
