@@ -15,18 +15,29 @@ use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AdminOwnerController;
 use App\Http\Controllers\Api\AdminReviewController;
 use App\Http\Controllers\Api\AdminTournamentController;
+use App\Http\Controllers\Api\TournamentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\TournamentController;
 
-// Public Routes
+
+// =====================================================
+// PUBLIC ROUTES
+// =====================================================
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected Routes
+
+// =====================================================
+// AUTHENTICATED ROUTES
+// =====================================================
+
 Route::middleware('auth:sanctum')->group(function () {
 
-    // User
+    // -------------------------------------------------
+    // USER / PROFILE
+    // -------------------------------------------------
+
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -34,78 +45,305 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 
-    // Courts
-    Route::apiResource('courts', CourtController::class);
 
-    // Court Images
-    Route::post('/court-images', [CourtImageController::class, 'store']);
+    // =================================================
+    // COURTS
+    // =================================================
+
+    // Users can view courts
+    Route::get('/courts', [CourtController::class, 'index']);
+    Route::get('/courts/{court}', [CourtController::class, 'show']);
+
+
+    // =================================================
+    // TIME SLOTS - USER VIEW
+    // =================================================
+
+    Route::get('/time-slots', [TimeSlotController::class, 'index']);
+    Route::get('/time-slots/{time_slot}', [TimeSlotController::class, 'show']);
+
+
+    // =================================================
+    // COURT IMAGES - USER VIEW
+    // =================================================
+
     Route::get('/courts/{court}/images', [CourtImageController::class, 'index']);
-    Route::delete('/court-images/{courtImage}', [CourtImageController::class, 'destroy']);
 
-    // Time Slots
-    Route::apiResource('time-slots', TimeSlotController::class);
 
-    // User Booking APIs
+    // =================================================
+    // BOOKINGS - USER
+    // =================================================
+
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
 
-    // Wishlist APIs
+
+    // =================================================
+    // WISHLIST
+    // =================================================
+
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::delete('/wishlist/{court}', [WishlistController::class, 'destroy']);
 
-    // Review APIs
+
+    // =================================================
+    // REVIEWS
+    // =================================================
+
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
     Route::put('/reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
 
-    Route::apiResource('tournaments', TournamentController::class);
 
-    //user Tournaments APIs
-    Route::post('/tournaments/{tournament}/join', [TournamentController::class, 'joinTournament']);
-    Route::delete('/tournaments/{tournament}/leave', [TournamentController::class, 'leaveTournament']);
-    Route::prefix('user')->group(function () {
-        Route::get('/my-tournaments', [TournamentController::class, 'myJoinedTournaments']);
-    });
+    // =================================================
+    // TOURNAMENTS - USER VIEW
+    // =================================================
 
-    // Owner Booking APIs
-    Route::prefix('owner')->middleware('owner')->group(function () {
-        Route::get('/bookings', [BookingController::class, 'ownerBookings']);
-        Route::put('/bookings/{booking}', [BookingController::class, 'update']);
-        Route::get('/tournaments', [TournamentController::class, 'myTournaments']);
-        Route::get('/dashboard', [OwnerDashboardController::class, 'index']);
-    });
+    Route::get('/tournaments', [TournamentController::class, 'index']);
+    Route::get('/tournaments/{tournament}', [TournamentController::class, 'show']);
+
+    // User joins/leaves tournament
+    Route::post(
+        '/tournaments/{tournament}/join',
+        [TournamentController::class, 'joinTournament']
+    );
+
+    Route::delete(
+        '/tournaments/{tournament}/leave',
+        [TournamentController::class, 'leaveTournament']
+    );
+
+    Route::get(
+        '/user/my-tournaments',
+        [TournamentController::class, 'myJoinedTournaments']
+    );
+
+
+    // =================================================
+    // OWNER APIs
+    // =================================================
+
+    Route::prefix('owner')
+        ->middleware('owner')
+        ->group(function () {
+
+            // -----------------------------------------
+            // OWNER DASHBOARD
+            // -----------------------------------------
+
+            Route::get(
+                '/dashboard',
+                [OwnerDashboardController::class, 'index']
+            );
+
+
+            // -----------------------------------------
+            // OWNER BOOKINGS
+            // -----------------------------------------
+
+            Route::get(
+                '/bookings',
+                [BookingController::class, 'ownerBookings']
+            );
+
+            Route::put(
+                '/bookings/{booking}',
+                [BookingController::class, 'update']
+            );
+
+
+            // -----------------------------------------
+            // OWNER COURTS
+            // -----------------------------------------
+
+            Route::post(
+                '/courts',
+                [CourtController::class, 'store']
+            );
+
+            Route::put(
+                '/courts/{court}',
+                [CourtController::class, 'update']
+            );
+
+            Route::patch(
+                '/courts/{court}',
+                [CourtController::class, 'update']
+            );
+
+            Route::delete(
+                '/courts/{court}',
+                [CourtController::class, 'destroy']
+            );
+
+
+            // -----------------------------------------
+            // OWNER COURT IMAGES
+            // -----------------------------------------
+
+            Route::post(
+                '/court-images',
+                [CourtImageController::class, 'store']
+            );
+
+            Route::delete(
+                '/court-images/{courtImage}',
+                [CourtImageController::class, 'destroy']
+            );
+
+
+            // -----------------------------------------
+            // OWNER TIME SLOTS
+            // -----------------------------------------
+
+            Route::post(
+                '/time-slots',
+                [TimeSlotController::class, 'store']
+            );
+
+            Route::put(
+                '/time-slots/{time_slot}',
+                [TimeSlotController::class, 'update']
+            );
+
+            Route::patch(
+                '/time-slots/{time_slot}',
+                [TimeSlotController::class, 'update']
+            );
+
+            Route::delete(
+                '/time-slots/{time_slot}',
+                [TimeSlotController::class, 'destroy']
+            );
+
+
+            // -----------------------------------------
+            // OWNER TOURNAMENTS
+            // -----------------------------------------
+
+            Route::post(
+                '/tournaments',
+                [TournamentController::class, 'store']
+            );
+
+            Route::put(
+                '/tournaments/{tournament}',
+                [TournamentController::class, 'update']
+            );
+
+            Route::patch(
+                '/tournaments/{tournament}',
+                [TournamentController::class, 'update']
+            );
+
+            Route::delete(
+                '/tournaments/{tournament}',
+                [TournamentController::class, 'destroy']
+            );
+
+            Route::get(
+                '/tournaments',
+                [TournamentController::class, 'myTournaments']
+            );
+        });
 });
 
-//Admin
-Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
 
-    Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+// =====================================================
+// ADMIN APIs
+// =====================================================
 
-    //user Management
-    Route::apiResource('users', AdminUserController::class);
+Route::middleware(['auth:sanctum', 'admin'])
+    ->prefix('admin')
+    ->group(function () {
 
-    //owner Management
-    Route::apiResource('owners', AdminOwnerController::class);
+        // ---------------------------------------------
+        // ADMIN DASHBOARD
+        // ---------------------------------------------
 
-    //Court Management
-    Route::apiResource('courts', AdminCourtController::class);
-    Route::patch('/courts/{court}/status', [AdminCourtController::class, 'updateStatus']);
-
-    //Booking Management 
-    Route::apiResource('bookings', AdminBookingController::class)
-    ->only(['index', 'show']);
-
-    //Tournament Management
-    Route::apiResource('tournaments', AdminTournamentController::class)
-    ->only(['index','show','update','destroy']);
-
-    //Review Management
-    Route::apiResource('reviews',AdminReviewController::class)
-    ->only(['index','show','destroy']);
-});
+        Route::get(
+            '/dashboard',
+            [AdminDashboardController::class, 'index']
+        );
 
 
+        // ---------------------------------------------
+        // USER MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'users',
+            AdminUserController::class
+        );
+
+
+        // ---------------------------------------------
+        // OWNER MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'owners',
+            AdminOwnerController::class
+        );
+
+
+        // ---------------------------------------------
+        // COURT MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'courts',
+            AdminCourtController::class
+        );
+
+        Route::patch(
+            '/courts/{court}/status',
+            [AdminCourtController::class, 'updateStatus']
+        );
+
+
+        // ---------------------------------------------
+        // BOOKING MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'bookings',
+            AdminBookingController::class
+        )->only([
+            'index',
+            'show'
+        ]);
+
+
+        // ---------------------------------------------
+        // TOURNAMENT MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'tournaments',
+            AdminTournamentController::class
+        )->only([
+            'index',
+            'show',
+            'update',
+            'destroy'
+        ]);
+
+
+        // ---------------------------------------------
+        // REVIEW MANAGEMENT
+        // ---------------------------------------------
+
+        Route::apiResource(
+            'reviews',
+            AdminReviewController::class
+        )->only([
+            'index',
+            'show',
+            'destroy'
+        ]);
+    });

@@ -26,7 +26,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email'=> 'required|email|unique:users,email',
             'password'=>'required|string|min:8|confirmed',
-            'role'=>'required|in:user,owner,'
+            'role' => 'required|in:user,owner',
         ];
     }
     public function messages():array{

@@ -26,13 +26,12 @@ class UpdateCourtRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'address' => 'sometimes|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'latitude' => 'sometimes|nullable|numeric|between:-90,90',
+            'longitude' => 'sometimes|nullable|numeric|between:-180,180',
             'price_per_hour' => 'sometimes|numeric|min:0',
             'court_type' => 'sometimes|in:Indoor,Outdoor',
             'opening_time' => 'sometimes|date_format:H:i',
             'closing_time' => 'sometimes|date_format:H:i',
-            'status' => 'sometimes|in:active,inactive',
         ];
     }
 }

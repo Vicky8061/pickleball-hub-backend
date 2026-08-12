@@ -37,7 +37,7 @@ class StoreCourtImageRequest extends FormRequest
             'court_id.exists'=>'Selected court does not exist.',
             'images.required'=> 'Please upload at least one image.',
             'images.array'=> 'Images must be array.',
-            'imeages.max'=> 'Maximum 5 images are allowed',
+            'images.max' => 'Maximum 5 images are allowed',
             'images.*.image'=>'Each file must be an image',
             'images.*.mimes'=>'Only JPG,JPEG,PNG and WEBP images are allowed.',
             'images.*.max'=>'Each image size must not exceed 2MB',

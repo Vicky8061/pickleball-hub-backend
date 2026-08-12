@@ -40,4 +40,15 @@ class UpdateUserRequest extends FormRequest
             ]
         ];
     }
+    public function messages(): array
+    {
+        return [
+
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'Email already exists.',
+
+            'status.in' => 'Invalid user status.',
+
+        ];
+    }
 }

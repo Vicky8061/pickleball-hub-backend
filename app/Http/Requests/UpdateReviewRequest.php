@@ -23,8 +23,17 @@ class UpdateReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating'=> 'required|integer|min:1|max:5',
-            'review'=> 'nullable|string|max:1000',
+            'rating' => 'sometimes|integer|min:1|max:5',
+            'review' => 'sometimes|nullable|string|max:1000',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'rating.integer' => 'Rating must be a number.',
+            'rating.min' => 'Minimum rating is 1.',
+            'rating.max' => 'Maximum rating is 5.',
+            'review.max' => 'Review cannot exceed 1000 characters.',
         ];
     }
 }

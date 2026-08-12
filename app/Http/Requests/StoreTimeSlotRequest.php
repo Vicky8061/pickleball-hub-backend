@@ -30,11 +30,11 @@ class StoreTimeSlotRequest extends FormRequest
 
     }
 
-    public function message(): array
+    public function messages(): array
     {
         return[
             'court_id.required'=>'Court is required',
-            'court_id.exists'=> 'Selected court does not exits',
+            'court_id.exists'=> 'Selected court does not exist.',
             'start_time.required'=>'Start time is required',
             'start_time.date_format'=>'Start time must be in HH:MM format',
             'end_time.required'=>'End time is required',

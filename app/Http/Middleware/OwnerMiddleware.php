@@ -8,25 +8,32 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OwnerMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
-    {
-        if(!$request->user()){
+    public function handle(
+        Request $request,
+        Closure $next
+    ): Response {
+
+        if (!$request->user()) {
             return response()->json([
-                'success'=>false,
-                'message'=>'Unauthenticated',
-            ],401);
+                'success' => false,
+                'message' => 'Unauthenticated.'
+            ], 401);
         }
-        if($request->user()->role !== 'owner'){
+
+        if ($request->user()->role !== 'owner') {
             return response()->json([
-                'success'=>false,
-                'mesaage'=>'Unauthorized. Owner Access require',
-            ],403);
+                'success' => false,
+                'message' => 'Access denied. Owner only.'
+            ], 403);
         }
+
+        if ($request->user()->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your owner account is not active.'
+            ], 403);
+        }
+
         return $next($request);
     }
 }

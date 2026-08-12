@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
             'password'=>'required|string',
         ];
     }
-    public function message():array
+    public function messages():array
     {
         return[
             'email.required'=>'Email is required',

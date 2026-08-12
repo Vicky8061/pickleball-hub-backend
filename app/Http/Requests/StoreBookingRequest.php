@@ -25,7 +25,7 @@ class StoreBookingRequest extends FormRequest
         return [
             'court_id'=> 'required|exists:courts,id',
             'time_slot_id'=> 'required|exists:time_slots,id',
-            'booking_date'=> 'required|date|after_or_equal:today',
+            'booking_date' => 'required|date_format:Y-m-d|after_or_equal:today',
         ];
     }
     public function messages(): array
