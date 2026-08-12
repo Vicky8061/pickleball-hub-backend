@@ -23,8 +23,15 @@ class StoreWishlistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'court_id'=> 'required|exists:courts,id',
-            
+            'court_id' => 'required|exists:courts,id',
+
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'court_id.required' => 'Court is required.',
+            'court_id.exists' => 'Selected court does not exist.',
         ];
     }
 }
