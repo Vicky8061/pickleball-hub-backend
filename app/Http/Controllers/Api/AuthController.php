@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     /**
-     * Register User / Owner
+     * Register Normal User
      */
     public function register(RegisterRequest $request)
     {
@@ -23,8 +23,8 @@ class AuthController extends Controller
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => 'user',
-            'status' => 'active',
+            'role'     => 'user',
+            'status'   => 'active',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -45,6 +45,7 @@ class AuthController extends Controller
         ], 201);
     }
 
+
     /**
      * Login
      */
@@ -62,18 +63,14 @@ class AuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Pending Owner
-        if ($user->status === 'pending') {
-            Auth::logout();
+        /*
+        |--------------------------------------------------------------------------
+        | Check Blocked Account
+        |--------------------------------------------------------------------------
+        */
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Your account is pending admin approval.'
-            ], 403);
-        }
-
-        // Blocked User
         if ($user->status === 'blocked') {
+
             Auth::logout();
 
             return response()->json([
@@ -82,10 +79,20 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Delete old tokens
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Old Tokens
+        |--------------------------------------------------------------------------
+        */
+
         $user->tokens()->delete();
 
-        // Generate new token
+        /*
+        |--------------------------------------------------------------------------
+        | Generate New Token
+        |--------------------------------------------------------------------------
+        */
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -104,29 +111,41 @@ class AuthController extends Controller
         ], 200);
     }
 
+
+    /**
+     * Logout
+     */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->user()->currentAccessToken();
+
+        if ($token) {
+            $token->delete();
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Logout successful',
+            'message' => 'Logout successful.'
         ], 200);
     }
 
+
+    /**
+     * Get Authenticated User Profile
+     */
     public function profile(Request $request)
     {
         $user = $request->user();
 
         return response()->json([
             'success' => true,
+            'message' => 'Profile fetched successfully.',
             'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'role'   => $user->role,
                 'status' => $user->status,
-
             ]
         ], 200);
     }
