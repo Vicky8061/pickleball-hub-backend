@@ -36,7 +36,7 @@ class StoreBookingRequest extends FormRequest
             'time_slot_id.required'=> 'Time slot is required',
             'time_slot_id.exists'=> 'Selected Time slot does not exist',
             'booking_date.required'=> 'Booking date is required',
-            'booking_date.date'=> 'Booking date must be a valid date',
+            'booking_date.date_format'=> 'Booking date must be a valid date',
             'booking_date.after_or_equal'=> 'Booking date must be today or a future date',
         ];
     }

@@ -23,8 +23,8 @@ class AuthController extends Controller
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => $data['role'],
-            'status'   => $data['role'] === 'owner' ? 'pending' : 'active',
+            'role' => 'user',
+            'status' => 'active',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -104,28 +104,30 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'success'=> true,
-            'message'=>'Logout successful',
-        ],200);
+            'success' => true,
+            'message' => 'Logout successful',
+        ], 200);
     }
 
-    public function profile(Request $request){
+    public function profile(Request $request)
+    {
         $user = $request->user();
 
         return response()->json([
-            'success'=>true,
-            'data'=> [
-                'id'=> $user->id,
-                'name'=> $user->name,
-                'email'=> $user->email,
-                'role'=> $user->role,
-                'status'=> $user->status,
+            'success' => true,
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'status' => $user->status,
 
             ]
-        ],200);
+        ], 200);
     }
 }

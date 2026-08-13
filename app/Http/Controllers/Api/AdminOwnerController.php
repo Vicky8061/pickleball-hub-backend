@@ -78,7 +78,7 @@ class AdminOwnerController extends Controller
             'data'=> new UserResource($owner),
         ]);
     }
-    public function destroy(User $owner){
+    public function block(User $owner){
         if($owner->role!== 'owner'){
             return response()->json([
                 'success'=>false,

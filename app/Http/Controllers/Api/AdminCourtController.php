@@ -31,6 +31,9 @@ class AdminCourtController extends Controller
 
         //filter by status
         if ($request->filled('status')) {
+            $request->validated([
+                'status'=> 'in:active,inactive'
+            ]);
             $query->where('status', $request->status);
         }
 

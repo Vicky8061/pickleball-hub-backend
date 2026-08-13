@@ -26,4 +26,11 @@ class UpdateBookingRequest extends FormRequest
             'booking_status' => 'required|in:confirmed,completed',
         ];
     }
+     public function messages(): array
+    {
+        return [
+            'booking_status.required' => 'Booking status is required.',
+            'booking_status.in' => 'Booking status must be confirmed or completed.',
+        ];
+    }
 }

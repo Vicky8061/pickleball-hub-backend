@@ -33,7 +33,7 @@ class AdminBookingController extends Controller
 
         //filter by booking status
         if($request->filled('status')){
-            $query->where('Booking_status',$request->status);
+            $query->where('booking_status',$request->status);
         }
 
         //Latest / oldest

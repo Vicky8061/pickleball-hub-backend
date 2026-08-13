@@ -16,11 +16,12 @@ class CourtImageController extends Controller
      */
     public function index(Court $court)
     {
+        $court->load('images');
         return response()->json([
-            'success'=> true,
-            'message'=> 'Court images fetched successfuly',
-            'data'=> $court->images
-        ],200);
+            'success' => true,
+            'message' => 'Court images fetched successfuly',
+            'data' => $court->images
+        ], 200);
     }
 
     /**
@@ -29,49 +30,73 @@ class CourtImageController extends Controller
     public function store(StoreCourtImageRequest $request)
     {
         $court = Court::findOrFail($request->court_id);
-
-        if($court->owner_id != $request->user()->id){
+        if ($request->user()->role != 'owner') {
             return response()->json([
-                'success'=>false,
-                'message'=>'You are not authorized to upload images for this court ',
-            ],403);
+                'success' => false,
+                'message' => 'Only owners can upload court images.'
+            ], 403);
+        }
+
+        if ($court->owner_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to upload images for this court ',
+            ], 403);
+        }
+
+        if ($court->images()->count() + count($request->file('images')) > 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Maximum 5 images are allowed per court.'
+            ], 400);
+        }
+        if ($request->boolean('is_primary')) {
+            $court->images()->update([
+                'is_primary' => false
+            ]);
         }
 
         $uploadedImages = [];
 
-        foreach ($request->file('images') as $index => $image){
+        foreach ($request->file('images') as $index => $image) {
 
-            $path = $image->store('court_images','public');
+            $path = $image->store('court_images', 'public');
 
             $courtImage = CourtImage::create([
                 'court_id' => $court->id,
                 'image' => $path,
-                'is_primary'=> $request->is_primary && $index == 0,
+                'is_primary' => $request->boolean('is_primary') && $index === 0,
             ]);
 
             $uploadedImages[] = $courtImage;
         }
         return response()->json([
-            'success'=>true,
-            'message'=> 'Images uploaded successfuly',
-            'data'=> $uploadedImages
-        ],201);
+            'success' => true,
+            'message' => 'Images uploaded successfully',
+            'data' => $uploadedImages
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(CourtImage $courtImage)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => $courtImage,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, CourtImage $courtImage)
     {
-        //
+        return response()->json([
+            'success' => false,
+            'message' => 'Update image feature is not available.',
+        ], 405);
     }
 
     /**
@@ -79,22 +104,48 @@ class CourtImageController extends Controller
      */
     public function destroy(CourtImage $courtImage, Request $request)
     {
-        if($courtImage->court->owner_id != $request->user()->id){
+        if ($request->user()->role != 'owner') {
             return response()->json([
-                'success'=>false,
-                'message'=>'Unauthorized',
-            ],403);
+                'success' => false,
+                'message' => 'Only owners can delete images.'
+            ], 403);
         }
 
-        if(Storage::disk('public')->exists($courtImage->image)){
+        if ($courtImage->court->owner_id != $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to delete this image',
+            ], 403);
+        }
+
+        $wasPrimary = $courtImage->is_primary;
+        $courtId = $courtImage->court_id;
+
+        // Delete Physical Image
+        if (Storage::disk('public')->exists($courtImage->image)) {
             Storage::disk('public')->delete($courtImage->image);
         }
 
+        // Delete Database Record
         $courtImage->delete();
 
+        // Assign new primary image if deleted image was primary
+        if ($wasPrimary) {
+
+            $newPrimary = CourtImage::where('court_id', $courtId)
+                ->oldest()
+                ->first();
+
+            if ($newPrimary) {
+                $newPrimary->update([
+                    'is_primary' => true
+                ]);
+            }
+        }
+
         return response()->json([
-            'success'=>true,
-            'message'=>'Image deleted successfuly.',
-        ]);
+            'success' => true,
+            'message' => 'Image deleted successfully.',
+        ], 200);
     }
 }

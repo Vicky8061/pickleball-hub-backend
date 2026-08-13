@@ -31,11 +31,10 @@ class AdminUserController extends Controller
                 $query->oldest();
                 break;
             case 'latest':
-                $query->latest();
-                break;
             default:
                 $query->latest();
                 break;
+            
 
         }
 
@@ -83,7 +82,7 @@ class AdminUserController extends Controller
             'data'=> new UserResource($user)
         ],200);
     }
-    public function destroy(User $user){
+    public function block(User $user){
         if($user->role !== 'user'){
             return response()->json([
                 'success'=>false,

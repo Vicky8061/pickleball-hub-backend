@@ -31,7 +31,7 @@ class UpdateCourtRequest extends FormRequest
             'price_per_hour' => 'sometimes|numeric|min:0',
             'court_type' => 'sometimes|in:Indoor,Outdoor',
             'opening_time' => 'sometimes|date_format:H:i',
-            'closing_time' => 'sometimes|date_format:H:i',
+            'closing_time' => 'sometimes|date_format:H:i|after:opening_time',
         ];
     }
 }

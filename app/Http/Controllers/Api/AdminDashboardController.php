@@ -12,7 +12,7 @@ use App\Models\Tournament;
 
 class AdminDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
     $totalUsers = User::where('role', 'user')->count();
 

@@ -26,7 +26,6 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email'=> 'required|email|unique:users,email',
             'password'=>'required|string|min:8|confirmed',
-            'role' => 'required|in:user,owner',
         ];
     }
     public function messages():array{
@@ -38,8 +37,6 @@ class RegisterRequest extends FormRequest
             'password.required'=>'Password is required',
             'password.min'=>'Password must be at least 8 characters',
             'password.confirmed'=>'Password confirmation does not match',
-            'role.required'=>'Role is required',
-            'role.in'=>'Invalid role Selected',
         ];
     }
 }

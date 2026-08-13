@@ -275,10 +275,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         // USER MANAGEMENT
         // ---------------------------------------------
 
-        Route::apiResource(
-            'users',
-            AdminUserController::class
-        );
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::get('/users/{user}', [AdminUserController::class, 'show']);
+        Route::put('/users/{user}', [AdminUserController::class, 'update']);
+        Route::patch('/users/{user}/block', [AdminUserController::class, 'block']);
 
 
         // ---------------------------------------------
@@ -289,6 +289,7 @@ Route::middleware(['auth:sanctum', 'admin'])
             'owners',
             AdminOwnerController::class
         );
+        Route::patch('/owners/{owner}/block', [AdminOwnerController::class, 'block']);
 
 
         // ---------------------------------------------
