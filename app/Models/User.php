@@ -62,4 +62,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(TournamentParticipant::class);
     }
+    public function ownerApplications()
+    {
+        return $this->hasMany(OwnerApplication::class);
+    }
 }

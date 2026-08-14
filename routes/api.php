@@ -11,10 +11,12 @@ use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\OwnerDashboardController;
 use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\AdminOwnerApplicationController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AdminOwnerController;
 use App\Http\Controllers\Api\AdminReviewController;
 use App\Http\Controllers\Api\AdminTournamentController;
+use App\Http\Controllers\Api\OwnerApplicationController;
 use App\Http\Controllers\Api\TournamentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -120,6 +122,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get(
         '/user/my-tournaments',
         [TournamentController::class, 'myJoinedTournaments']
+    );
+
+    //Become Owner
+    Route::post(
+        '/owner/apply',
+        [OwnerApplicationController::class, 'applyForOwner']
+    );
+
+    Route::get(
+        '/owner/application',
+        [OwnerApplicationController::class, 'myApplication']
     );
 
 
@@ -347,4 +360,20 @@ Route::middleware(['auth:sanctum', 'admin'])
             'show',
             'destroy'
         ]);
+        // ---------------------------------------------
+        // Owner Application MANAGEMENT
+        // ---------------------------------------------
+
+        Route::get(
+            '/owner-applications',
+            [AdminOwnerApplicationController::class, 'index']
+        );
+        Route::patch(
+            '/owner-applications/{ownerApplication}/approved',
+            [AdminOwnerApplicationController::class, 'approve']
+        );
+        Route::patch(
+            '/owner-applications/{ownerApplication}/rejected',
+            [AdminOwnerApplicationController::class, 'reject']
+        );
     });
