@@ -7,20 +7,63 @@ use Illuminate\Http\Request;
 use App\Models\Court;
 use App\Models\CourtImage;
 use App\Http\Requests\StoreCourtImageRequest;
+use App\Http\Resources\CourtImageResource;
 use Illuminate\Support\Facades\Storage;
+use OpenApi\Attributes as OA;
 
 class CourtImageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/courts/{court}/images',
+        summary: 'Get court images',
+        description: 'Returns all images associated with a specific court.',
+        tags: ['Court Images'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'court',
+                in: 'path',
+                required: true,
+                description: 'Court ID.',
+                schema: new OA\Schema(
+                    type: 'integer'
+                ),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Court images fetched successfully'
+            ),
+
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+
+            new OA\Response(
+                response: 404,
+                description: 'Court not found'
+            ),
+        ]
+    )]
+
     public function index(Court $court)
     {
         $court->load('images');
         return response()->json([
             'success' => true,
             'message' => 'Court images fetched successfuly',
-            'data' => $court->images
+            'data' => CourtImageResource::collection($court->images)
         ], 200);
     }
 

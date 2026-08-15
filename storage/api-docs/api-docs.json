@@ -489,6 +489,381 @@
                 ]
             }
         },
+        "/api/bookings": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Get my bookings",
+                "description": "Returns all bookings belonging to the authenticated user.",
+                "operationId": "4535e967ef15bc76dadf1efa40192f0d",
+                "responses": {
+                    "200": {
+                        "description": "Bookings fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Only users can access their bookings"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Create a booking",
+                "description": "Allows an authenticated user to book an active court and an available time slot.",
+                "operationId": "43e6dcca842886074084b8db86af7802",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "court_id",
+                                    "time_slot_id",
+                                    "booking_date"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "time_slot_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "booking_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Booking created successfully"
+                    },
+                    "400": {
+                        "description": "Court, time slot, or booking is not available"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Only users can book courts"
+                    },
+                    "404": {
+                        "description": "Court or time slot not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/bookings/{booking}": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Get booking details",
+                "description": "Returns details of a specific booking belonging to the authenticated user.",
+                "operationId": "65258f4a04829afc503334b30421ad4f",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "You are not authorized to view this booking"
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Cancel a booking",
+                "description": "Cancels a booking belonging to the authenticated user. Completed bookings cannot be cancelled.",
+                "operationId": "dd0cd74ecc75a87121ba3e03ee226677",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking cancelled successfully"
+                    },
+                    "400": {
+                        "description": "Booking is already cancelled or completed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "You are not authorized to cancel this booking"
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/courts": {
+            "get": {
+                "tags": [
+                    "Courts"
+                ],
+                "summary": "Get courts",
+                "description": "Returns a paginated list of courts with search, filtering, price range, and sorting options.",
+                "operationId": "c022902eaf90a4be03fd53295dab53d2",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search courts by court name.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Pickleball Arena"
+                    },
+                    {
+                        "name": "court_type",
+                        "in": "query",
+                        "description": "Filter courts by court type.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "indoor"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter courts by status. This filter is intended for admin users.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive"
+                            ]
+                        },
+                        "example": "active"
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "Filter courts by city/address.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Surat"
+                    },
+                    {
+                        "name": "price_min",
+                        "in": "query",
+                        "description": "Minimum price per hour.",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "minimum": 0
+                        },
+                        "example": 200
+                    },
+                    {
+                        "name": "price_max",
+                        "in": "query",
+                        "description": "Maximum price per hour.",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "minimum": 0
+                        },
+                        "example": 1000
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort courts by price or latest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "price_low",
+                                "price_high",
+                                "latest"
+                            ]
+                        },
+                        "example": "price_low"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Courts fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/courts/{court}": {
+            "get": {
+                "tags": [
+                    "Courts"
+                ],
+                "summary": "Get court details",
+                "description": "Returns detailed information about a specific court including owner, images, time slots, reviews, wishlist information, and tournaments.",
+                "operationId": "9ae6efa0c37ab05f4cb2d54b0e79486e",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court details fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Court not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/courts/{court}/images": {
+            "get": {
+                "tags": [
+                    "Court Images"
+                ],
+                "summary": "Get court images",
+                "description": "Returns all images associated with a specific court.",
+                "operationId": "65db71d834e063c6777cc79e61630c29",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court images fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Court not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/owner/apply": {
             "post": {
                 "tags": [
@@ -606,6 +981,224 @@
                     }
                 ]
             }
+        },
+        "/api/time-slots": {
+            "get": {
+                "tags": [
+                    "Time Slots"
+                ],
+                "summary": "Get all time slots",
+                "description": "Returns all time slots along with their associated courts, sorted by latest first.",
+                "operationId": "a15282e344e577a5fac2e8d43df9b4c8",
+                "responses": {
+                    "200": {
+                        "description": "Time slots fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/time-slots/{timeSlot}": {
+            "get": {
+                "tags": [
+                    "Time Slots"
+                ],
+                "summary": "Get time slot details",
+                "description": "Returns details of a specific time slot along with its associated court.",
+                "operationId": "d9280c08dc1d41885041b9db42a962c0",
+                "parameters": [
+                    {
+                        "name": "timeSlot",
+                        "in": "path",
+                        "description": "Time slot ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Time slot fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Time slot not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlists": {
+            "get": {
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "Get user wishlist",
+                "description": "Returns all courts added to the authenticated user wishlist.",
+                "operationId": "f5147eddc45d3e994b9ac32cb3a4944e",
+                "responses": {
+                    "200": {
+                        "description": "Wishlists fetched successfully"
+                    },
+                    "403": {
+                        "description": "Only users can access wishlist"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "Add court to wishlist",
+                "description": "Adds an active court to the authenticated user wishlist.",
+                "operationId": "f703ea939dbcf946d0917e0c57d11055",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "court_id"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Court added to wishlist successfully"
+                    },
+                    "400": {
+                        "description": "Court already in wishlist or inactive court"
+                    },
+                    "403": {
+                        "description": "Only users can add courts to wishlist"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlists/{wishlist}": {
+            "get": {
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "Get wishlist item",
+                "description": "Returns a specific wishlist item belonging to the authenticated user.",
+                "operationId": "d0d06181fb21240112b8251d2e8199e2",
+                "parameters": [
+                    {
+                        "name": "wishlist",
+                        "in": "path",
+                        "description": "Wishlist ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Wishlist fetched successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Wishlist not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlists/{court}": {
+            "delete": {
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "Remove court from wishlist",
+                "description": "Removes a court from the authenticated user wishlist.",
+                "operationId": "478e940b53406770b6f4061eec7d06f0",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court removed from wishlist successfully"
+                    },
+                    "403": {
+                        "description": "Only users can remove courts from wishlist"
+                    },
+                    "404": {
+                        "description": "Court not found in wishlist"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -627,8 +1220,28 @@
             "description": "Authentication"
         },
         {
+            "name": "Bookings",
+            "description": "Bookings"
+        },
+        {
+            "name": "Courts",
+            "description": "Courts"
+        },
+        {
+            "name": "Court Images",
+            "description": "Court Images"
+        },
+        {
             "name": "Owner Application",
             "description": "Owner Application"
+        },
+        {
+            "name": "Time Slots",
+            "description": "Time Slots"
+        },
+        {
+            "name": "Wishlist",
+            "description": "Wishlist"
         }
     ]
 }

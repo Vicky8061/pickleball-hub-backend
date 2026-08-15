@@ -10,12 +10,39 @@ use App\Models\TimeSlot;
 use App\Models\Booking;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\UpdateBookingRequest;
+use OpenApi\Attributes as OA;
 
 class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/bookings',
+        summary: 'Get my bookings',
+        description: 'Returns all bookings belonging to the authenticated user.',
+        tags: ['Bookings'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Bookings fetched successfully'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only users can access their bookings'
+            ),
+        ]
+    )]
+
     public function index(Request $request)
     {
         if ($request->user()->role !== 'user') {
@@ -44,6 +71,75 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    #[OA\Post(
+        path: '/api/bookings',
+        summary: 'Create a booking',
+        description: 'Allows an authenticated user to book an active court and an available time slot.',
+        tags: ['Bookings'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: [
+                    'court_id',
+                    'time_slot_id',
+                    'booking_date'
+                ],
+                properties: [
+                    new OA\Property(
+                        property: 'court_id',
+                        type: 'integer',
+                        example: 1
+                    ),
+
+                    new OA\Property(
+                        property: 'time_slot_id',
+                        type: 'integer',
+                        example: 3
+                    ),
+
+                    new OA\Property(
+                        property: 'booking_date',
+                        type: 'string',
+                        format: 'date',
+                        example: '2026-08-20'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Booking created successfully'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Court, time slot, or booking is not available'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only users can book courts'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Court or time slot not found'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error'
+            ),
+        ]
+    )]
     public function store(StoreBookingRequest $request)
     {
         // Only users can book courts
@@ -127,7 +223,49 @@ class BookingController extends Controller
     /**
      * Display the specified resource.
      */
-     public function show(Booking $booking, Request $request)
+    #[OA\Get(
+        path: '/api/bookings/{booking}',
+        summary: 'Get booking details',
+        description: 'Returns details of a specific booking belonging to the authenticated user.',
+        tags: ['Bookings'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(
+                    type: 'integer'
+                ),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Booking fetched successfully'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'You are not authorized to view this booking'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Booking not found'
+            ),
+        ]
+    )]
+    public function show(Booking $booking, Request $request)
     {
         if ($request->user()->role !== 'user') {
             return response()->json([
@@ -236,6 +374,52 @@ class BookingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/bookings/{booking}',
+        summary: 'Cancel a booking',
+        description: 'Cancels a booking belonging to the authenticated user. Completed bookings cannot be cancelled.',
+        tags: ['Bookings'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(
+                    type: 'integer'
+                ),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Booking cancelled successfully'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Booking is already cancelled or completed'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'You are not authorized to cancel this booking'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Booking not found'
+            ),
+        ]
+    )]
     public function destroy(Booking $booking, Request $request)
     {
         // Only users can cancel their bookings

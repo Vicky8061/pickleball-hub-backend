@@ -9,12 +9,35 @@ use App\Models\Court;
 use App\Models\TimeSlot;
 use App\Http\Resources\TimeSlotResource;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
 class TimeSlotController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/time-slots',
+        summary: 'Get all time slots',
+        description: 'Returns all time slots along with their associated courts, sorted by latest first.',
+        tags: ['Time Slots'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Time slots fetched successfully'
+            ),
+
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+        ]
+    )]
     public function index()
     {
         $timeSlots = TimeSlot::with('court')
@@ -112,6 +135,46 @@ class TimeSlotController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/time-slots/{timeSlot}',
+        summary: 'Get time slot details',
+        description: 'Returns details of a specific time slot along with its associated court.',
+        tags: ['Time Slots'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'timeSlot',
+                in: 'path',
+                required: true,
+                description: 'Time slot ID.',
+                schema: new OA\Schema(
+                    type: 'integer'
+                ),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Time slot fetched successfully'
+            ),
+
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+
+            new OA\Response(
+                response: 404,
+                description: 'Time slot not found'
+            ),
+        ]
+    )]
     public function show(TimeSlot $timeSlot)
     {
         $timeSlot->load('court');
