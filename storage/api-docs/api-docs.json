@@ -12,6 +12,256 @@
         }
     ],
     "paths": {
+        "/api/admin/owner-applications": {
+            "get": {
+                "tags": [
+                    "Admin - Owner Applications"
+                ],
+                "summary": "Get owner applications",
+                "description": "Returns a paginated list of owner applications for admin users. Supports searching, status filtering, sorting, and pagination.",
+                "operationId": "57751656a4a97a8785055207bfda6103",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by applicant name, email, or business name.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Vicky"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter applications by status.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected"
+                            ]
+                        },
+                        "example": "pending"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort applications by creation date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner applications fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized. Admin access required."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owner-applications/{ownerApplication}": {
+            "get": {
+                "tags": [
+                    "Admin - Owner Applications"
+                ],
+                "summary": "Get owner application details",
+                "description": "Returns the details of a specific owner application for admin review.",
+                "operationId": "a43f2b482cb86ad77606b1214ef5f83f",
+                "parameters": [
+                    {
+                        "name": "ownerApplication",
+                        "in": "path",
+                        "description": "Owner application ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner application fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized. Admin access required."
+                    },
+                    "404": {
+                        "description": "Owner application not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owner-applications/{ownerApplication}/approve": {
+            "patch": {
+                "tags": [
+                    "Admin - Owner Applications"
+                ],
+                "summary": "Approve owner application",
+                "description": "Approves an owner application and promotes the associated user to owner status.",
+                "operationId": "e8d81b4f10dccb40d5f6ba7824126510",
+                "parameters": [
+                    {
+                        "name": "ownerApplication",
+                        "in": "path",
+                        "description": "Owner application ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_note": {
+                                        "type": "string",
+                                        "example": "Documents verified. Owner application approved.",
+                                        "nullable": true,
+                                        "maxLength": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Owner application approved successfully"
+                    },
+                    "400": {
+                        "description": "Application is already approved or has been rejected"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized. Admin access required."
+                    },
+                    "404": {
+                        "description": "Owner application not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owner-applications/{ownerApplication}/reject": {
+            "patch": {
+                "tags": [
+                    "Admin - Owner Applications"
+                ],
+                "summary": "Reject owner application",
+                "description": "Rejects an owner application. An admin rejection reason is required.",
+                "operationId": "b4a1c69fae7b744da8dad8dc4c1fad5b",
+                "parameters": [
+                    {
+                        "name": "ownerApplication",
+                        "in": "path",
+                        "description": "Owner application ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "admin_note"
+                                ],
+                                "properties": {
+                                    "admin_note": {
+                                        "type": "string",
+                                        "example": "Verification document is not valid.",
+                                        "maxLength": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Owner application rejected successfully"
+                    },
+                    "400": {
+                        "description": "Application is already rejected, already approved, or can no longer be rejected"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized. Admin access required."
+                    },
+                    "404": {
+                        "description": "Owner application not found"
+                    },
+                    "422": {
+                        "description": "Validation error. Rejection reason is required."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -368,6 +618,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin - Owner Applications",
+            "description": "Admin - Owner Applications"
+        },
         {
             "name": "Authentication",
             "description": "Authentication"

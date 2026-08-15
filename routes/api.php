@@ -368,12 +368,16 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/owner-applications',
             [AdminOwnerApplicationController::class, 'index']
         );
+        Route::get(
+            '/owner-applications/{ownerApplication}',
+            [AdminOwnerApplicationController::class, 'show']
+        );
         Route::patch(
-            '/owner-applications/{ownerApplication}/approved',
+            '/owner-applications/{ownerApplication}/approve',
             [AdminOwnerApplicationController::class, 'approve']
         );
         Route::patch(
-            '/owner-applications/{ownerApplication}/rejected',
+            '/owner-applications/{ownerApplication}/reject',
             [AdminOwnerApplicationController::class, 'reject']
         );
     });
