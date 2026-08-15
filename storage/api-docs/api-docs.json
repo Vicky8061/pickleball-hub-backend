@@ -238,6 +238,124 @@
                     }
                 ]
             }
+        },
+        "/api/owner/apply": {
+            "post": {
+                "tags": [
+                    "Owner Application"
+                ],
+                "summary": "Apply to become an owner",
+                "description": "Allows an authenticated normal user to submit an application to become an owner. A verification document is required.",
+                "operationId": "a91ac2c6110b5d3d09f0450c25edfcf9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "business_name",
+                                    "phone",
+                                    "address",
+                                    "city",
+                                    "state",
+                                    "pincode",
+                                    "document"
+                                ],
+                                "properties": {
+                                    "business_name": {
+                                        "type": "string",
+                                        "example": "Vicky Pickleball Club"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "9876543210"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main Road, Adajan"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Surat"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "Gujarat"
+                                    },
+                                    "pincode": {
+                                        "type": "string",
+                                        "example": "395009"
+                                    },
+                                    "experience": {
+                                        "type": "string",
+                                        "example": "5 years of experience in sports management.",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "I want to start and manage a professional pickleball facility.",
+                                        "nullable": true
+                                    },
+                                    "document": {
+                                        "description": "Verification document. Allowed formats: PDF, JPG, JPEG, PNG. Maximum size: 5 MB.",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Owner application submitted successfully"
+                    },
+                    "400": {
+                        "description": "User already has a pending owner application"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Only normal users can apply"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/application": {
+            "get": {
+                "tags": [
+                    "Owner Application"
+                ],
+                "summary": "Get my owner application",
+                "description": "Returns the authenticated user's latest owner application and its current status.",
+                "operationId": "46c7c3761673381bbbb511e0797bee77",
+                "responses": {
+                    "200": {
+                        "description": "Owner application fetched successfully or no application has been submitted yet"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Only normal users can access owner applications"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -253,6 +371,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Owner Application",
+            "description": "Owner Application"
         }
     ]
 }
