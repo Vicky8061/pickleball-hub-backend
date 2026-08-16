@@ -12,12 +12,42 @@ use App\Http\Resources\TournamentParticipantResource;
 use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use Carbon\Carbon;
+use OpenApi\Attributes as OA;
 
 class TournamentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/tournaments',
+        summary: 'Get all tournaments',
+        description: 'Fetch all available tournaments with owner, court, and participant information.',
+        tags: ['Tournaments'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                required: false,
+                description: 'Page number',
+                schema: new OA\Schema(type: 'integer', example: 1)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Tournaments fetched successfully'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            )
+        ]
+    )]
+
     public function index(Request $request)
     {
         $tournaments = Tournament::with([
@@ -101,6 +131,42 @@ class TournamentController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/tournaments/{tournament}',
+        summary: 'Get tournament details',
+        description: 'Fetch detailed information about a specific tournament.',
+        tags: ['Tournaments'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'tournament',
+                in: 'path',
+                required: true,
+                description: 'Tournament ID',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    example: 1
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Tournament fetched successfully'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Tournament not found'
+            )
+        ]
+    )]
+
     public function show(Tournament $tournament)
     {
         $tournament->load([
@@ -113,12 +179,13 @@ class TournamentController extends Controller
             'success' => true,
             'message' => 'Tournament fetched successfully',
             'data' => new TournamentResource($tournament)
-        ], 201);
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
+
     public function update(UpdateTournamentRequest $request, Tournament $tournament)
     {
 
@@ -209,8 +276,50 @@ class TournamentController extends Controller
         ], 200);
     }
 
-    public function joinTournament(Tournament $tournament, Request $request)
-    {
+
+    #[OA\Post(
+        path: '/api/tournaments/{tournament}/join',
+        summary: 'Join a tournament',
+        description: 'Allows a normal user to join an upcoming tournament.',
+        tags: ['Tournaments'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'tournament',
+                in: 'path',
+                required: true,
+                description: 'Tournament ID',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    example: 1
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Successfully joined tournament'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Tournament unavailable, registration closed, already joined, or tournament full'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only normal users can join tournaments'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            )
+        ]
+    )]
+    public function joinTournament(
+        Tournament $tournament,
+        Request $request
+    ) {
         // Only normal users can join tournaments
         if ($request->user()->role !== 'user') {
             return response()->json([
@@ -302,6 +411,50 @@ class TournamentController extends Controller
             'data' => new TournamentParticipantResource($participant),
         ], 201);
     }
+    #[OA\Delete(
+        path: '/api/tournaments/{tournament}/leave',
+        summary: 'Leave a tournament',
+        description: 'Allows a user to leave a tournament they have joined.',
+        tags: ['Tournaments'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'tournament',
+                in: 'path',
+                required: true,
+                description: 'Tournament ID',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    example: 1
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Successfully left tournament'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Tournament cannot be left'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only normal users can leave tournaments'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'User is not a participant'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            )
+        ]
+    )]
+
     public function leaveTournament(
         Tournament $tournament,
         Request $request
@@ -353,6 +506,30 @@ class TournamentController extends Controller
             'message' => 'You have successfully left the tournament.',
         ], 200);
     }
+    #[OA\Get(
+        path: '/api/user/my-tournaments',
+        summary: 'Get my joined tournaments',
+        description: 'Fetch all tournaments joined by the currently authenticated user.',
+        tags: ['Tournaments'],
+        security: [
+            ['sanctum' => []]
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Joined tournaments fetched successfully'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only normal users can access joined tournaments'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            )
+        ]
+    )]
+
     public function myJoinedTournaments(Request $request)
     {
         // Only normal users can access joined tournaments

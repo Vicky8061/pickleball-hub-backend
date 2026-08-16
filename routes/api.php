@@ -100,6 +100,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
     Route::put('/reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/reviews/{review}',[ReviewController::class,'show']);
 
 
     // =================================================

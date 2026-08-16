@@ -982,6 +982,342 @@
                 ]
             }
         },
+        "/api/courts/{court}/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get court reviews",
+                "description": "Fetch all reviews for a specific court.",
+                "operationId": "eae94c3cd546c5b4a518f294a2fca3a2",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reviews fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reviews fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user": {
+                                                        "description": "User who submitted the review",
+                                                        "type": "object"
+                                                    },
+                                                    "court": {
+                                                        "description": "Court being reviewed",
+                                                        "type": "object"
+                                                    },
+                                                    "rating": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "review": {
+                                                        "type": "string",
+                                                        "example": "Excellent court and very good facilities."
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Court not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews": {
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Create a review",
+                "description": "Allows a user to review a court after completing a booking.",
+                "operationId": "f9bf17f06508aa2dd6aecbb9771092da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "court_id",
+                                    "rating",
+                                    "review"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 5,
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Excellent court and very clean."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review created successfully"
+                    },
+                    "400": {
+                        "description": "Court inactive or review already exists"
+                    },
+                    "403": {
+                        "description": "User is not allowed to submit a review"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews/{review}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get a review",
+                "description": "Fetch details of a specific review.",
+                "operationId": "bc15d59ab65a3c25b207e0dc7cfb97b4",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review fetched successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user": {
+                                                    "description": "User who submitted the review",
+                                                    "type": "object"
+                                                },
+                                                "court": {
+                                                    "description": "Court being reviewed",
+                                                    "type": "object"
+                                                },
+                                                "rating": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "review": {
+                                                    "type": "string",
+                                                    "example": "Excellent court and very good facilities."
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Update a review",
+                "description": "Allows the user who created the review to update it.",
+                "operationId": "4fc783c9667c54da3fbb49dd0e41493b",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 4,
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Updated review. The court was very good."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review updated successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Delete a review",
+                "description": "Allows the user who created the review to delete it.",
+                "operationId": "ffc33e039e253ec8fc54cf304e8d7e10",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review deleted successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/time-slots": {
             "get": {
                 "tags": [
@@ -1034,6 +1370,190 @@
                     },
                     "404": {
                         "description": "Time slot not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/tournaments": {
+            "get": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Get all tournaments",
+                "description": "Fetch all available tournaments with owner, court, and participant information.",
+                "operationId": "57254b9990dcba8759536c0d4b057f57",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournaments fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/tournaments/{tournament}": {
+            "get": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Get tournament details",
+                "description": "Fetch detailed information about a specific tournament.",
+                "operationId": "9f508c2ecb9c31de3d7dce26e947823a",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournament fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Tournament not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/tournaments/{tournament}/join": {
+            "post": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Join a tournament",
+                "description": "Allows a normal user to join an upcoming tournament.",
+                "operationId": "cc12ade5f38de73b3e400d9cbc3ddf5c",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully joined tournament"
+                    },
+                    "400": {
+                        "description": "Tournament unavailable, registration closed, already joined, or tournament full"
+                    },
+                    "403": {
+                        "description": "Only normal users can join tournaments"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/tournaments/{tournament}/leave": {
+            "delete": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Leave a tournament",
+                "description": "Allows a user to leave a tournament they have joined.",
+                "operationId": "9b824ae2bfee96efa7be51dd78c17c8d",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully left tournament"
+                    },
+                    "400": {
+                        "description": "Tournament cannot be left"
+                    },
+                    "403": {
+                        "description": "Only normal users can leave tournaments"
+                    },
+                    "404": {
+                        "description": "User is not a participant"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/my-tournaments": {
+            "get": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Get my joined tournaments",
+                "description": "Fetch all tournaments joined by the currently authenticated user.",
+                "operationId": "fcfaa34db30b516c91eb18d8eebc509f",
+                "responses": {
+                    "200": {
+                        "description": "Joined tournaments fetched successfully"
+                    },
+                    "403": {
+                        "description": "Only normal users can access joined tournaments"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1236,8 +1756,16 @@
             "description": "Owner Application"
         },
         {
+            "name": "Reviews",
+            "description": "Reviews"
+        },
+        {
             "name": "Time Slots",
             "description": "Time Slots"
+        },
+        {
+            "name": "Tournaments",
+            "description": "Tournaments"
         },
         {
             "name": "Wishlist",
