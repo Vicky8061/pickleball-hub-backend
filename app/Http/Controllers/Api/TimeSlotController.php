@@ -53,6 +53,74 @@ class TimeSlotController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/owner/time-slots',
+        summary: 'Create a time slot',
+        description: 'Allows an authenticated owner to create a time slot for their court.',
+        tags: ['Owner Time Slots'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: [
+                    'court_id',
+                    'start_time',
+                    'end_time'
+                ],
+                properties: [
+                    new OA\Property(
+                        property: 'court_id',
+                        type: 'integer',
+                        example: 1,
+                        description: 'Court ID'
+                    ),
+                    new OA\Property(
+                        property: 'start_time',
+                        type: 'string',
+                        example: '06:00',
+                        description: 'Time slot start time'
+                    ),
+                    new OA\Property(
+                        property: 'end_time',
+                        type: 'string',
+                        example: '07:00',
+                        description: 'Time slot end time'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Time slot created successfully.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Duplicate, overlapping, or inactive court.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Court not found.'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error.'
+            ),
+        ]
+    )]
+
     public function store(StoreTimeSlotRequest $request)
     {
         if ($request->user()->role !== 'owner') {
@@ -191,6 +259,85 @@ class TimeSlotController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/owner/time-slots/{timeSlot}',
+        summary: 'Update a time slot',
+        description: 'Allows an authenticated owner to update a time slot belonging to their court.',
+        tags: ['Owner Time Slots'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'timeSlot',
+                in: 'path',
+                required: true,
+                description: 'Time slot ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: [
+                    'start_time',
+                    'end_time',
+                    'status'
+                ],
+                properties: [
+                    new OA\Property(
+                        property: 'start_time',
+                        type: 'string',
+                        example: '07:00',
+                        description: 'Updated start time'
+                    ),
+                    new OA\Property(
+                        property: 'end_time',
+                        type: 'string',
+                        example: '08:00',
+                        description: 'Updated end time'
+                    ),
+                    new OA\Property(
+                        property: 'status',
+                        type: 'string',
+                        enum: ['active', 'inactive'],
+                        example: 'active'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Time slot updated successfully.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Time slot already exists.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Time slot not found.'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error.'
+            ),
+        ]
+    )]
+
     public function update(UpdateTimeSlotRequest $request, TimeSlot $timeSlot)
     {
         if ($request->user()->role !== 'owner') {
@@ -240,6 +387,50 @@ class TimeSlotController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/owner/time-slots/{timeSlot}',
+        summary: 'Delete a time slot',
+        description: 'Allows an authenticated owner to delete a time slot belonging to their court. A time slot cannot be deleted if it has bookings.',
+        tags: ['Owner Time Slots'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'timeSlot',
+                in: 'path',
+                required: true,
+                description: 'Time slot ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Time slot deleted successfully.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Cannot delete a booked time slot.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Time slot not found.'
+            ),
+        ]
+    )]
+
     public function destroy(TimeSlot $timeSlot, Request $request)
     {
         if ($request->user()->role !== 'owner') {

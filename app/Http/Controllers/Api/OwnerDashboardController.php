@@ -9,12 +9,160 @@ use App\Models\Booking;
 use App\Models\Review;
 use App\Models\Tournament;
 use Carbon\Carbon;
+use OpenApi\Attributes as OA;
 
 class OwnerDashboardController extends Controller
 {
     /**
      * Display owner dashboard statistics.
      */
+    #[OA\Get(
+        path: '/api/owner/dashboard',
+        summary: 'Get owner dashboard',
+        description: 'Fetch dashboard statistics for the authenticated owner including courts, bookings, revenue, tournaments, and reviews.',
+        tags: ['Owner Dashboard'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Dashboard data fetched successfully.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'success',
+                            type: 'boolean',
+                            example: true
+                        ),
+
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Dashboard data fetched successfully.'
+                        ),
+
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            properties: [
+
+                                // Courts
+                                new OA\Property(
+                                    property: 'total_courts',
+                                    type: 'integer',
+                                    example: 10
+                                ),
+                                new OA\Property(
+                                    property: 'active_courts',
+                                    type: 'integer',
+                                    example: 8
+                                ),
+                                new OA\Property(
+                                    property: 'inactive_courts',
+                                    type: 'integer',
+                                    example: 2
+                                ),
+
+                                // Bookings
+                                new OA\Property(
+                                    property: 'total_bookings',
+                                    type: 'integer',
+                                    example: 150
+                                ),
+                                new OA\Property(
+                                    property: 'today_bookings',
+                                    type: 'integer',
+                                    example: 8
+                                ),
+                                new OA\Property(
+                                    property: 'pending_bookings',
+                                    type: 'integer',
+                                    example: 12
+                                ),
+                                new OA\Property(
+                                    property: 'confirmed_bookings',
+                                    type: 'integer',
+                                    example: 20
+                                ),
+                                new OA\Property(
+                                    property: 'completed_bookings',
+                                    type: 'integer',
+                                    example: 100
+                                ),
+                                new OA\Property(
+                                    property: 'cancelled_bookings',
+                                    type: 'integer',
+                                    example: 18
+                                ),
+
+                                // Revenue
+                                new OA\Property(
+                                    property: 'total_revenue',
+                                    type: 'number',
+                                    format: 'float',
+                                    example: 25000.00
+                                ),
+
+                                // Tournaments
+                                new OA\Property(
+                                    property: 'total_tournaments',
+                                    type: 'integer',
+                                    example: 10
+                                ),
+                                new OA\Property(
+                                    property: 'upcoming_tournaments',
+                                    type: 'integer',
+                                    example: 3
+                                ),
+                                new OA\Property(
+                                    property: 'ongoing_tournaments',
+                                    type: 'integer',
+                                    example: 1
+                                ),
+                                new OA\Property(
+                                    property: 'completed_tournaments',
+                                    type: 'integer',
+                                    example: 5
+                                ),
+                                new OA\Property(
+                                    property: 'cancelled_tournaments',
+                                    type: 'integer',
+                                    example: 1
+                                ),
+
+                                // Reviews
+                                new OA\Property(
+                                    property: 'total_reviews',
+                                    type: 'integer',
+                                    example: 75
+                                ),
+                                new OA\Property(
+                                    property: 'average_rating',
+                                    type: 'number',
+                                    format: 'float',
+                                    example: 4.5
+                                ),
+                            ]
+                        ),
+                    ]
+                )
+            ),
+
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+
+            new OA\Response(
+                response: 403,
+                description: 'Only owners can access the dashboard.'
+            ),
+        ]
+    )]
+
     public function index(Request $request)
     {
         // Only owners can access owner dashboard

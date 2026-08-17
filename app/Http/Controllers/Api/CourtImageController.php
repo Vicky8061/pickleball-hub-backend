@@ -70,53 +70,219 @@ class CourtImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    #[OA\Post(
+        path: '/api/owner/court-images',
+        summary: 'Upload court images',
+        description: 'Allows an authenticated owner to upload up to 5 images for their court.',
+        tags: ['Owner Court Images'],
+
+        security: [
+            ['sanctum' => []]
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+
+                schema: new OA\Schema(
+                    type: 'object',
+
+                    required: [
+                        'court_id',
+                        'images[]'
+                    ],
+
+                    properties: [
+
+                        new OA\Property(
+                            property: 'court_id',
+                            type: 'integer',
+                            example: 6,
+                            description: 'ID of the court.'
+                        ),
+
+                        new OA\Property(
+                            property: 'images[]',
+                            type: 'array',
+                            description: 'Court images. Upload between 1 and 5 images.',
+                            items: new OA\Items(
+                                type: 'string',
+                                format: 'binary'
+                            ),
+                            minItems: 1,
+                            maxItems: 5
+                        ),
+                        new OA\Property(
+                            property: 'is_primary',
+                            type: 'boolean',
+                            nullable: true,
+                            example: true,
+                            description: 'If true, the first uploaded image will become the primary image.'
+                        ),
+                    ]
+                )
+            )
+        ),
+
+        responses: [
+
+            new OA\Response(
+                response: 201,
+                description: 'Images uploaded successfully.'
+            ),
+
+            new OA\Response(
+                response: 400,
+                description: 'Maximum 5 images are allowed for this court.'
+            ),
+
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+
+            new OA\Response(
+                response: 404,
+                description: 'Court not found.'
+            ),
+
+            new OA\Response(
+                response: 422,
+                description: 'Validation error.'
+            ),
+        ]
+    )]
     public function store(StoreCourtImageRequest $request)
     {
-        $court = Court::findOrFail($request->court_id);
-        if ($request->user()->role != 'owner') {
+        // -----------------------------------------
+        // 1. Only owners can upload images
+        // -----------------------------------------
+
+        if ($request->user()->role !== 'owner') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only owners can upload court images.'
+                'message' => 'Only owners can upload court images.',
             ], 403);
         }
+
+
+        // -----------------------------------------
+        // 2. Find court
+        // -----------------------------------------
+
+        $court = Court::findOrFail($request->court_id);
+
+
+        // -----------------------------------------
+        // 3. Check court ownership
+        // -----------------------------------------
 
         if ($court->owner_id !== $request->user()->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to upload images for this court ',
+                'message' => 'You are not authorized to upload images for this court.',
             ], 403);
         }
 
-        if ($court->images()->count() + count($request->file('images')) > 5) {
+
+        // -----------------------------------------
+        // 4. Get uploaded images
+        // -----------------------------------------
+
+        $images = $request->file('images');
+
+
+        // -----------------------------------------
+        // 5. Safety check
+        // -----------------------------------------
+
+        if (!$images || !is_array($images)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Maximum 5 images are allowed per court.'
+                'message' => 'Please upload at least one image.',
+            ], 422);
+        }
+
+
+        // -----------------------------------------
+        // 6. Maximum 5 images per court
+        // -----------------------------------------
+
+        $existingImages = $court->images()->count();
+        $newImages = count($images);
+
+        if (($existingImages + $newImages) > 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Maximum 5 images are allowed for this court.',
             ], 400);
         }
-        if ($request->boolean('is_primary')) {
+
+
+        // -----------------------------------------
+        // 7. Primary image
+        // -----------------------------------------
+
+        $isPrimary = $request->boolean('is_primary');
+
+
+        // If new primary image is selected,
+        // remove primary status from existing images.
+
+        if ($isPrimary) {
             $court->images()->update([
-                'is_primary' => false
+                'is_primary' => false,
             ]);
         }
 
+
+        // -----------------------------------------
+        // 8. Upload images
+        // -----------------------------------------
+
         $uploadedImages = [];
 
-        foreach ($request->file('images') as $index => $image) {
+        foreach ($images as $index => $image) {
 
-            $path = $image->store('court_images', 'public');
+            $path = $image->store(
+                'court_images',
+                'public'
+            );
+
+
+            // -----------------------------------------
+            // 9. Create database record
+            // -----------------------------------------
 
             $courtImage = CourtImage::create([
                 'court_id' => $court->id,
                 'image' => $path,
-                'is_primary' => $request->boolean('is_primary') && $index === 0,
+
+                // Only first image becomes primary
+                'is_primary' => $isPrimary && $index === 0,
             ]);
+
 
             $uploadedImages[] = $courtImage;
         }
+
+
+        // -----------------------------------------
+        // 10. Response
+        // -----------------------------------------
+
         return response()->json([
             'success' => true,
-            'message' => 'Images uploaded successfully',
-            'data' => $uploadedImages
+            'message' => 'Images uploaded successfully.',
+            'data' => $uploadedImages,
         ], 201);
     }
 
@@ -127,10 +293,10 @@ class CourtImageController extends Controller
     {
         return response()->json([
             'success' => true,
+            'message' => 'Court image fetched successfully.',
             'data' => $courtImage,
-        ]);
+        ], 200);
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -145,6 +311,46 @@ class CourtImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/owner/court-images/{courtImage}',
+        summary: 'Delete a court image',
+        description: 'Allows an authenticated owner to delete an image belonging to their court. If the deleted image is primary, another image is automatically assigned as primary.',
+        tags: ['Owner Court Images'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'courtImage',
+                in: 'path',
+                required: true,
+                description: 'Court image ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Image deleted successfully.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Court image not found.'
+            ),
+        ]
+    )]
+
     public function destroy(CourtImage $courtImage, Request $request)
     {
         if ($request->user()->role != 'owner') {

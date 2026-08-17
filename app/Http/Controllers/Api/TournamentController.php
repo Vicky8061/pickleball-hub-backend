@@ -74,60 +74,210 @@ class TournamentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    #[OA\Post(
+        path: '/api/owner/tournaments',
+        summary: 'Create a tournament',
+        description: 'Create a new tournament for a court owned by the authenticated owner.',
+        tags: ['Owner - Tournaments'],
+        security: [['sanctum' => []]],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(
+                    type: 'object',
+                    required: [
+                        'court_id',
+                        'title',
+                        'description',
+                        'tournament_date',
+                        'registration_last_date',
+                        'start_time',
+                        'end_time',
+                        'entry_fee',
+                        'max_participants',
+                        'prize'
+                    ],
+                    properties: [
+
+                        new OA\Property(
+                            property: 'court_id',
+                            type: 'integer',
+                            example: 6,
+                            description: 'ID of the court.'
+                        ),
+
+                        new OA\Property(
+                            property: 'title',
+                            type: 'string',
+                            example: 'Surat Pickleball Championship'
+                        ),
+
+                        new OA\Property(
+                            property: 'description',
+                            type: 'string',
+                            example: 'Open pickleball tournament for intermediate players.'
+                        ),
+
+                        new OA\Property(
+                            property: 'banner',
+                            type: 'string',
+                            format: 'binary',
+                            nullable: true,
+                            description: 'Tournament banner image. JPG, JPEG, PNG or WEBP.'
+                        ),
+
+                        new OA\Property(
+                            property: 'tournament_date',
+                            type: 'string',
+                            format: 'date',
+                            example: '2026-09-15'
+                        ),
+
+                        new OA\Property(
+                            property: 'registration_last_date',
+                            type: 'string',
+                            format: 'date',
+                            example: '2026-09-10'
+                        ),
+
+                        new OA\Property(
+                            property: 'start_time',
+                            type: 'string',
+                            example: '09:00'
+                        ),
+
+                        new OA\Property(
+                            property: 'end_time',
+                            type: 'string',
+                            example: '18:00'
+                        ),
+
+                        new OA\Property(
+                            property: 'entry_fee',
+                            type: 'number',
+                            format: 'float',
+                            example: 500
+                        ),
+
+                        new OA\Property(
+                            property: 'max_participants',
+                            type: 'integer',
+                            example: 32
+                        ),
+
+                        new OA\Property(
+                            property: 'prize',
+                            type: 'string',
+                            example: '₹20,000'
+                        )
+                    ]
+                )
+            )
+        ),
+
+        responses: [
+
+            new OA\Response(
+                response: 201,
+                description: 'Tournament created successfully'
+            ),
+
+            new OA\Response(
+                response: 400,
+                description: 'Inactive court cannot host tournaments'
+            ),
+
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized'
+            ),
+
+            new OA\Response(
+                response: 404,
+                description: 'Court not found'
+            ),
+
+            new OA\Response(
+                response: 422,
+                description: 'Validation error'
+            )
+        ]
+    )]
     public function store(StoreTournamentRequest $request)
     {
+        // Only owner can create tournament
         if ($request->user()->role !== 'owner') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only owner can create tournamenrs',
-            ]);
+                'message' => 'Only owner can create tournaments.',
+            ], 403);
         }
 
+        // Get validated data
         $data = $request->validated();
+
+        // Find court
         $court = Court::findOrFail($data['court_id']);
 
+        // Check court ownership
         if ($court->owner_id != $request->user()->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to create a tournament for this court',
+                'message' => 'You are not authorized to create a tournament for this court.',
             ], 403);
         }
-        //Prevent tournament in inactive court
+
+        // Court must be active
         if ($court->status !== 'active') {
             return response()->json([
                 'success' => false,
-                'message' => 'Inactive court cannot host tournaments',
+                'message' => 'Inactive court cannot host tournaments.',
             ], 400);
         }
 
+        // Store banner
+        $bannerPath = null;
 
+        if ($request->hasFile('banner')) {
+            $bannerPath = $request->file('banner')->store(
+                'tournament_banners',
+                'public'
+            );
+        }
+
+        // Create tournament
         $tournament = Tournament::create([
             'owner_id' => $request->user()->id,
-            'court_id' => $request->court_id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'banner' => $request->banner,
-            'tournament_date' => $request->tournament_date,
-            'registration_last_date' => $request->registration_last_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'entry_fee' => $request->entry_fee,
-            'max_participants' => $request->max_participants,
-            'prize' => $request->prize,
+            'court_id' => $data['court_id'],
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'banner' => $bannerPath,
+            'tournament_date' => $data['tournament_date'],
+            'registration_last_date' => $data['registration_last_date'],
+            'start_time' => $data['start_time'],
+            'end_time' => $data['end_time'],
+            'entry_fee' => $data['entry_fee'],
+            'max_participants' => $data['max_participants'],
+            'prize' => $data['prize'],
             'status' => 'upcoming',
         ]);
+
+        // Load relationships
         $tournament->load([
             'owner',
             'court.owner',
             'court.images',
         ]);
+
         return response()->json([
             'success' => true,
-            'message' => 'Tournament created successfuly',
-            'data' => new TournamentResource($tournament)
-        ], 200);
+            'message' => 'Tournament created successfully.',
+            'data' => new TournamentResource($tournament),
+        ], 201);
     }
-
     /**
      * Display the specified resource.
      */
@@ -185,15 +335,117 @@ class TournamentController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/owner/tournaments/{tournament}',
+        summary: 'Update a tournament',
+        description: 'Update a tournament owned by the authenticated owner.',
+        tags: ['Owner - Tournaments'],
+        security: [['sanctum' => []]],
 
+        parameters: [
+            new OA\Parameter(
+                name: 'tournament',
+                in: 'path',
+                required: true,
+                description: 'Tournament ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            )
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'title',
+                        type: 'string',
+                        example: 'Surat Pickleball Championship 2026'
+                    ),
+                    new OA\Property(
+                        property: 'description',
+                        type: 'string',
+                        example: 'Updated tournament description.'
+                    ),
+                    new OA\Property(
+                        property: 'tournament_date',
+                        type: 'string',
+                        format: 'date',
+                        example: '2026-09-20'
+                    ),
+                    new OA\Property(
+                        property: 'registration_last_date',
+                        type: 'string',
+                        format: 'date',
+                        example: '2026-09-15'
+                    ),
+                    new OA\Property(
+                        property: 'start_time',
+                        type: 'string',
+                        example: '09:00'
+                    ),
+                    new OA\Property(
+                        property: 'end_time',
+                        type: 'string',
+                        example: '18:00'
+                    ),
+                    new OA\Property(
+                        property: 'entry_fee',
+                        type: 'number',
+                        format: 'float',
+                        example: 600
+                    ),
+                    new OA\Property(
+                        property: 'max_participants',
+                        type: 'integer',
+                        example: 40
+                    ),
+                    new OA\Property(
+                        property: 'prize',
+                        type: 'string',
+                        example: '₹25,000'
+                    ),
+                    new OA\Property(
+                        property: 'status',
+                        type: 'string',
+                        enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
+                        example: 'upcoming'
+                    )
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Tournament updated successfully'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Completed tournament cannot be updated'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Tournament not found'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error'
+            )
+        ]
+    )]
     public function update(UpdateTournamentRequest $request, Tournament $tournament)
     {
 
         if ($request->user()->role != 'owner') {
             return response()->json([
-                'success' => true,
+                'success' => false,
                 'message' => 'Only owner can update tournaments'
-            ]);
+            ], 403);
         }
 
         if ($tournament->owner_id != $request->user()->id) {
@@ -227,6 +479,43 @@ class TournamentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/owner/tournaments/{tournament}',
+        summary: 'Cancel a tournament',
+        description: 'Cancel a tournament owned by the authenticated owner.',
+        tags: ['Owner - Tournaments'],
+        security: [['sanctum' => []]],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'tournament',
+                in: 'path',
+                required: true,
+                description: 'Tournament ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            )
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Tournament cancelled successfully'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Tournament is already cancelled'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Tournament not found'
+            )
+        ]
+    )]
     public function destroy(Tournament $tournament, Request $request)
     {
         if ($request->user()->role != 'owner') {
@@ -254,8 +543,45 @@ class TournamentController extends Controller
         ], 200);
     }
 
+    #[OA\Get(
+        path: '/api/owner/tournaments/my',
+        summary: 'Get my tournaments',
+        description: 'Fetch all tournaments created by the authenticated owner with pagination.',
+        tags: ['Owner - Tournaments'],
+        security: [['sanctum' => []]],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                required: false,
+                description: 'Page number',
+                schema: new OA\Schema(type: 'integer', minimum: 1),
+                example: 1
+            )
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Owner tournaments fetched successfully'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized'
+            )
+        ]
+    )]
+
     public function myTournaments(Request $request)
     {
+        if ($request->user()->role != 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can access tournaments.'
+            ], 403);
+        }
+
         $tournaments = Tournament::with([
             'owner',
             'court.owner',

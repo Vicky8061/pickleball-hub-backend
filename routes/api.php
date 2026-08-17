@@ -221,17 +221,17 @@ Route::middleware('auth:sanctum')->group(function () {
             );
 
             Route::put(
-                '/time-slots/{time_slot}',
+                '/time-slots/{timeSlot}',
                 [TimeSlotController::class, 'update']
             );
 
             Route::patch(
-                '/time-slots/{time_slot}',
+                '/time-slots/{timeSlot}',
                 [TimeSlotController::class, 'update']
             );
 
             Route::delete(
-                '/time-slots/{time_slot}',
+                '/time-slots/{timeSlot}',
                 [TimeSlotController::class, 'destroy']
             );
 
@@ -261,7 +261,7 @@ Route::middleware('auth:sanctum')->group(function () {
             );
 
             Route::get(
-                '/tournaments',
+                '/tournaments/my',
                 [TournamentController::class, 'myTournaments']
             );
         });

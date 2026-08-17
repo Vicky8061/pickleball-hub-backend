@@ -661,6 +661,99 @@
                 ]
             }
         },
+        "/api/owner/bookings/{booking}": {
+            "put": {
+                "tags": [
+                    "Owner Bookings"
+                ],
+                "summary": "Update booking status",
+                "description": "Allows the authenticated owner to update the status of a booking belonging to one of their courts.",
+                "operationId": "cf971e799755bf37637d8698436f7a5f",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "booking_status"
+                                ],
+                                "properties": {
+                                    "booking_status": {
+                                        "type": "string",
+                                        "example": "confirmed",
+                                        "enum": [
+                                            "confirmed",
+                                            "completed"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking status updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid booking status transition."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Booking not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/bookings": {
+            "get": {
+                "tags": [
+                    "Owner Bookings"
+                ],
+                "summary": "Get owner bookings",
+                "description": "Fetch all bookings made for courts owned by the authenticated owner.",
+                "operationId": "dcc27f4a6ff5b907dc1f8f6bb20ffb56",
+                "responses": {
+                    "200": {
+                        "description": "Owner bookings fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only owners can access owner bookings."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/courts": {
             "get": {
                 "tags": [
@@ -785,6 +878,97 @@
                 ]
             }
         },
+        "/api/owner/courts": {
+            "post": {
+                "tags": [
+                    "Owner Courts"
+                ],
+                "summary": "Create a court",
+                "description": "Allows an authenticated owner to create a new court.",
+                "operationId": "f5eebaa9a8a2efa1525a0bf63609f6f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "address",
+                                    "latitude",
+                                    "longitude",
+                                    "price_per_hour",
+                                    "court_type",
+                                    "opening_time",
+                                    "closing_time"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Sukhkarta Pickleball Court"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Premium outdoor pickleball court."
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Vesu, Surat"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 21.1702
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 72.8311
+                                    },
+                                    "price_per_hour": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 500
+                                    },
+                                    "court_type": {
+                                        "type": "string",
+                                        "example": "Outdoor"
+                                    },
+                                    "opening_time": {
+                                        "type": "string",
+                                        "example": "06:00"
+                                    },
+                                    "closing_time": {
+                                        "type": "string",
+                                        "example": "23:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Court created successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only owners can create courts."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/courts/{court}": {
             "get": {
                 "tags": [
@@ -826,6 +1010,151 @@
                 ]
             }
         },
+        "/api/owner/courts/{court}": {
+            "put": {
+                "tags": [
+                    "Owner Courts"
+                ],
+                "summary": "Update a court",
+                "description": "Allows the authenticated owner to update their court details.",
+                "operationId": "d58fd73e8056e9f3494622bb13822e4c",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Pickleball Court"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated court description."
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Vesu, Surat"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 21.1702
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 72.8311
+                                    },
+                                    "price_per_hour": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 600
+                                    },
+                                    "court_type": {
+                                        "type": "string",
+                                        "example": "Indoor"
+                                    },
+                                    "opening_time": {
+                                        "type": "string",
+                                        "example": "06:00"
+                                    },
+                                    "closing_time": {
+                                        "type": "string",
+                                        "example": "22:00"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Court updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "You are not authorized to update this court."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Owner Courts"
+                ],
+                "summary": "Delete a court",
+                "description": "Allows the authenticated owner to delete their court if no bookings exist.",
+                "operationId": "34e183982ec31e5c96a164f83f642a3e",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court deleted successfully."
+                    },
+                    "400": {
+                        "description": "Cannot delete court because bookings exist."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "You are not authorized to delete this court."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/courts/{court}/images": {
             "get": {
                 "tags": [
@@ -855,6 +1184,119 @@
                     },
                     "404": {
                         "description": "Court not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/court-images": {
+            "post": {
+                "tags": [
+                    "Owner Court Images"
+                ],
+                "summary": "Upload court images",
+                "description": "Allows an authenticated owner to upload up to 5 images for their court.",
+                "operationId": "2328658701b7b7c85c3b9c269a34ff07",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "court_id",
+                                    "images[]"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "description": "ID of the court.",
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "images[]": {
+                                        "description": "Court images. Upload between 1 and 5 images.",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        },
+                                        "maxItems": 5,
+                                        "minItems": 1
+                                    },
+                                    "is_primary": {
+                                        "description": "If true, the first uploaded image will become the primary image.",
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Images uploaded successfully."
+                    },
+                    "400": {
+                        "description": "Maximum 5 images are allowed for this court."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/court-images/{courtImage}": {
+            "delete": {
+                "tags": [
+                    "Owner Court Images"
+                ],
+                "summary": "Delete a court image",
+                "description": "Allows an authenticated owner to delete an image belonging to their court. If the deleted image is primary, another image is automatically assigned as primary.",
+                "operationId": "1c18eb23f2215acc54e726a82d246eb5",
+                "parameters": [
+                    {
+                        "name": "courtImage",
+                        "in": "path",
+                        "description": "Court image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Court image not found."
                     }
                 },
                 "security": [
@@ -973,6 +1415,124 @@
                     },
                     "403": {
                         "description": "Only normal users can access owner applications"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/dashboard": {
+            "get": {
+                "tags": [
+                    "Owner Dashboard"
+                ],
+                "summary": "Get owner dashboard",
+                "description": "Fetch dashboard statistics for the authenticated owner including courts, bookings, revenue, tournaments, and reviews.",
+                "operationId": "83db704f086ee1d2b0038441dfcd34f6",
+                "responses": {
+                    "200": {
+                        "description": "Dashboard data fetched successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dashboard data fetched successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_courts": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "active_courts": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "inactive_courts": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "total_bookings": {
+                                                    "type": "integer",
+                                                    "example": 150
+                                                },
+                                                "today_bookings": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "pending_bookings": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                },
+                                                "confirmed_bookings": {
+                                                    "type": "integer",
+                                                    "example": 20
+                                                },
+                                                "completed_bookings": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "cancelled_bookings": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                },
+                                                "total_revenue": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 25000
+                                                },
+                                                "total_tournaments": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "upcoming_tournaments": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "ongoing_tournaments": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "completed_tournaments": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "cancelled_tournaments": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "total_reviews": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                },
+                                                "average_rating": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 4.5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only owners can access the dashboard."
                     }
                 },
                 "security": [
@@ -1341,6 +1901,73 @@
                 ]
             }
         },
+        "/api/owner/time-slots": {
+            "post": {
+                "tags": [
+                    "Owner Time Slots"
+                ],
+                "summary": "Create a time slot",
+                "description": "Allows an authenticated owner to create a time slot for their court.",
+                "operationId": "4223f75141c57d0439f9fdb11fbf3246",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "court_id",
+                                    "start_time",
+                                    "end_time"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "description": "Court ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_time": {
+                                        "description": "Time slot start time",
+                                        "type": "string",
+                                        "example": "06:00"
+                                    },
+                                    "end_time": {
+                                        "description": "Time slot end time",
+                                        "type": "string",
+                                        "example": "07:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Time slot created successfully."
+                    },
+                    "400": {
+                        "description": "Duplicate, overlapping, or inactive court."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/time-slots/{timeSlot}": {
             "get": {
                 "tags": [
@@ -1370,6 +1997,130 @@
                     },
                     "404": {
                         "description": "Time slot not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/time-slots/{timeSlot}": {
+            "put": {
+                "tags": [
+                    "Owner Time Slots"
+                ],
+                "summary": "Update a time slot",
+                "description": "Allows an authenticated owner to update a time slot belonging to their court.",
+                "operationId": "afc47221ccb7d34f99d588d53b8d39ca",
+                "parameters": [
+                    {
+                        "name": "timeSlot",
+                        "in": "path",
+                        "description": "Time slot ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "start_time",
+                                    "end_time",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "start_time": {
+                                        "description": "Updated start time",
+                                        "type": "string",
+                                        "example": "07:00"
+                                    },
+                                    "end_time": {
+                                        "description": "Updated end time",
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Time slot updated successfully."
+                    },
+                    "400": {
+                        "description": "Time slot already exists."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Time slot not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Owner Time Slots"
+                ],
+                "summary": "Delete a time slot",
+                "description": "Allows an authenticated owner to delete a time slot belonging to their court. A time slot cannot be deleted if it has bookings.",
+                "operationId": "569fd01e9a54d04405622fb6a3cb0252",
+                "parameters": [
+                    {
+                        "name": "timeSlot",
+                        "in": "path",
+                        "description": "Time slot ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Time slot deleted successfully."
+                    },
+                    "400": {
+                        "description": "Cannot delete a booked time slot."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Time slot not found."
                     }
                 },
                 "security": [
@@ -1414,6 +2165,112 @@
                 ]
             }
         },
+        "/api/owner/tournaments": {
+            "post": {
+                "tags": [
+                    "Owner - Tournaments"
+                ],
+                "summary": "Create a tournament",
+                "description": "Create a new tournament for a court owned by the authenticated owner.",
+                "operationId": "43c98a079dc7b13a0d4755da0f0a7478",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "court_id",
+                                    "title",
+                                    "description",
+                                    "tournament_date",
+                                    "registration_last_date",
+                                    "start_time",
+                                    "end_time",
+                                    "entry_fee",
+                                    "max_participants",
+                                    "prize"
+                                ],
+                                "properties": {
+                                    "court_id": {
+                                        "description": "ID of the court.",
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Surat Pickleball Championship"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Open pickleball tournament for intermediate players."
+                                    },
+                                    "banner": {
+                                        "description": "Tournament banner image. JPG, JPEG, PNG or WEBP.",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "tournament_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-09-15"
+                                    },
+                                    "registration_last_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-09-10"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "example": "18:00"
+                                    },
+                                    "entry_fee": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    },
+                                    "max_participants": {
+                                        "type": "integer",
+                                        "example": 32
+                                    },
+                                    "prize": {
+                                        "type": "string",
+                                        "example": "₹20,000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tournament created successfully"
+                    },
+                    "400": {
+                        "description": "Inactive court cannot host tournaments"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Court not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/tournaments/{tournament}": {
             "get": {
                 "tags": [
@@ -1443,6 +2300,186 @@
                     },
                     "404": {
                         "description": "Tournament not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/tournaments/{tournament}": {
+            "put": {
+                "tags": [
+                    "Owner - Tournaments"
+                ],
+                "summary": "Update a tournament",
+                "description": "Update a tournament owned by the authenticated owner.",
+                "operationId": "40085598f079cc9c47fe2dd4ec50ed47",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Surat Pickleball Championship 2026"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated tournament description."
+                                    },
+                                    "tournament_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-09-20"
+                                    },
+                                    "registration_last_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-09-15"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "example": "18:00"
+                                    },
+                                    "entry_fee": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 600
+                                    },
+                                    "max_participants": {
+                                        "type": "integer",
+                                        "example": 40
+                                    },
+                                    "prize": {
+                                        "type": "string",
+                                        "example": "₹25,000"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "upcoming",
+                                        "enum": [
+                                            "upcoming",
+                                            "ongoing",
+                                            "completed",
+                                            "cancelled"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tournament updated successfully"
+                    },
+                    "400": {
+                        "description": "Completed tournament cannot be updated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Tournament not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Owner - Tournaments"
+                ],
+                "summary": "Cancel a tournament",
+                "description": "Cancel a tournament owned by the authenticated owner.",
+                "operationId": "c3aab5d289892c40d1195820cc9eeedf",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournament cancelled successfully"
+                    },
+                    "400": {
+                        "description": "Tournament is already cancelled"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Tournament not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/owner/tournaments/my": {
+            "get": {
+                "tags": [
+                    "Owner - Tournaments"
+                ],
+                "summary": "Get my tournaments",
+                "description": "Fetch all tournaments created by the authenticated owner with pagination.",
+                "operationId": "89b74fa31e0d4c1c7d94192717515529",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner tournaments fetched successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
@@ -1744,16 +2781,32 @@
             "description": "Bookings"
         },
         {
+            "name": "Owner Bookings",
+            "description": "Owner Bookings"
+        },
+        {
             "name": "Courts",
             "description": "Courts"
+        },
+        {
+            "name": "Owner Courts",
+            "description": "Owner Courts"
         },
         {
             "name": "Court Images",
             "description": "Court Images"
         },
         {
+            "name": "Owner Court Images",
+            "description": "Owner Court Images"
+        },
+        {
             "name": "Owner Application",
             "description": "Owner Application"
+        },
+        {
+            "name": "Owner Dashboard",
+            "description": "Owner Dashboard"
         },
         {
             "name": "Reviews",
@@ -1764,8 +2817,16 @@
             "description": "Time Slots"
         },
         {
+            "name": "Owner Time Slots",
+            "description": "Owner Time Slots"
+        },
+        {
             "name": "Tournaments",
             "description": "Tournaments"
+        },
+        {
+            "name": "Owner - Tournaments",
+            "description": "Owner - Tournaments"
         },
         {
             "name": "Wishlist",

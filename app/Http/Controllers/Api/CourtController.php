@@ -206,6 +206,103 @@ class CourtController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    #[OA\Post(
+        path: '/api/owner/courts',
+        summary: 'Create a court',
+        description: 'Allows an authenticated owner to create a new court.',
+        tags: ['Owner Courts'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: [
+                    'name',
+                    'description',
+                    'address',
+                    'latitude',
+                    'longitude',
+                    'price_per_hour',
+                    'court_type',
+                    'opening_time',
+                    'closing_time'
+                ],
+                properties: [
+                    new OA\Property(
+                        property: 'name',
+                        type: 'string',
+                        example: 'Sukhkarta Pickleball Court'
+                    ),
+                    new OA\Property(
+                        property: 'description',
+                        type: 'string',
+                        example: 'Premium outdoor pickleball court.'
+                    ),
+                    new OA\Property(
+                        property: 'address',
+                        type: 'string',
+                        example: 'Vesu, Surat'
+                    ),
+                    new OA\Property(
+                        property: 'latitude',
+                        type: 'number',
+                        format: 'double',
+                        example: 21.1702
+                    ),
+                    new OA\Property(
+                        property: 'longitude',
+                        type: 'number',
+                        format: 'double',
+                        example: 72.8311
+                    ),
+                    new OA\Property(
+                        property: 'price_per_hour',
+                        type: 'number',
+                        format: 'double',
+                        example: 500
+                    ),
+                    new OA\Property(
+                        property: 'court_type',
+                        type: 'string',
+                        example: 'Outdoor'
+                    ),
+                    new OA\Property(
+                        property: 'opening_time',
+                        type: 'string',
+                        example: '06:00'
+                    ),
+                    new OA\Property(
+                        property: 'closing_time',
+                        type: 'string',
+                        example: '23:00'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Court created successfully.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only owners can create courts.'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error.'
+            ),
+        ]
+    )]
+
     public function store(StoreCourtRequest $request)
     {
         if ($request->user()->role !== 'owner') {
@@ -314,6 +411,112 @@ class CourtController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/owner/courts/{court}',
+        summary: 'Update a court',
+        description: 'Allows the authenticated owner to update their court details.',
+        tags: ['Owner Courts'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'court',
+                in: 'path',
+                required: true,
+                description: 'Court ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'name',
+                        type: 'string',
+                        example: 'Updated Pickleball Court'
+                    ),
+                    new OA\Property(
+                        property: 'description',
+                        type: 'string',
+                        example: 'Updated court description.'
+                    ),
+                    new OA\Property(
+                        property: 'address',
+                        type: 'string',
+                        example: 'Vesu, Surat'
+                    ),
+                    new OA\Property(
+                        property: 'latitude',
+                        type: 'number',
+                        format: 'double',
+                        example: 21.1702
+                    ),
+                    new OA\Property(
+                        property: 'longitude',
+                        type: 'number',
+                        format: 'double',
+                        example: 72.8311
+                    ),
+                    new OA\Property(
+                        property: 'price_per_hour',
+                        type: 'number',
+                        format: 'double',
+                        example: 600
+                    ),
+                    new OA\Property(
+                        property: 'court_type',
+                        type: 'string',
+                        example: 'Indoor'
+                    ),
+                    new OA\Property(
+                        property: 'opening_time',
+                        type: 'string',
+                        example: '06:00'
+                    ),
+                    new OA\Property(
+                        property: 'closing_time',
+                        type: 'string',
+                        example: '22:00'
+                    ),
+                    new OA\Property(
+                        property: 'status',
+                        type: 'string',
+                        enum: ['active', 'inactive'],
+                        example: 'active'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Court updated successfully.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'You are not authorized to update this court.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Court not found.'
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error.'
+            ),
+        ]
+    )]
+
     public function update(UpdateCourtRequest $request, Court $court)
     {
         if ($court->owner_id !== $request->user()->id) {
@@ -335,6 +538,50 @@ class CourtController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/owner/courts/{court}',
+        summary: 'Delete a court',
+        description: 'Allows the authenticated owner to delete their court if no bookings exist.',
+        tags: ['Owner Courts'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'court',
+                in: 'path',
+                required: true,
+                description: 'Court ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Court deleted successfully.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Cannot delete court because bookings exist.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'You are not authorized to delete this court.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Court not found.'
+            ),
+        ]
+    )]
+
     public function destroy(Court $court, Request $request)
     {
         if ($court->owner_id != $request->user()->id) {
@@ -343,16 +590,18 @@ class CourtController extends Controller
                 'message' => 'You are not authorized to delete this court.'
             ], 403);
         }
-
-
-        $court->delete();
-
+        
         if ($court->bookings()->exists()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete court because bookings exist.'
             ], 400);
         }
+
+
+        $court->delete();
+
+
 
         return response()->json([
             'success' => true,

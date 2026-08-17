@@ -297,6 +297,65 @@ class BookingController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/owner/bookings/{booking}',
+        summary: 'Update booking status',
+        description: 'Allows the authenticated owner to update the status of a booking belonging to one of their courts.',
+        tags: ['Owner Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['booking_status'],
+                properties: [
+                    new OA\Property(
+                        property: 'booking_status',
+                        type: 'string',
+                        enum: ['confirmed', 'completed'],
+                        example: 'confirmed'
+                    ),
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Booking status updated successfully.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Invalid booking status transition.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized or user is not an owner.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Booking not found.'
+            ),
+        ]
+    )]
+
     public function update(UpdateBookingRequest $request, Booking $booking)
     {
         // Only owners can update booking status
@@ -463,6 +522,30 @@ class BookingController extends Controller
             'message' => 'Booking cancelled successfully.',
         ], 200);
     }
+    #[OA\Get(
+        path: '/api/owner/bookings',
+        summary: 'Get owner bookings',
+        description: 'Fetch all bookings made for courts owned by the authenticated owner.',
+        tags: ['Owner Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Owner bookings fetched successfully.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Only owners can access owner bookings.'
+            ),
+        ]
+    )]
+
     public function ownerBookings(Request $request)
     {
         // Only owners
