@@ -116,7 +116,6 @@ class AdminBookingController extends Controller
                         'like',
                         "%{$search}%"
                     );
-
                 })->orWhereHas('court', function ($court) use ($search) {
 
                     $court->where(
@@ -124,7 +123,6 @@ class AdminBookingController extends Controller
                         'like',
                         "%{$search}%"
                     );
-
                 });
             });
         }
