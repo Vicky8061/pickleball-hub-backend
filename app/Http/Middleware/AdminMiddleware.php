@@ -28,6 +28,12 @@ class AdminMiddleware
 
             ],403);
         }
+        if ($request->user()->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your admin account is not active.',
+            ], 403);
+        }
         
         return $next($request);
     }
