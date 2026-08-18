@@ -98,7 +98,6 @@ class AdminOwnerController extends Controller
                     'like',
                     "%{$search}%"
                 );
-
             });
         }
 
