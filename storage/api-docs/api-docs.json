@@ -12,6 +12,477 @@
         }
     ],
     "paths": {
+        "/api/admin/bookings": {
+            "get": {
+                "tags": [
+                    "Admin - Bookings"
+                ],
+                "summary": "Get all bookings",
+                "description": "Fetch all bookings with user, court and time slot details. Supports search, status filtering, sorting and pagination.",
+                "operationId": "86851174377924405904e5726dd1f9df",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search booking by user name or court name.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Vicky"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter bookings by booking status.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "confirmed"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort bookings by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookings fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access bookings."
+                    },
+                    "422": {
+                        "description": "Invalid filter value."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bookings/{booking}": {
+            "get": {
+                "tags": [
+                    "Admin - Bookings"
+                ],
+                "summary": "Get booking details",
+                "description": "Fetch complete details of a specific booking including user, court and time slot information.",
+                "operationId": "25b44b80042cf543fecf2d4707b0786d",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access bookings."
+                    },
+                    "404": {
+                        "description": "Booking not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/courts": {
+            "get": {
+                "tags": [
+                    "Admin - Courts"
+                ],
+                "summary": "Get all courts",
+                "description": "Fetch all courts with owner and images. Supports search, status filtering, sorting and pagination.",
+                "operationId": "f2ad967a05d346f0faec2198602f1964",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search court by name or address.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Smash Arena"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter courts by status.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive"
+                            ]
+                        },
+                        "example": "active"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort courts by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Courts fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access courts."
+                    },
+                    "422": {
+                        "description": "Invalid status value."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/courts/{court}": {
+            "get": {
+                "tags": [
+                    "Admin - Courts"
+                ],
+                "summary": "Get court details",
+                "description": "Fetch complete details of a specific court including owner, images, time slots and reviews.",
+                "operationId": "f59d07bdffb0bd333b0fdb290a658de7",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access courts."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Courts"
+                ],
+                "summary": "Update court",
+                "description": "Update details of a specific court.",
+                "operationId": "2509224ec63907a22b966567d6b8e909",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Smash Arena"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Vesu, Surat"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 21.1702
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "example": 72.8311
+                                    },
+                                    "price_per_hour": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Premium indoor pickleball court."
+                                    },
+                                    "court_type": {
+                                        "type": "string",
+                                        "example": "indoor"
+                                    },
+                                    "opening_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "06:00"
+                                    },
+                                    "closing_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "23:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Court updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can update courts."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Courts"
+                ],
+                "summary": "Deactivate court",
+                "description": "Deactivate a court. This does not permanently delete the court.",
+                "operationId": "8d475e1b652cf0505dbe703e17a835b1",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court deactivated successfully."
+                    },
+                    "400": {
+                        "description": "Court is already inactive."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can deactivate courts."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/courts/{court}/status": {
+            "patch": {
+                "tags": [
+                    "Admin - Courts"
+                ],
+                "summary": "Update court status",
+                "description": "Activate or deactivate a court.",
+                "operationId": "360195e41f8cf7a47b2547556293efc7",
+                "parameters": [
+                    {
+                        "name": "court",
+                        "in": "path",
+                        "description": "Court ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Court status updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can update court status."
+                    },
+                    "404": {
+                        "description": "Court not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Admin Dashboard"
+                ],
+                "summary": "Get admin dashboard",
+                "description": "Fetch dashboard statistics for the authenticated admin.",
+                "operationId": "5d791593fa555f79374c4860f99705c2",
+                "responses": {
+                    "200": {
+                        "description": "Admin dashboard fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access the admin dashboard."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/admin/owner-applications": {
             "get": {
                 "tags": [
@@ -253,6 +724,874 @@
                     },
                     "422": {
                         "description": "Validation error. Rejection reason is required."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owners": {
+            "get": {
+                "tags": [
+                    "Admin - Owners"
+                ],
+                "summary": "Get all owners",
+                "description": "Fetch all owner users with optional search and sorting.",
+                "operationId": "a4a35ea9a40cd5357114bc117b0739b2",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search owner by name or email.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "vicky"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort owners by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owners fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access owners."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owners/{owner}": {
+            "get": {
+                "tags": [
+                    "Admin - Owners"
+                ],
+                "summary": "Get owner details",
+                "description": "Fetch details of a specific owner.",
+                "operationId": "6568988aa94760fbd4b3d5d57549b929",
+                "parameters": [
+                    {
+                        "name": "owner",
+                        "in": "path",
+                        "description": "Owner ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access owners."
+                    },
+                    "404": {
+                        "description": "Owner not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Owners"
+                ],
+                "summary": "Update owner",
+                "description": "Update details of a specific owner.",
+                "operationId": "debadb8d2df968500f8d5f023159b4ee",
+                "parameters": [
+                    {
+                        "name": "owner",
+                        "in": "path",
+                        "description": "Owner ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Vicky"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "vicky@gmail.com"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "blocked"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Owner updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can update owners."
+                    },
+                    "404": {
+                        "description": "Owner not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/owners/{owner}/block": {
+            "patch": {
+                "tags": [
+                    "Admin - Owners"
+                ],
+                "summary": "Block owner",
+                "description": "Block a specific owner account.",
+                "operationId": "6ee47e06d1c6fef3fac3bbaf44d25bdd",
+                "parameters": [
+                    {
+                        "name": "owner",
+                        "in": "path",
+                        "description": "Owner ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner blocked successfully."
+                    },
+                    "400": {
+                        "description": "Owner is already blocked."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can block owners."
+                    },
+                    "404": {
+                        "description": "Owner not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews": {
+            "get": {
+                "tags": [
+                    "Admin - Reviews"
+                ],
+                "summary": "Get all reviews",
+                "description": "Fetch all reviews with user and court details. Supports search, rating filtering, sorting and pagination.",
+                "operationId": "92619aa3ff1543a69792f70a31f0beba",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search review by review text, user name or court name.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "excellent court"
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter reviews by rating from 1 to 5.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 5,
+                            "minimum": 1
+                        },
+                        "example": 5
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort reviews by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reviews fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access reviews."
+                    },
+                    "422": {
+                        "description": "Rating must be between 1 and 5."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews/{review}": {
+            "get": {
+                "tags": [
+                    "Admin - Reviews"
+                ],
+                "summary": "Get review details",
+                "description": "Fetch complete details of a specific review including user and court information.",
+                "operationId": "1cd595bd8756313a43c1d96c0aa6d7ad",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access reviews."
+                    },
+                    "404": {
+                        "description": "Review not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Reviews"
+                ],
+                "summary": "Delete review",
+                "description": "Permanently delete a specific review.",
+                "operationId": "44cf99feaf071ddd03525b4e21d792c5",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can delete reviews."
+                    },
+                    "404": {
+                        "description": "Review not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/tournaments": {
+            "get": {
+                "tags": [
+                    "Admin - Tournaments"
+                ],
+                "summary": "Get all tournaments",
+                "description": "Fetch all tournaments with owner, court and court image details. Supports search, status filtering, sorting and pagination.",
+                "operationId": "8bfb5249fe497a88d4e26202d4075355",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search tournament by title or court name.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Summer Cup"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter tournaments by status.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "upcoming",
+                                "ongoing",
+                                "completed",
+                                "cancelled"
+                            ]
+                        },
+                        "example": "upcoming"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort tournaments by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournaments fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access tournaments."
+                    },
+                    "422": {
+                        "description": "Invalid filter value."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/tournaments/{tournament}": {
+            "get": {
+                "tags": [
+                    "Admin - Tournaments"
+                ],
+                "summary": "Get tournament details",
+                "description": "Fetch complete details of a specific tournament including owner, court, court images and participants.",
+                "operationId": "9975276521672462019bd874a1930d39",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournament fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access tournaments."
+                    },
+                    "404": {
+                        "description": "Tournament not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Tournaments"
+                ],
+                "summary": "Update tournament",
+                "description": "Update details of a specific tournament.",
+                "operationId": "bb9bd087c74967370478b446acd0d509",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Summer Pickleball Cup"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Annual pickleball tournament."
+                                    },
+                                    "tournament_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-09-15"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "18:00"
+                                    },
+                                    "entry_fee": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    },
+                                    "max_participants": {
+                                        "type": "integer",
+                                        "example": 32
+                                    },
+                                    "prize": {
+                                        "type": "string",
+                                        "example": "₹25,000"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "upcoming",
+                                        "enum": [
+                                            "upcoming",
+                                            "ongoing",
+                                            "completed",
+                                            "cancelled"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tournament updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can update tournaments."
+                    },
+                    "404": {
+                        "description": "Tournament not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Tournaments"
+                ],
+                "summary": "Cancel tournament",
+                "description": "Cancel a tournament. The tournament is not permanently deleted; its status is changed to cancelled.",
+                "operationId": "04ef563712a70db7a23f6ecd7a511b18",
+                "parameters": [
+                    {
+                        "name": "tournament",
+                        "in": "path",
+                        "description": "Tournament ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tournament cancelled successfully."
+                    },
+                    "400": {
+                        "description": "Tournament is already cancelled."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can cancel tournaments."
+                    },
+                    "404": {
+                        "description": "Tournament not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin - Users"
+                ],
+                "summary": "Get all users",
+                "description": "Fetch all normal users with optional search and sorting.",
+                "operationId": "d156d39445ae79896aaf1d8e17c10a17",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search user by name or email.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "vicky"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort users by latest or oldest.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest"
+                            ]
+                        },
+                        "example": "latest"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access users."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{user}": {
+            "get": {
+                "tags": [
+                    "Admin - Users"
+                ],
+                "summary": "Get user details",
+                "description": "Fetch details of a normal user.",
+                "operationId": "0b0255d802b69867735940350e516aac",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "User ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can access users."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Users"
+                ],
+                "summary": "Update user",
+                "description": "Update details of a normal user.",
+                "operationId": "5ffd63409c69671b36dd53ce708a4335",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "User ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Vicky"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "vicky@gmail.com"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "blocked"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can update users."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{user}/block": {
+            "patch": {
+                "tags": [
+                    "Admin - Users"
+                ],
+                "summary": "Block user",
+                "description": "Block a normal user account.",
+                "operationId": "35a30581b1030b506842b8e71d2ad34f",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "User ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User blocked successfully."
+                    },
+                    "400": {
+                        "description": "User is already blocked."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Only admins can block users."
+                    },
+                    "404": {
+                        "description": "User not found."
                     }
                 },
                 "security": [
@@ -2769,8 +4108,36 @@
     },
     "tags": [
         {
+            "name": "Admin - Bookings",
+            "description": "Admin - Bookings"
+        },
+        {
+            "name": "Admin - Courts",
+            "description": "Admin - Courts"
+        },
+        {
+            "name": "Admin Dashboard",
+            "description": "Admin Dashboard"
+        },
+        {
             "name": "Admin - Owner Applications",
             "description": "Admin - Owner Applications"
+        },
+        {
+            "name": "Admin - Owners",
+            "description": "Admin - Owners"
+        },
+        {
+            "name": "Admin - Reviews",
+            "description": "Admin - Reviews"
+        },
+        {
+            "name": "Admin - Tournaments",
+            "description": "Admin - Tournaments"
+        },
+        {
+            "name": "Admin - Users",
+            "description": "Admin - Users"
         },
         {
             "name": "Authentication",
