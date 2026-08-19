@@ -32,6 +32,7 @@ class UpdateCourtRequest extends FormRequest
             'court_type' => 'sometimes|in:Indoor,Outdoor',
             'opening_time' => 'sometimes|date_format:H:i',
             'closing_time' => 'sometimes|date_format:H:i|after:opening_time',
+            'status' => 'sometimes|in:active,inactive',
         ];
     }
 }
