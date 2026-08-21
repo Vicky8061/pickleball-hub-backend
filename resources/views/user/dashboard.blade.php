@@ -1,122 +1,299 @@
-<div>
-    <!-- Simplicity is the ultimate sophistication. - Leonardo da Vinci -->
+@extends('layouts.user')
+
+@section('title', 'Dashboard | Pickleball Hub')
+
+
+@section('content')
+
+<div class="container-fluid py-4">
+
+
+    <!-- =========================================
+         WELCOME
+    ========================================== -->
+
+    <div class="user-welcome mb-4">
+
+        <div>
+
+            <span class="welcome-label">
+                Welcome back 👋
+            </span>
+
+
+            <h1 id="dashboardUserName">
+                Ready to play?
+            </h1>
+
+
+            <p>
+                Find a court, book your next game,
+                and enjoy pickleball.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('user.courts') }}"
+            class="btn user-primary-btn">
+
+            <i class="bi bi-search"></i>
+
+            Find a Court
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =========================================
+         QUICK ACTIONS
+    ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+
+        <!-- COURTS -->
+
+        <div class="col-md-4">
+
+            <a
+                href="{{ route('user.courts') }}"
+                class="quick-card">
+
+                <div class="quick-icon">
+
+                    <i class="bi bi-grid"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h5>
+                        Find Courts
+                    </h5>
+
+                    <p>
+                        Discover courts near you
+                    </p>
+
+                </div>
+
+
+                <i
+                    class="bi bi-arrow-right ms-auto"></i>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- TOURNAMENTS -->
+
+        <div class="col-md-4">
+
+            <a
+                href="{{ route('user.tournaments') }}"
+                class="quick-card">
+
+                <div class="quick-icon">
+
+                    <i class="bi bi-trophy"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h5>
+                        Tournaments
+                    </h5>
+
+                    <p>
+                        Join exciting tournaments
+                    </p>
+
+                </div>
+
+
+                <i
+                    class="bi bi-arrow-right ms-auto"></i>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- BOOKINGS -->
+
+        <div class="col-md-4">
+
+            <a
+                href="{{ route('user.bookings') }}"
+                class="quick-card">
+
+                <div class="quick-icon">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h5>
+                        My Bookings
+                    </h5>
+
+                    <p>
+                        Manage your bookings
+                    </p>
+
+                </div>
+
+
+                <i
+                    class="bi bi-arrow-right ms-auto"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         FEATURED COURTS
+    ========================================== -->
+
+    <div class="section-header">
+
+        <div>
+
+            <h3>
+                Featured Courts
+            </h3>
+
+            <p>
+                Explore popular pickleball courts
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('user.courts') }}"
+            class="view-all">
+
+            View all
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+
+    <div
+        class="row g-4"
+        id="featuredCourts">
+
+        <!-- Loading -->
+
+        <div class="col-12">
+
+            <div
+                class="empty-state"
+                id="courtsLoading">
+
+                <div
+                    class="spinner-border text-success"></div>
+
+
+                <p>
+                    Loading courts...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         UPCOMING TOURNAMENTS
+    ========================================== -->
+
+    <div class="section-header mt-5">
+
+        <div>
+
+            <h3>
+                Upcoming Tournaments
+            </h3>
+
+            <p>
+                Compete, connect and have fun
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('user.tournaments') }}"
+            class="view-all">
+
+            View all
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+
+    <div
+        class="row g-4"
+        id="upcomingTournaments">
+
+        <div class="col-12">
+
+            <div class="empty-state">
+
+                <div
+                    class="spinner-border text-success"></div>
+
+
+                <p>
+                    Loading tournaments...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>User Dashboard | Pickleball Hub</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-</head>
-
-<body>
-
-    <nav class="navbar navbar-dark bg-success">
-
-        <div class="container">
-
-            <span class="navbar-brand fw-bold">
-                Pickleball Hub
-            </span>
-
-            <span class="text-white">
-                User
-            </span>
-
-        </div>
-
-    </nav>
+@endsection
 
 
-    <main class="container py-5">
 
-        <h1>
-            Welcome to Pickleball Hub 👋
-        </h1>
+@push('scripts')
 
-        <p class="text-muted">
-            User Dashboard
-        </p>
+<script type="module">
+    import "{{ Vite::asset('resources/js/user/dashboard.js') }}";
+</script>
 
-
-        <div class="row g-4 mt-3">
-
-            <div class="col-md-4">
-
-                <div class="card shadow-sm border-0">
-
-                    <div class="card-body">
-
-                        <h5>
-                            🏟️ Courts
-                        </h5>
-
-                        <p class="text-muted">
-                            Find and book pickleball courts.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="card shadow-sm border-0">
-
-                    <div class="card-body">
-
-                        <h5>
-                            🏆 Tournaments
-                        </h5>
-
-                        <p class="text-muted">
-                            Discover upcoming tournaments.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="card shadow-sm border-0">
-
-                    <div class="card-body">
-
-                        <h5>
-                            ❤️ Wishlist
-                        </h5>
-
-                        <p class="text-muted">
-                            View your favorite courts.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-</body>
-
-</html>
+@endpush

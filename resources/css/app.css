@@ -9,3 +9,207 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+/* =========================================
+   PICKLEBALL HUB - GLOBAL CSS
+========================================= */
+
+/* -----------------------------------------
+   RESET
+----------------------------------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+
+/* -----------------------------------------
+   BODY
+----------------------------------------- */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f7f4;
+    color: #17251f;
+}
+
+
+/* -----------------------------------------
+   LINKS
+----------------------------------------- */
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+/* -----------------------------------------
+   IMAGES
+----------------------------------------- */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* -----------------------------------------
+   BUTTON
+----------------------------------------- */
+
+button,
+.btn {
+    font-family: inherit;
+}
+
+
+/* -----------------------------------------
+   FORM
+----------------------------------------- */
+
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+
+/* -----------------------------------------
+   COMMON COLORS
+----------------------------------------- */
+
+:root {
+    --primary-color: #198754;
+    --primary-dark: #157347;
+
+    --dark-color: #17251f;
+    --text-color: #27332e;
+    --muted-color: #737b77;
+
+    --background-color: #f5f7f4;
+
+    --border-color: #dfe5e1;
+
+    --white: #ffffff;
+}
+
+
+/* -----------------------------------------
+   COMMON CONTAINER
+----------------------------------------- */
+
+.page-container {
+    width: 100%;
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+/* -----------------------------------------
+   COMMON SECTION
+----------------------------------------- */
+
+.section {
+    padding: 70px 0;
+}
+
+
+/* -----------------------------------------
+   COMMON HEADING
+----------------------------------------- */
+
+.section-title {
+    font-size: 32px;
+    font-weight: 800;
+
+    color: var(--dark-color);
+
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    font-size: 15px;
+
+    color: var(--muted-color);
+
+    margin-bottom: 30px;
+}
+
+
+/* -----------------------------------------
+   COMMON CARD
+----------------------------------------- */
+
+.custom-card {
+    background: var(--white);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 14px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+
+/* -----------------------------------------
+   PRIMARY BUTTON
+----------------------------------------- */
+
+.btn-primary-custom {
+    background: var(--primary-color);
+
+    border: none;
+
+    color: var(--white);
+
+    font-weight: 600;
+
+    border-radius: 10px;
+
+    padding: 11px 20px;
+
+    transition: 0.2s;
+}
+
+.btn-primary-custom:hover {
+    background: var(--primary-dark);
+
+    color: var(--white);
+
+    transform: translateY(-1px);
+}
+
+
+/* -----------------------------------------
+   RESPONSIVE
+----------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .section {
+        padding: 50px 0;
+    }
+
+    .section-title {
+        font-size: 27px;
+    }
+
+    .page-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}

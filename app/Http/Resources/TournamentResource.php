@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class TournamentResource extends JsonResource
 {
@@ -15,30 +16,57 @@ class TournamentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=> $this->id,
-            'owner'=>new UserResource(
+
+            'id' => $this->id,
+
+            // Owner
+            'owner' => new UserResource(
                 $this->whenLoaded('owner')
             ),
-            'court'=>new CourtResource(
+
+            // Court
+            'court' => new CourtResource(
                 $this->whenLoaded('court')
             ),
-            'title'=> $this->title,
-            'description'=> $this->description,
-            'banner'=> $this->banner,
-            'tournament_date'=> $this->tournament_date,
-            'regitration_last_date'=> $this->registration_last_date,
-            'start_time'=> $this->start_time,
-            'end_time'=> $this->end_time,
-            'entry_fee'=> $this->entry_fee,
-            'max_participants'=> $this->max_participants,
-            'prize'=> $this->prize,
-            'status'=> $this->status,
 
-            'participants'=> TournamentParticipantResource::collection(
+            // Tournament information
+            'title' => $this->title,
+
+            'description' => $this->description,
+
+            // Tournament Banner
+            'banner' => $this->banner
+                ? asset('storage/' . $this->banner)
+                : null,
+
+            // Dates
+            'tournament_date' => $this->tournament_date,
+
+            'registration_last_date' => $this->registration_last_date,
+
+            // Time
+            'start_time' => $this->start_time,
+
+            'end_time' => $this->end_time,
+
+            // Tournament details
+            'entry_fee' => $this->entry_fee,
+
+            'max_participants' => $this->max_participants,
+
+            'prize' => $this->prize,
+
+            'status' => $this->status,
+
+            // Participants
+            'participants' => TournamentParticipantResource::collection(
                 $this->whenLoaded('participants')
             ),
-            'created_at'=> $this->created_at,
-            'updated_at'=> $this->updated_at,
+
+            // Timestamps
+            'created_at' => $this->created_at,
+
+            'updated_at' => $this->updated_at,
         ];
     }
 }
