@@ -37,7 +37,6 @@ Route::get('/login', function () {
         ->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
         ->header('Pragma', 'no-cache')
         ->header('Expires', '0');
-
 })->name('login');
 
 Route::get('/register', function () {
@@ -102,7 +101,6 @@ Route::post('/auth/logout', function (Request $request) {
         'success' => true,
         'message' => 'Logged out successfully.',
     ]);
-
 });
 
 
@@ -114,7 +112,6 @@ Route::middleware('user.session')
     ->prefix('user')
     ->name('user.')
     ->group(function () {
-
 
         // Dashboard
         Route::get(
@@ -132,6 +129,15 @@ Route::middleware('user.session')
                 return view('user.courts');
             }
         )->name('courts');
+
+
+        // Court Details
+        Route::get(
+            '/courts/{id}',
+            function ($id) {
+                return view('user.court-details', compact('id'));
+            }
+        )->name('courts-details');
 
 
         // Tournaments
@@ -169,7 +175,6 @@ Route::middleware('user.session')
             }
         )->name('profile');
     });
-
 
 // =====================================================
 // OWNER DASHBOARD

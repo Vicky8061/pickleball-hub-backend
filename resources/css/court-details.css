@@ -1,0 +1,596 @@
+/* =========================================
+   COURT DETAILS PAGE
+========================================= */
+
+.court-details-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #59635e;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.court-details-back a:hover {
+    color: #198754;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.court-details-loading {
+    min-height: 350px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8ece9;
+
+    border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.court-details-loading p {
+    margin: 14px 0 0;
+
+    color: #7b8580;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.court-details-message {
+    min-height: 350px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8ece9;
+
+    border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+.court-details-message-icon {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    background: #fff0f1;
+
+    color: #dc3545;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+
+    margin-bottom: 15px;
+}
+
+.court-details-message h4 {
+    margin: 0 0 6px;
+
+    color: #17251f;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.court-details-message p {
+    margin: 0 0 18px;
+
+    color: #7b8580;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   IMAGE CARD
+========================================= */
+
+.court-details-image-card {
+    background: #ffffff;
+
+    border: 1px solid #e8ece9;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   MAIN IMAGE
+========================================= */
+
+.court-details-main-image {
+    position: relative;
+
+    width: 100%;
+    height: 500px;
+
+    background: #eef2ef;
+
+    overflow: hidden;
+}
+
+.court-main-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+.court-image-placeholder {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #8a938e;
+}
+
+.court-image-placeholder i {
+    font-size: 45px;
+
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   IMAGE COUNTER
+========================================= */
+
+.court-image-counter {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    color: #ffffff;
+
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   IMAGE CONTROLS
+========================================= */
+
+.court-image-control {
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    color: #17251f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.court-image-control:hover {
+    background: #198754;
+
+    color: #ffffff;
+}
+
+.court-image-prev {
+    left: 15px;
+}
+
+.court-image-next {
+    right: 15px;
+}
+
+
+/* =========================================
+   THUMBNAILS
+========================================= */
+
+.court-image-thumbnails {
+    display: flex;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    overflow-x: auto;
+}
+
+.court-thumbnail {
+    width: 75px;
+    height: 60px;
+
+    flex-shrink: 0;
+
+    border: 2px solid transparent;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    padding: 0;
+
+    background: #eef2ef;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.court-thumbnail img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.court-thumbnail.active {
+    border-color: #198754;
+}
+
+
+/* =========================================
+   DETAILS CARD
+========================================= */
+
+.court-details-card {
+    background: #ffffff;
+
+    border: 1px solid #e8ece9;
+
+    border-radius: 16px;
+
+    padding: 28px;
+
+    height: 100%;
+}
+
+
+/* =========================================
+   TYPE
+========================================= */
+
+.court-details-type {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    background: #eaf6ef;
+
+    color: #198754;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   NAME
+========================================= */
+
+.court-details-name {
+    margin: 12px 0 10px;
+
+    color: #17251f;
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================
+   LOCATION
+========================================= */
+
+.court-details-location {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    color: #737b77;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+.court-details-location i {
+    color: #198754;
+
+    margin-top: 2px;
+}
+
+
+/* =========================================
+   PRICE
+========================================= */
+
+.court-details-price-box {
+    margin-top: 22px;
+
+    padding: 18px;
+
+    background: #f7faf8;
+
+    border: 1px solid #edf0ee;
+
+    border-radius: 12px;
+}
+
+.court-details-price-box span {
+    display: block;
+
+    color: #8a938e;
+
+    font-size: 11px;
+
+    margin-bottom: 3px;
+}
+
+.court-details-price-box strong {
+    color: #198754;
+
+    font-size: 27px;
+
+    font-weight: 800;
+}
+
+.court-details-price-box small {
+    color: #8a938e;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   SECTION
+========================================= */
+
+.court-details-section {
+    margin-top: 25px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid #edf0ee;
+}
+
+.court-details-section h4 {
+    margin: 0 0 10px;
+
+    color: #17251f;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+.court-details-section p {
+    margin: 0;
+
+    color: #737b77;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   INFO GRID
+========================================= */
+
+.court-info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+.court-info-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    background: #f8faf9;
+
+    border: 1px solid #edf0ee;
+
+    border-radius: 9px;
+}
+
+.court-info-icon {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background: #eaf6ef;
+
+    color: #198754;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.court-info-item span {
+    display: block;
+
+    color: #8a938e;
+
+    font-size: 10px;
+
+    margin-bottom: 2px;
+}
+
+.court-info-item strong {
+    display: block;
+
+    color: #27332e;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   BOOK BUTTON
+========================================= */
+
+.court-details-book {
+    margin-top: 25px;
+}
+
+.court-book-btn {
+    width: 100%;
+
+    background: #198754;
+
+    color: #ffffff;
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 13px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.court-book-btn:hover {
+    background: #157347;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 991px) {
+
+    .court-details-main-image {
+        height: 420px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 576px) {
+
+    .court-details-main-image {
+        height: 280px;
+    }
+
+    .court-details-card {
+        padding: 20px;
+    }
+
+    .court-details-name {
+        font-size: 24px;
+    }
+
+    .court-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .court-image-control {
+        width: 34px;
+        height: 34px;
+    }
+
+    .court-thumbnail {
+        width: 65px;
+        height: 52px;
+    }
+
+}

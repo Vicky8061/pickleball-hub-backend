@@ -61,7 +61,10 @@
 
     @vite([
     'resources/css/app.css',
-    'resources/css/user.css'
+    'resources/css/user.css',
+    'resources/css/courts.css',
+    'resources/css/court-details.css'
+    
     ])
 
 

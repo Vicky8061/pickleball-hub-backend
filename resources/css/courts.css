@@ -1,0 +1,716 @@
+/* =========================================
+   COURTS PAGE HEADER
+========================================= */
+
+.courts-page-header {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.courts-page-header .page-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #198754;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.courts-page-header .page-label i {
+    font-size: 15px;
+}
+
+.courts-page-header h1 {
+    margin: 8px 0 6px;
+    color: #17251f;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.courts-page-header p {
+    margin: 0;
+    color: #737b77;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   COURT FILTERS
+========================================= */
+
+.court-filters {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.court-filter-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #4f5954;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.court-search-box {
+    position: relative;
+}
+
+.court-search-box > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a938e;
+    font-size: 15px;
+    z-index: 2;
+}
+
+.court-search-box .form-control {
+    padding-left: 40px;
+}
+
+.court-filters .form-control,
+.court-filters .form-select {
+    min-height: 43px;
+    border: 1px solid #dfe5e1;
+    border-radius: 8px;
+    color: #27332e;
+    font-size: 13px;
+}
+
+.court-filters .form-control:focus,
+.court-filters .form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.12);
+}
+
+.court-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.court-reset-btn {
+    border: 1px solid #dfe5e1;
+    background: #ffffff;
+    color: #59635e;
+    border-radius: 9px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.court-reset-btn:hover {
+    background: #f5f8f6;
+    border-color: #cfd8d3;
+    color: #27332e;
+}
+
+
+/* =========================================
+   COURTS PAGE MOBILE
+========================================= */
+
+@media (max-width: 576px) {
+
+    .courts-page-header {
+        padding: 22px;
+    }
+
+    .courts-page-header h1 {
+        font-size: 26px;
+    }
+
+    .courts-page-header p {
+        font-size: 13px;
+    }
+
+    .court-filters {
+        padding: 16px;
+    }
+
+    .court-filter-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .court-filter-actions .btn {
+        width: 100%;
+    }
+}
+
+/* =====================================================
+   SEARCH BOX
+===================================================== */
+
+.court-search-box {
+    position: relative;
+}
+
+.court-search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a938e;
+    font-size: 15px;
+    z-index: 2;
+}
+
+.court-search-box .form-control {
+    padding-left: 40px;
+}
+
+
+/* =====================================================
+   FILTER BUTTONS
+===================================================== */
+
+.court-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.court-filter-actions .user-primary-btn {
+    min-height: 42px;
+    padding: 9px 17px;
+}
+
+.court-reset-btn {
+    min-height: 42px;
+    padding: 9px 17px;
+    border: 1px solid #dfe5e1;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #59635e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.court-reset-btn:hover {
+    background: #f5f8f6;
+    border-color: #198754;
+    color: #198754;
+}
+
+
+/* =====================================================
+   COURT CARD
+===================================================== */
+
+.court-card {
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 14px;
+    overflow: hidden;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.court-card:hover {
+    transform: translateY(-4px);
+    border-color: #198754;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =====================================================
+   IMAGE AREA
+===================================================== */
+
+.court-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #eef2ef;
+}
+
+.court-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.court-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.court-slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.court-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* =====================================================
+   IMAGE PLACEHOLDER
+===================================================== */
+
+.court-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ef;
+    color: #198754;
+    font-size: 40px;
+}
+
+
+/* =====================================================
+   COURT TYPE BADGE
+===================================================== */
+
+.court-type-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+
+    padding: 6px 10px;
+    border-radius: 7px;
+
+    background: rgba(255, 255, 255, 0.95);
+    color: #198754;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   SLIDER BUTTONS
+===================================================== */
+
+.court-slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    z-index: 10;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.93);
+    color: #17251f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    opacity: 0;
+    transition:
+        opacity 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.court-image-wrapper:hover .court-slider-btn {
+    opacity: 1;
+}
+
+.court-slider-btn:hover {
+    background: #198754;
+    color: #ffffff;
+}
+
+.court-prev {
+    left: 10px;
+}
+
+.court-next {
+    right: 10px;
+}
+
+.court-slider-btn i {
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   SLIDER DOTS
+===================================================== */
+
+.court-slider-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+
+    z-index: 10;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.court-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.65);
+
+    cursor: pointer;
+
+    transition:
+        width 0.2s ease,
+        background 0.2s ease;
+}
+
+.court-dot.active {
+    width: 18px;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+
+/* =====================================================
+   COURT BODY
+===================================================== */
+
+.court-card-body {
+    padding: 18px;
+}
+
+
+/* =====================================================
+   COURT NAME
+===================================================== */
+
+.court-name {
+    margin: 0 0 10px;
+
+    color: #17251f;
+    font-size: 17px;
+    font-weight: 800;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   LOCATION
+===================================================== */
+
+.court-location {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 7px;
+
+    min-height: 38px;
+    margin-bottom: 15px;
+
+    color: #7b8580;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.court-location i {
+    color: #198754;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+
+/* =====================================================
+   CARD FOOTER
+===================================================== */
+
+.court-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #edf0ee;
+}
+
+
+/* =====================================================
+   PRICE
+===================================================== */
+
+.court-price {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+}
+
+.court-price strong {
+    color: #17251f;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.court-price span {
+    color: #8a938e;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   VIEW COURT BUTTON
+===================================================== */
+
+.court-view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 8px 12px;
+
+    border-radius: 7px;
+
+    background: #198754;
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.court-view-btn:hover {
+    background: #157347;
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.court-view-btn i {
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   EMPTY / ERROR STATE
+===================================================== */
+
+.empty-state {
+    min-height: 220px;
+
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: #7b8580;
+}
+
+.empty-state p {
+    margin: 10px 0 0;
+    font-size: 13px;
+}
+
+.empty-state h5 {
+    margin: 12px 0 0;
+    color: #27332e;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.court-empty-icon {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    background: #eaf6ef;
+    color: #198754;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.court-error-state .court-empty-icon {
+    background: #fff0f1;
+    color: #dc3545;
+}
+
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+
+.court-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-top: 30px;
+}
+
+.court-page-btn {
+    min-width: 38px;
+    height: 38px;
+
+    padding: 0 10px;
+
+    border: 1px solid #dfe5e1;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #59635e;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.court-page-btn:hover:not(:disabled) {
+    border-color: #198754;
+    color: #198754;
+    background: #f1f8f4;
+}
+
+.court-page-btn.active {
+    background: #198754;
+    border-color: #198754;
+    color: #ffffff;
+}
+
+.court-page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .courts-page-header {
+        padding: 24px;
+    }
+
+    .courts-page-header h1 {
+        font-size: 27px;
+    }
+
+    .court-filters {
+        padding: 17px;
+    }
+
+    .court-image-wrapper {
+        height: 210px;
+    }
+
+    .court-slider-btn {
+        opacity: 1;
+    }
+}
+
+
+@media (max-width: 576px) {
+
+    .courts-page-header {
+        padding: 21px;
+    }
+
+    .courts-page-header h1 {
+        font-size: 24px;
+    }
+
+    .courts-page-header p {
+        font-size: 13px;
+    }
+
+    .court-filter-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .court-filter-actions button {
+        width: 100%;
+    }
+
+    .court-image-wrapper {
+        height: 200px;
+    }
+
+    .court-card-body {
+        padding: 16px;
+    }
+
+    .court-name {
+        font-size: 16px;
+    }
+
+    .court-view-btn {
+        padding: 8px 10px;
+    }
+
+    .court-pagination {
+        flex-wrap: wrap;
+    }
+}
