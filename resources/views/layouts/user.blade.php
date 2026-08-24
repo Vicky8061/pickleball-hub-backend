@@ -63,10 +63,10 @@
     'resources/css/app.css',
     'resources/css/user.css',
     'resources/css/courts.css',
-    'resources/css/court-details.css'
-    
+    'resources/css/court-details.css',
+    'resources/css/booking.css',
+    'resources/css/bookings.css'
     ])
-
 
     @stack('styles')
 

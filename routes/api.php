@@ -63,6 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/time-slots', [TimeSlotController::class, 'index']);
     Route::get('/time-slots/{time_slot}', [TimeSlotController::class, 'show']);
+    Route::get(
+        '/courts/{court}/availability',
+        [TimeSlotController::class, 'availability']
+    );
+
 
 
     // =================================================
@@ -383,8 +388,3 @@ Route::middleware(['auth:sanctum', 'admin'])
             [AdminOwnerApplicationController::class, 'reject']
         );
     });
-
-
-
-
-

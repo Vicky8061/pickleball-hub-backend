@@ -54,8 +54,11 @@ class BookingController extends Controller
 
         $bookings = Booking::with([
             'user',
-            'court',
-            'timeSlot',
+            'court.images',
+            'court.owner',
+            'court.timeSlots',
+            'court.reviews',
+            'timeSlot'
         ])
             ->where('user_id', $request->user()->id)
             ->latest()

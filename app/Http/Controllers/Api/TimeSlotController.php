@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Models\Court;
 use App\Models\TimeSlot;
 use App\Http\Resources\TimeSlotResource;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
@@ -46,7 +47,64 @@ class TimeSlotController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Time slots fetched successfuly',
-            'date' => TimeSlotResource::collection($timeSlots),
+            'data' => TimeSlotResource::collection($timeSlots),
+        ], 200);
+    }
+
+    public function availability(Request $request, Court $court)
+    {
+        $request->validate([
+            'date' => 'required|date_format:Y-m-d|after_or_equal:today',
+        ]);
+
+        // Court must be active
+        if ($court->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Court is not available for booking.',
+            ], 400);
+        }
+
+        $date = $request->date;
+
+        // Get all active slots of this court
+        $timeSlots = TimeSlot::where('court_id', $court->id)
+            ->where('status', 'active')
+            ->orderBy('start_time')
+            ->get();
+
+        // Get booked time slot IDs for selected date
+        $bookedSlotIds = Booking::where('court_id', $court->id)
+            ->where('booking_date', $date)
+            ->whereIn('booking_status', ['pending', 'confirmed'])
+            ->pluck('time_slot_id')
+            ->toArray();
+
+        $data = $timeSlots->map(function ($slot) use ($bookedSlotIds) {
+
+            return [
+                'id' => $slot->id,
+                'court_id' => $slot->court_id,
+                'start_time' => $slot->start_time,
+                'end_time' => $slot->end_time,
+                'status' => $slot->status,
+
+                'is_booked' => in_array(
+                    $slot->id,
+                    $bookedSlotIds
+                ),
+
+                'is_available' => !in_array(
+                    $slot->id,
+                    $bookedSlotIds
+                ),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Court time slot availability fetched successfully.',
+            'data' => $data,
         ], 200);
     }
 

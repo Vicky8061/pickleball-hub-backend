@@ -138,6 +138,14 @@ Route::middleware('user.session')
                 return view('user.court-details', compact('id'));
             }
         )->name('courts-details');
+        
+        // Booking
+        Route::get(
+            '/courts/{id}/book',
+            function ($id) {
+                return view('user.booking', compact('id'));
+            }
+        )->name('booking');
 
 
         // Tournaments
