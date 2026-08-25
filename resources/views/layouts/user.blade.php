@@ -65,7 +65,8 @@
     'resources/css/courts.css',
     'resources/css/court-details.css',
     'resources/css/booking.css',
-    'resources/css/bookings.css'
+    'resources/css/bookings.css',
+    'resources/css/wishlist.css'    
     ])
 
     @stack('styles')

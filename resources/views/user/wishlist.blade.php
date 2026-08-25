@@ -7,9 +7,14 @@
 <div class="container py-5">
 
     {{-- Page Header --}}
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div class="wishlist-header mb-4">
 
         <div>
+            <div class="page-label">
+                <i class="bi bi-heart-fill"></i>
+                <span>MY FAVORITES</span>
+            </div>
+
             <h2 class="fw-bold mb-1">
                 My Wishlist
             </h2>
@@ -19,7 +24,7 @@
             </p>
         </div>
 
-        <a href="/user/courts" class="btn btn-success mt-3 mt-md-0">
+        <a href="/user/courts" class="user-primary-btn text-decoration-none mt-3 mt-md-0">
             <i class="bi bi-search me-1"></i>
             Explore Courts
         </a>
@@ -72,7 +77,7 @@
 
             <span
                 id="wishlistCount"
-                class="text-muted"
+                class="text-muted fw-bold"
             >
                 0 courts
             </span>
@@ -90,39 +95,24 @@
         {{-- Empty Wishlist --}}
         <div
             id="emptyWishlist"
-            class="d-none text-center py-5"
+            class="d-none empty-wishlist-box py-5"
         >
 
-            <div
-                class="mx-auto mb-4 d-flex align-items-center justify-content-center"
-                style="
-                    width: 90px;
-                    height: 90px;
-                    border-radius: 50%;
-                    background: #f8f9fa;
-                "
-            >
-                <i
-                    class="bi bi-heart"
-                    style="
-                        font-size: 42px;
-                        color: #198754;
-                    "
-                ></i>
+            <div class="empty-wishlist-icon">
+                <i class="bi bi-heart"></i>
             </div>
 
-            <h3 class="fw-bold">
+            <h3 class="fw-bold mb-2">
                 Your Wishlist is Empty
             </h3>
 
             <p class="text-muted mb-4">
-                Save your favorite courts here and
-                book them whenever you want.
+                Save your favorite courts here and book them whenever you want.
             </p>
 
             <a
                 href="/user/courts"
-                class="btn btn-success px-4"
+                class="user-primary-btn text-decoration-none px-4"
             >
                 <i class="bi bi-search me-1"></i>
                 Explore Courts

@@ -8,9 +8,11 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/user/user-layout.js',
                 'resources/js/user/bookings.js',
                 'resources/css/bookings.css',
-
+                'resources/js/user/wishlist.js',
+                'resources/css/wishlist.css',
             ],
             refresh: true,
         }),

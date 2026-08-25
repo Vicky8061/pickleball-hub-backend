@@ -349,17 +349,11 @@ function createWishlistCard(
 
     col.innerHTML = `
 
-        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+        <div class="wishlist-card">
 
-            <!-- COURT IMAGE -->
+            <!-- COURT IMAGE AREA -->
 
-            <div
-                class="position-relative"
-                style="
-                    height: 220px;
-                    background: #f5f5f5;
-                "
-            >
+            <div class="wishlist-image-wrapper">
 
                 ${imageUrl
             ?
@@ -367,10 +361,7 @@ function createWishlistCard(
                     <img
                         src="${escapeAttribute(imageUrl)}"
                         alt="${escapeAttribute(courtName)}"
-                        class="w-100 h-100"
-                        style="
-                            object-fit: cover;
-                        "
+                        class="wishlist-image"
                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none');"
                     >
 
@@ -379,7 +370,7 @@ function createWishlistCard(
                     >
                         <i
                             class="bi bi-image"
-                            style="font-size: 50px;"
+                            style="font-size: 40px;"
                         ></i>
                     </div>
                     `
@@ -390,27 +381,26 @@ function createWishlistCard(
                     >
                         <i
                             class="bi bi-image"
-                            style="font-size: 50px;"
+                            style="font-size: 40px;"
                         ></i>
                     </div>
                     `
         }
+
+                <!-- BADGE -->
+
+                <span class="wishlist-type-badge">
+                    ${escapeHtml(courtType)}
+                </span>
 
 
                 <!-- REMOVE HEART -->
 
                 <button
                     type="button"
-                    class="remove-wishlist-btn position-absolute top-0 end-0 m-3 border-0 rounded-circle d-flex align-items-center justify-content-center"
+                    class="remove-wishlist-btn"
                     data-wishlist-id="${wishlist.id}"
                     data-court-id="${court.id}"
-                    style="
-                        width: 42px;
-                        height: 42px;
-                        background: white;
-                        color: #dc3545;
-                        box-shadow: 0 2px 8px rgba(0,0,0,.15);
-                    "
                     title="Remove from wishlist"
                 >
 
@@ -423,20 +413,11 @@ function createWishlistCard(
 
             <!-- CARD BODY -->
 
-            <div class="card-body p-4">
-
-                <!-- COURT TYPE -->
-
-                <span
-                    class="badge bg-success-subtle text-success mb-2"
-                >
-                    ${escapeHtml(courtType)}
-                </span>
-
+            <div class="court-card-body">
 
                 <!-- COURT NAME -->
 
-                <h5 class="fw-bold mb-2">
+                <h5 class="court-name" title="${escapeAttribute(courtName)}">
 
                     ${escapeHtml(courtName)}
 
@@ -445,13 +426,9 @@ function createWishlistCard(
 
                 <!-- ADDRESS -->
 
-                <div
-                    class="text-muted small mb-3 d-flex"
-                >
+                <div class="court-location">
 
-                    <i
-                        class="bi bi-geo-alt me-2"
-                    ></i>
+                    <i class="bi bi-geo-alt"></i>
 
                     <span>
                         ${escapeHtml(courtAddress)}
@@ -460,44 +437,34 @@ function createWishlistCard(
                 </div>
 
 
-                <!-- PRICE -->
+                <!-- CARD FOOTER -->
 
-                <div
-                    class="d-flex align-items-center justify-content-between mb-3"
-                >
+                <div class="court-card-footer">
 
-                    <div>
+                    <div class="court-price">
 
-                        <span
-                            class="fw-bold fs-5 text-success"
-                        >
-                            ₹${formatPrice(price)}
-                        </span>
+                        <strong>₹${formatPrice(price)}</strong>
 
-                        <span class="text-muted small">
-                            / hour
-                        </span>
+                        <span>/ hour</span>
 
                     </div>
 
+
+                    <!-- VIEW COURT -->
+
+                    <button
+                        type="button"
+                        class="view-court-btn user-primary-btn"
+                        data-court-id="${court.id}"
+                    >
+
+                        <i class="bi bi-eye me-1"></i>
+
+                        View Court
+
+                    </button>
+
                 </div>
-
-
-                <!-- VIEW COURT -->
-
-                <button
-                    type="button"
-                    class="view-court-btn btn btn-success w-100"
-                    data-court-id="${court.id}"
-                >
-
-                    <i
-                        class="bi bi-eye me-1"
-                    ></i>
-
-                    View Court
-
-                </button>
 
             </div>
 

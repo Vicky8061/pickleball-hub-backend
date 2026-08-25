@@ -3,6 +3,11 @@
 ========================================= */
 
 .bookings-header {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 16px;
+    padding: 30px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
