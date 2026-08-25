@@ -1549,16 +1549,12 @@ document.addEventListener(
         );
 
 
-        await loadUser();
-
-
-        await loadUserWishlist();
-
-
-        await loadFeaturedCourts();
-
-
-        await loadUpcomingTournaments();
+        await Promise.all([
+            loadUser(),
+            loadUserWishlist(),
+            loadFeaturedCourts(),
+            loadUpcomingTournaments()
+        ]);
 
     }
 );

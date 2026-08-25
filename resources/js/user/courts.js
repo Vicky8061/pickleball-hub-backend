@@ -385,11 +385,11 @@ function createCourtCard(court) {
 
                 ${validImages.map((image, index) => {
 
-                    const imageUrl =
-                        image.image_url ||
-                        image.image;
+            const imageUrl =
+                image.image_url ||
+                image.image;
 
-                    return `
+            return `
                         <div
                             class="court-slide ${index === 0 ? "active" : ""}"
                         >
@@ -397,10 +397,10 @@ function createCourtCard(court) {
                             <img
                                 src="${escapeAttribute(imageUrl)}"
                                 alt="${escapeAttribute(
-                                    court.court_name ||
-                                    court.name ||
-                                    "Pickleball Court"
-                                )}"
+                court.court_name ||
+                court.name ||
+                "Pickleball Court"
+            )}"
                                 class="court-image"
                                 loading="lazy"
                                 onerror="this.style.display='none';"
@@ -409,7 +409,7 @@ function createCourtCard(court) {
                         </div>
                     `;
 
-                }).join("")}
+        }).join("")}
 
             </div>
         `;
@@ -462,15 +462,14 @@ function createCourtCard(court) {
                 <div class="court-slider-dots">
 
                     ${validImages.map(
-                        (_, index) => `
+                (_, index) => `
                             <span
-                                class="court-dot ${
-                                    index === 0 ? "active" : ""
-                                }"
+                                class="court-dot ${index === 0 ? "active" : ""
+                    }"
                                 data-slide="${index}"
                             ></span>
                         `
-                    ).join("")}
+            ).join("")}
 
                 </div>
 
@@ -1369,9 +1368,10 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        await loadUserWishlist();
-
-        loadCourts(1);
+        await Promise.all([
+            loadUserWishlists(),
+            loadCourts(1)
+        ]);
 
     }
 );
