@@ -342,6 +342,7 @@
 
     @vite([
     'resources/js/app.js',
+    'resources/js/api.js',
     'resources/js/user/user-layout.js'
     ])
 

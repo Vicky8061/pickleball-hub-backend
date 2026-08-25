@@ -130,37 +130,7 @@ async function loadCourtDetails() {
          * Court Details API uses another route.
          */
 
-        const response = await fetch(
-            `${API_BASE_URL}/courts/${courtId}`,
-            {
-                method: "GET",
-                headers: getHeaders()
-            }
-        );
-
-
-        const result =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to fetch court details."
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Unable to fetch court details."
-            );
-
-        }
+        const result = await apiFetch(`/courts/${courtId}`);
 
 
         /*

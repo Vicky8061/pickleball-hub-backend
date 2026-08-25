@@ -75,7 +75,7 @@ function getHeaders() {
    LOAD USER WISHLIST
 ===================================================== */
 
-async function loadUserWishlist() {
+async function loadUserWishlists() {
 
     try {
 
@@ -84,20 +84,7 @@ async function loadUserWishlist() {
         if (!token) return;
 
 
-        const response = await fetch(
-            `${API_BASE_URL}/wishlists`,
-            {
-                method: "GET",
-                headers: getHeaders()
-            }
-        );
-
-
-        if (!response.ok) return;
-
-
-        const result =
-            await response.json();
+        const result = await apiFetch("/wishlists");
 
 
         const wishlists =
@@ -224,57 +211,7 @@ async function loadCourts(page = 1) {
 
     try {
 
-        const response = await fetch(
-            `${API_BASE_URL}/courts?${params.toString()}`,
-            {
-                method: "GET",
-                headers: getHeaders()
-            }
-        );
-
-
-        let result;
-
-        try {
-            result = await response.json();
-        } catch (jsonError) {
-
-            throw new Error(
-                `Invalid response from server. HTTP ${response.status}`
-            );
-
-        }
-
-
-        /* -------------------------------------------------
-           HTTP ERROR
-        ------------------------------------------------- */
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                `Unable to fetch courts. HTTP ${response.status}`
-            );
-
-        }
-
-
-        /* -------------------------------------------------
-           API SUCCESS CHECK
-        ------------------------------------------------- */
-
-        if (
-            result.success !== undefined &&
-            result.success === false
-        ) {
-
-            throw new Error(
-                result.message ||
-                "Unable to fetch courts."
-            );
-
-        }
+        const result = await apiFetch(`/courts?${params.toString()}`);
 
 
         /* -------------------------------------------------

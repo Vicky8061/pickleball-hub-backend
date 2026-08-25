@@ -100,77 +100,7 @@ async function loadWishlist() {
 
     try {
 
-        const token = getToken();
-
-        if (!token) {
-
-            throw new Error(
-                "Please login to view your wishlist."
-            );
-
-        }
-
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/wishlists`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        console.log(
-            "Wishlist Response:",
-            result
-        );
-
-
-        /* =================================
-           AUTHENTICATION ERROR
-        ================================= */
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "Your session has expired. Please login again."
-            );
-
-        }
-
-
-        /* =================================
-           API ERROR
-        ================================= */
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load wishlist."
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load wishlist."
-            );
-
-        }
-
-
-        /* =================================
-           GET WISHLIST DATA
-        ================================= */
+        const result = await apiFetch("/wishlists");
 
         wishlists =
             result.data?.data ||
@@ -687,53 +617,19 @@ confirmRemoveWishlist.addEventListener(
 
         try {
 
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/wishlists/${courtId}`,
+            const result =
+                await apiFetch(
+                    `/wishlists/${courtId}`,
                     {
-                        method: "DELETE",
-                        headers: getHeaders()
+                        method: "DELETE"
                     }
                 );
-
-
-            const result =
-                await response.json();
 
 
             console.log(
                 "Remove Wishlist Response:",
                 result
             );
-
-
-            if (response.status === 401) {
-
-                throw new Error(
-                    "Your session has expired. Please login again."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    result.message ||
-                    "Unable to remove court from wishlist."
-                );
-
-            }
-
-
-            if (!result.success) {
-
-                throw new Error(
-                    result.message ||
-                    "Unable to remove court from wishlist."
-                );
-
-            }
 
 
             /* =================================

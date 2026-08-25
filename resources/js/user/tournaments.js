@@ -1,9 +1,6 @@
-import axios from 'axios';
-
-
 /*
 |--------------------------------------------------------------------------
-| Elements
+| Elements & State
 |--------------------------------------------------------------------------
 */
 
@@ -18,13 +15,6 @@ const searchInput =
 
 const statusFilter =
     document.getElementById('tournamentStatus');
-
-
-/*
-|--------------------------------------------------------------------------
-| Data
-|--------------------------------------------------------------------------
-*/
 
 let tournaments = [];
 
@@ -41,25 +31,17 @@ async function loadTournaments() {
 
         showLoading();
 
-        const token = localStorage.getItem('auth_token');
-
-        const response = await axios.get(
-            '/api/tournaments',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json'
-                }
-            }
-        );
+        const response = await apiFetch('/tournaments');
 
         if (
-            response.data &&
-            response.data.success
+            response &&
+            response.success
         ) {
 
             tournaments =
-                response.data.data || [];
+                response.data?.data ||
+                response.data ||
+                [];
 
             renderTournaments();
 

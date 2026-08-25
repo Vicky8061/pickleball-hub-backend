@@ -135,80 +135,12 @@ async function loadBookings() {
 
     try {
 
-        const token = getToken();
-
-
-        if (!token) {
-
-            throw new Error(
-                "Please login to view your bookings."
-            );
-
-        }
-
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/bookings`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        const result =
-            await response.json();
-
+        const result = await apiFetch("/bookings");
 
         console.log(
             "Bookings Response:",
             result
         );
-
-
-        /* Authentication */
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "Your session has expired. Please login again."
-            );
-
-        }
-
-
-        /* API error */
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load bookings."
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load bookings."
-            );
-
-        }
-
-
-        /*
-         * BookingController returns:
-         *
-         * data => BookingResource::collection(...)
-         *
-         * Therefore:
-         *
-         * result.data.data
-         */
 
         bookings =
             result.data?.data ||

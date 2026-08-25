@@ -36,53 +36,7 @@ function getToken() {
 */
 
 async function apiRequest(url, options = {}) {
-
-    const token = getToken();
-
-    const headers = {
-        "Accept": "application/json",
-        ...options.headers
-    };
-
-    if (token) {
-
-        headers["Authorization"] =
-            `Bearer ${token}`;
-
-    }
-
-
-    const response = await fetch(url, {
-        ...options,
-        headers
-    });
-
-
-    let data = null;
-
-    try {
-
-        data = await response.json();
-
-    } catch (error) {
-
-        data = null;
-
-    }
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            data?.message ||
-            "Something went wrong."
-        );
-
-    }
-
-
-    return data;
-
+    return apiFetch(url, options);
 }
 
 

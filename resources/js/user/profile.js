@@ -83,57 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
 
-            const response =
-                await fetch('/api/profile', {
-
-                    method: 'GET',
-
-                    headers: {
-
-                        'Accept':
-                            'application/json',
-
-                        'Authorization':
-                            `Bearer ${token}`
-
-                    }
-
-                });
-
-
-            const result =
-                await response.json();
-
-
-            // =========================================
-            // UNAUTHENTICATED
-            // =========================================
-
-            if (response.status === 401) {
-
-                logoutLocal();
-
-                return;
-
-            }
-
-
-            if (!response.ok) {
-
-                console.error(
-                    'Profile API Error:',
-                    result
-                );
-
-                showAlert(
-                    result.message ||
-                    'Unable to load profile.',
-                    'danger'
-                );
-
-                return;
-
-            }
+            const result = await apiFetch('/profile');
 
 
             // =========================================

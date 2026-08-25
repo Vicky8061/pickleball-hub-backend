@@ -8,6 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/api.js',
                 'resources/js/user/user-layout.js',
                 'resources/js/user/bookings.js',
                 'resources/css/bookings.css',

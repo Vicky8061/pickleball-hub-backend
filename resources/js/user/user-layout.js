@@ -72,44 +72,21 @@ function initializeMobileLogout() {
     }
 
     mobileLogoutBtn.addEventListener("click", async () => {
-        const token =
-            localStorage.getItem("auth_token") ||
-            localStorage.getItem("token") ||
-            sessionStorage.getItem("auth_token") ||
-            sessionStorage.getItem("token");
-
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-        const csrfToken = csrfMeta ? csrfMeta.getAttribute("content") : null;
-
-        // 1. API Sanctum Logout
-        if (token) {
-            try {
-                await fetch("/api/logout", {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-            } catch (err) {
-                console.error("API Logout error:", err);
-            }
+        try {
+            await apiFetch("/logout", { method: "POST" });
+        } catch (err) {
+            console.error("API Logout error:", err);
         }
 
-        // 2. Web Session Logout
         try {
             await fetch("/auth/logout", {
                 method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
-                },
+                headers: getHeaders(),
             });
         } catch (err) {
             console.error("Session Logout error:", err);
         }
 
-        // 3. Clear Storage & Redirect
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = "/login";

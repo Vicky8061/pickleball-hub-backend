@@ -148,39 +148,7 @@ async function loadCourt() {
         }
 
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/courts/${courtId}`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load court."
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load court."
-            );
-
-        }
-
+        const result = await apiFetch(`/courts/${courtId}`);
 
         court =
             result.data?.data ||
@@ -429,53 +397,13 @@ async function loadTimeSlots() {
          * is_available
          */
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/courts/${courtId}/availability?date=${encodeURIComponent(date)}`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
         const result =
-            await response.json();
-
+            await apiFetch(`/courts/${courtId}/availability?date=${encodeURIComponent(date)}`);
 
         console.log(
             "Availability Response:",
             result
         );
-
-
-        if (response.status === 401) {
-
-            throw new Error(
-                "Your session has expired. Please login again."
-            );
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load time slot availability."
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load time slot availability."
-            );
-
-        }
 
 
         /*
@@ -938,12 +866,11 @@ async function createBooking() {
         );
 
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/bookings`,
+        const result =
+            await apiFetch(
+                "/bookings",
                 {
                     method: "POST",
-                    headers: getHeaders(),
                     body: JSON.stringify(
                         requestData
                     )
@@ -951,82 +878,10 @@ async function createBooking() {
             );
 
 
-        const result =
-            await response.json();
-
-
         console.log(
             "Booking Response:",
             result
         );
-
-
-        /*
-         * Authentication error
-         */
-
-        if (
-            response.status === 401
-        ) {
-
-            throw new Error(
-                "Your session has expired. Please login again."
-            );
-
-        }
-
-
-        /*
-         * API / validation error
-         */
-
-        if (!response.ok) {
-
-            let message =
-                result.message ||
-                "Unable to create booking.";
-
-
-            /*
-             * Laravel validation errors
-             */
-
-            if (
-                response.status === 422 &&
-                result.errors
-            ) {
-
-                const errors =
-                    Object.values(
-                        result.errors
-                    ).flat();
-
-
-                if (errors.length > 0) {
-
-                    message =
-                        errors.join(" ");
-
-                }
-
-            }
-
-
-            throw new Error(
-                message
-            );
-
-        }
-
-
-        if (!result.success) {
-
-            throw new Error(
-                result.message ||
-                "Booking could not be created."
-            );
-
-        }
 
 
         /*
