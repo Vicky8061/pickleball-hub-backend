@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container py-5">
+<div class="container-fluid py-4">
 
     {{-- Page Header --}}
     <div class="wishlist-header mb-4">
