@@ -9,6 +9,15 @@ const API_BASE_URL = "/api";
 
 /*
 |--------------------------------------------------------------------------
+| Wishlist State
+|--------------------------------------------------------------------------
+*/
+
+let wishlistCourtIds = new Set();
+
+
+/*
+|--------------------------------------------------------------------------
 | Authentication Token
 |--------------------------------------------------------------------------
 */
@@ -73,6 +82,61 @@ async function apiRequest(url, options = {}) {
 
 
     return data;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Load User Wishlist
+|--------------------------------------------------------------------------
+*/
+
+async function loadUserWishlist() {
+
+    try {
+
+        const response =
+            await apiRequest(
+                `${API_BASE_URL}/wishlists`
+            );
+
+
+        const wishlists =
+            response?.data?.data ||
+            response?.data ||
+            [];
+
+
+        if (Array.isArray(wishlists)) {
+
+            wishlistCourtIds = new Set(
+                wishlists
+                    .map(w => {
+
+                        const courtId =
+                            w.courts?.id ||
+                            w.court?.id ||
+                            w.court_id;
+
+                        return courtId
+                            ? Number(courtId)
+                            : null;
+
+                    })
+                    .filter(id => id !== null)
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Wishlist loading error:",
+            error
+        );
+
+    }
 
 }
 
@@ -589,6 +653,18 @@ async function createCourtCard(court) {
 
     /*
     |--------------------------------------------------------------------------
+    | Wishlist Check
+    |--------------------------------------------------------------------------
+    */
+
+    const isWishlisted =
+        wishlistCourtIds.has(
+            Number(court.id)
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Final Card
     |--------------------------------------------------------------------------
     */
@@ -639,6 +715,40 @@ async function createCourtCard(court) {
                     <!-- DOTS -->
 
                     ${dots}
+
+
+                    <!-- WISHLIST HEART -->
+
+                    <button
+                        type="button"
+                        class="wishlist-toggle-btn"
+                        data-court-id="${court.id}"
+                        title="${isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}"
+                        style="
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            margin: 12px;
+                            width: 38px;
+                            height: 38px;
+                            border: none;
+                            border-radius: 50%;
+                            background: rgba(255,255,255,0.9);
+                            color: ${isWishlisted ? '#dc3545' : '#6c757d'};
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            z-index: 2;
+                            transition: transform 0.2s, color 0.2s;
+                            font-size: 18px;
+                        "
+                    >
+
+                        <i class="bi ${isWishlisted ? 'bi-heart-fill' : 'bi-heart'}"></i>
+
+                    </button>
 
                 </div>
 
@@ -929,6 +1039,148 @@ function initializeCourtSliders() {
     });
 
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| Wishlist Toggle
+|--------------------------------------------------------------------------
+*/
+
+async function toggleWishlist(courtId, button) {
+
+    const token = getToken();
+
+    if (!token) return;
+
+
+    const id = Number(courtId);
+
+    const isWishlisted =
+        wishlistCourtIds.has(id);
+
+    const icon =
+        button.querySelector("i");
+
+
+    button.disabled = true;
+
+
+    try {
+
+        if (isWishlisted) {
+
+            /* REMOVE */
+
+            await apiRequest(
+                `${API_BASE_URL}/wishlists/${id}`,
+                { method: "DELETE" }
+            );
+
+            wishlistCourtIds.delete(id);
+
+            icon.className = "bi bi-heart";
+
+            button.style.color = "#6c757d";
+
+            button.title =
+                "Add to wishlist";
+
+        } else {
+
+            /* ADD */
+
+            await apiRequest(
+                `${API_BASE_URL}/wishlists`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        court_id: id
+                    })
+                }
+            );
+
+            wishlistCourtIds.add(id);
+
+            icon.className =
+                "bi bi-heart-fill";
+
+            button.style.color = "#dc3545";
+
+            button.title =
+                "Remove from wishlist";
+
+        }
+
+
+        /* SCALE ANIMATION */
+
+        button.style.transform =
+            "scale(1.3)";
+
+        setTimeout(() => {
+
+            button.style.transform =
+                "scale(1)";
+
+        }, 200);
+
+
+    } catch (error) {
+
+        console.error(
+            "Wishlist toggle error:",
+            error
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+    }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Wishlist Click Handler
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener(
+    "click",
+    (event) => {
+
+        const wishlistBtn =
+            event.target.closest(
+                ".wishlist-toggle-btn"
+            );
+
+        if (!wishlistBtn) return;
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        const courtId =
+            wishlistBtn.dataset.courtId;
+
+        if (courtId) {
+
+            toggleWishlist(
+                courtId,
+                wishlistBtn
+            );
+
+        }
+
+    }
+);
 
 
 /*
@@ -1330,85 +1582,6 @@ function escapeAttribute(value) {
 
 /*
 |--------------------------------------------------------------------------
-| Mobile Menu
-|--------------------------------------------------------------------------
-*/
-
-function initializeMobileMenu() {
-
-    const menuButton =
-        document.getElementById(
-            "userMenuBtn"
-        );
-
-
-    const mobileMenu =
-        document.getElementById(
-            "userMobileMenu"
-        );
-
-
-    if (
-        !menuButton ||
-        !mobileMenu
-    ) {
-
-        return;
-
-    }
-
-
-    menuButton.addEventListener(
-        "click",
-        () => {
-
-            mobileMenu.classList.toggle(
-                "active"
-            );
-
-        }
-    );
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| Notification
-|--------------------------------------------------------------------------
-*/
-
-function initializeNotifications() {
-
-    const button =
-        document.getElementById(
-            "notificationBtn"
-        );
-
-
-    if (!button) {
-
-        return;
-
-    }
-
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            alert(
-                "No new notifications."
-            );
-
-        }
-    );
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
 | Dashboard Initialization
 |--------------------------------------------------------------------------
 */
@@ -1425,16 +1598,13 @@ document.addEventListener(
         await loadUser();
 
 
+        await loadUserWishlist();
+
+
         await loadFeaturedCourts();
 
 
         await loadUpcomingTournaments();
-
-
-        initializeMobileMenu();
-
-
-        initializeNotifications();
 
     }
 );

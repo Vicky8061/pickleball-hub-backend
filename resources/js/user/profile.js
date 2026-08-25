@@ -610,7 +610,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     // =========================================
     // LOGOUT
     // =========================================

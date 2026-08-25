@@ -343,7 +343,7 @@
 
 @push('styles')
 
-@vite('resources/css/user/bookings.css')
+@vite('resources/css/bookings.css')
 
 
 

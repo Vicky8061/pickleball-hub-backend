@@ -340,7 +340,8 @@
     ========================================== -->
 
     @vite([
-    'resources/js/app.js'
+    'resources/js/app.js',
+    'resources/js/user/user-layout.js'
     ])
 
 

@@ -188,8 +188,8 @@ function createTournamentCard(tournament) {
                         class="tournament-status ${statusClass}">
 
                         ${capitalize(
-                            tournament.status
-                        )}
+        tournament.status
+    )}
 
                     </span>
 
@@ -203,8 +203,8 @@ function createTournamentCard(tournament) {
                     <h5 class="tournament-title">
 
                         ${escapeHtml(
-                            tournament.title
-                        )}
+        tournament.title
+    )}
 
                     </h5>
 
@@ -212,8 +212,8 @@ function createTournamentCard(tournament) {
                     <p class="tournament-description">
 
                         ${escapeHtml(
-                            tournament.description || ''
-                        )}
+        tournament.description || ''
+    )}
 
                     </p>
 
@@ -228,8 +228,8 @@ function createTournamentCard(tournament) {
 
                             <span>
                                 ${formatDate(
-                                    tournament.tournament_date
-                                )}
+        tournament.tournament_date
+    )}
                             </span>
 
                         </div>
@@ -241,12 +241,12 @@ function createTournamentCard(tournament) {
 
                             <span>
                                 ${formatTime(
-                                    tournament.start_time
-                                )}
+        tournament.start_time
+    )}
                                 -
                                 ${formatTime(
-                                    tournament.end_time
-                                )}
+        tournament.end_time
+    )}
                             </span>
 
                         </div>
@@ -279,8 +279,8 @@ function createTournamentCard(tournament) {
 
                             <strong>
                                 ${escapeHtml(
-                                    tournament.prize || '-'
-                                )}
+        tournament.prize || '-'
+    )}
                             </strong>
 
                         </div>
@@ -294,10 +294,9 @@ function createTournamentCard(tournament) {
 
                             <strong>
 
-                                ${
-                                    tournament.participants
-                                        ?.length || 0
-                                }
+                                ${tournament.participants
+            ?.length || 0
+        }
                                 /
                                 ${tournament.max_participants}
 
@@ -437,6 +436,7 @@ function showError() {
     `;
 
 }
+
 
 
 /*
