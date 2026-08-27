@@ -1530,16 +1530,12 @@ function escapeHtml(value) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| Escape Attribute
-|--------------------------------------------------------------------------
-*/
+function escapeHTML(value) {
+    return escapeHtml(value);
+}
 
 function escapeAttribute(value) {
-
     return escapeHtml(value);
-
 }
 
 
@@ -1578,15 +1574,27 @@ async function loadBanners() {
                 <button type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide-to="${index}" class="${activeClass}" ${ariaCurrent} aria-label="Slide ${index + 1}"></button>
             `;
 
-            const imgUrl = banner.image_url || "/images/banner-placeholder.jpg";
-            const redirectAttr = banner.redirect_url ? `href="${escapeAttribute(banner.redirect_url)}" target="_blank"` : "";
+            const imgUrl = banner.image_url || "/assets/images/banner-placeholder.jpg";
+            const hasRedirect = Boolean(banner.redirect_url);
 
             slidesHtml += `
                 <div class="carousel-item ${activeClass}">
-                    <a ${redirectAttr} class="d-block text-decoration-none">
-                        <img src="${escapeAttribute(imgUrl)}" class="d-block w-100 object-fit-cover" style="max-height: 380px; min-height: 200px; border-radius: 1rem;" alt="${escapeHTML(banner.title || 'Banner')}">
-                        ${banner.title ? `<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2 mb-2"><h5>${escapeHTML(banner.title)}</h5></div>` : ''}
-                    </a>
+                    <div class="dashboard-banner-card">
+                        <img src="${escapeAttribute(imgUrl)}" class="dashboard-banner-img" alt="${escapeHTML(banner.title || 'Banner')}">
+                        <div class="dashboard-banner-overlay">
+                            <span class="dashboard-banner-tag"><i class="bi bi-megaphone-fill me-1"></i> Featured Announcement</span>
+                            <h3 class="dashboard-banner-title">${escapeHTML(banner.title || 'Welcome to Pickleball Hub')}</h3>
+                            ${hasRedirect ? `
+                                <a href="${escapeAttribute(banner.redirect_url)}" target="_blank" class="dashboard-banner-btn">
+                                    Explore Now <i class="bi bi-arrow-right"></i>
+                                </a>
+                            ` : `
+                                <a href="/user/courts" class="dashboard-banner-btn">
+                                    Book a Court <i class="bi bi-arrow-right"></i>
+                                </a>
+                            `}
+                        </div>
+                    </div>
                 </div>
             `;
         });

@@ -569,6 +569,160 @@ body {
 
 
 /* =========================================
+   USER DASHBOARD - PROFESSIONAL BANNER CAROUSEL
+========================================= */
+
+#dashboardBannerContainer {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-banner-card {
+    position: relative;
+    height: 340px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+@media (max-width: 768px) {
+    .dashboard-banner-card {
+        height: 240px;
+    }
+}
+
+.dashboard-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.dashboard-banner-card:hover .dashboard-banner-img {
+    transform: scale(1.04);
+}
+
+.dashboard-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.45) 50%, rgba(15, 23, 42, 0.1) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2.5rem;
+    z-index: 2;
+}
+
+@media (max-width: 576px) {
+    .dashboard-banner-overlay {
+        padding: 1.25rem;
+    }
+}
+
+.dashboard-banner-tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(25, 135, 84, 0.85);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+
+.dashboard-banner-title {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    .dashboard-banner-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+}
+
+.dashboard-banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #198754;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 30px;
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
+    width: fit-content;
+}
+
+.dashboard-banner-btn:hover {
+    background: #146c43;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(25, 135, 84, 0.45);
+}
+
+/* Custom Glassmorphic Controls */
+#dashboardBannerCarousel .carousel-control-prev,
+#dashboardBannerCarousel .carousel-control-next {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.85;
+    transition: all 0.25s ease;
+    margin: 0 16px;
+}
+
+#dashboardBannerCarousel .carousel-control-prev:hover,
+#dashboardBannerCarousel .carousel-control-next:hover {
+    background: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Custom Modern Pill Indicators */
+#dashboardBannerCarousel .carousel-indicators {
+    margin-bottom: 1.25rem;
+    gap: 6px;
+}
+
+#dashboardBannerCarousel .carousel-indicators [data-bs-target] {
+    width: 10px;
+    height: 6px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.45);
+    border: none;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+#dashboardBannerCarousel .carousel-indicators .active {
+    width: 28px;
+    background-color: #198754;
+    box-shadow: 0 0 10px rgba(25, 135, 84, 0.8);
+    opacity: 1;
+}
+
+
+/* =========================================
    VIEW COURT BUTTON
 ========================================= */
 

@@ -53,7 +53,7 @@
 
     <div id="dashboardBannerContainer" class="mb-4 d-none">
 
-        <div id="dashboardBannerCarousel" class="carousel slide rounded-4 overflow-hidden shadow-sm" data-bs-ride="carousel" data-bs-interval="4000">
+        <div id="dashboardBannerCarousel" class="carousel slide carousel-fade rounded-4 overflow-hidden shadow-sm" data-bs-ride="carousel" data-bs-interval="5000">
 
             <div class="carousel-indicators" id="bannerCarouselIndicators"></div>
 
@@ -61,7 +61,7 @@
 
             <button class="carousel-control-prev" type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide="prev">
 
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <i class="bi bi-chevron-left text-white fs-5"></i>
 
                 <span class="visually-hidden">Previous</span>
 
@@ -69,7 +69,7 @@
 
             <button class="carousel-control-next" type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide="next">
 
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <i class="bi bi-chevron-right text-white fs-5"></i>
 
                 <span class="visually-hidden">Next</span>
 
