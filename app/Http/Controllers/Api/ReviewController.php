@@ -206,16 +206,16 @@ class ReviewController extends Controller
             ], 400);
         }
 
-        // User must have completed booking
-        $hasCompletedBooking = Booking::where('user_id', $request->user()->id)
+        // User must have a booking for this court
+        $hasBooking = Booking::where('user_id', $request->user()->id)
             ->where('court_id', $court->id)
-            ->where('booking_status', 'completed')
+            ->where('booking_status', '!=', 'cancelled')
             ->exists();
 
-        if (!$hasCompletedBooking) {
+        if (!$hasBooking) {
             return response()->json([
                 'success' => false,
-                'message' => 'You can only review courts after completing a booking.'
+                'message' => 'You can only review courts that you have booked.'
             ], 403);
         }
 
