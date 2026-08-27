@@ -407,7 +407,7 @@ class CourtController extends Controller
         ]);
         if (
             $court->status === 'inactive' &&
-            $request->user()->role !== 'admin'
+            (!$request->user() || $request->user()->role !== 'admin')
         ) {
             return response()->json([
                 'success' => false,

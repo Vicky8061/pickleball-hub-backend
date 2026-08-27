@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
 
 
 // =====================================================

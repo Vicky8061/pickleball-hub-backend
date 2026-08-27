@@ -323,11 +323,6 @@ function createWishlistCard(
                     ${escapeHtml(courtType)}
                 </span>
 
-                <!-- RATING BADGE -->
-                <span class="court-rating-badge" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: #ffc107; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 12px; backdrop-filter: blur(4px); z-index: 2;">
-                    <i class="bi bi-star-fill me-1"></i>${(court.average_rating !== undefined ? Number(court.average_rating).toFixed(1) : '0.0')} <span style="color: #fff; font-weight: 400; font-size: 11px;">(${(court.reviews_count || 0)})</span>
-                </span>
-
 
                 <!-- REMOVE HEART -->
 
@@ -350,13 +345,19 @@ function createWishlistCard(
 
             <div class="court-card-body">
 
-                <!-- COURT NAME -->
+                <!-- COURT NAME & RATING -->
 
-                <h5 class="court-name" title="${escapeAttribute(courtName)}">
+                <div class="d-flex justify-content-between align-items-center mb-2">
 
-                    ${escapeHtml(courtName)}
+                    <h5 class="court-name text-truncate mb-0" style="max-width: 70%;" title="${escapeAttribute(courtName)}">
+                        ${escapeHtml(courtName)}
+                    </h5>
 
-                </h5>
+                    <div class="badge bg-warning bg-opacity-10 text-dark border border-warning-subtle rounded-pill px-2 py-1 flex-shrink-0 ms-2" style="font-size: 12px;">
+                        <i class="bi bi-star-fill text-warning me-1"></i><strong>${(court.average_rating !== undefined ? Number(court.average_rating).toFixed(1) : '0.0')}</strong> <span class="text-muted">(${(court.reviews_count || 0)})</span>
+                    </div>
+
+                </div>
 
 
                 <!-- ADDRESS -->
