@@ -407,8 +407,7 @@
              BOOKING SUCCESS MODAL
         ========================================= -->
 
-    <div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-labelledby="bookingSuccessModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-labelledby="bookingSuccessModalLabel">
 
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content booking-success-modal">

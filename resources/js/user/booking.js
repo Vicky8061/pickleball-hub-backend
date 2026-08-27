@@ -1099,6 +1099,11 @@ function showBookingSuccessModal(
     if (
         typeof bootstrap !== "undefined"
     ) {
+        modal.addEventListener("hide.bs.modal", () => {
+            if (document.activeElement && modal.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+        });
 
         const bootstrapModal =
             bootstrap.Modal.getOrCreateInstance(
