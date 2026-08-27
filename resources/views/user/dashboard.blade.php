@@ -47,6 +47,39 @@
     </div>
 
 
+    <!-- =========================================
+         DYNAMIC BANNER CAROUSEL
+    ========================================== -->
+
+    <div id="dashboardBannerContainer" class="mb-4 d-none">
+
+        <div id="dashboardBannerCarousel" class="carousel slide rounded-4 overflow-hidden shadow-sm" data-bs-ride="carousel" data-bs-interval="4000">
+
+            <div class="carousel-indicators" id="bannerCarouselIndicators"></div>
+
+            <div class="carousel-inner" id="bannerCarouselInner"></div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide="prev">
+
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+
+                <span class="visually-hidden">Previous</span>
+
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide="next">
+
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+
+                <span class="visually-hidden">Next</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
 
     <!-- =========================================
          QUICK ACTIONS

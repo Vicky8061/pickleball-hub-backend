@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\AdminReviewController;
 use App\Http\Controllers\Api\AdminTournamentController;
 use App\Http\Controllers\Api\OwnerApplicationController;
 use App\Http\Controllers\Api\TournamentController;
+use App\Http\Controllers\Api\BannerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/banners', [BannerController::class, 'index']);
 
 
 // =====================================================
@@ -387,4 +389,13 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/owner-applications/{ownerApplication}/reject',
             [AdminOwnerApplicationController::class, 'reject']
         );
+
+        // ---------------------------------------------
+        // BANNER MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/banners', [BannerController::class, 'index']);
+        Route::get('/banners/{banner}', [BannerController::class, 'show']);
+        Route::post('/banners', [BannerController::class, 'store']);
+        Route::post('/banners/{banner}', [BannerController::class, 'update']);
+        Route::delete('/banners/{banner}', [BannerController::class, 'destroy']);
     });

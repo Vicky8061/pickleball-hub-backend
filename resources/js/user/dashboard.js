@@ -1536,6 +1536,76 @@ function escapeAttribute(value) {
 
 /*
 |--------------------------------------------------------------------------
+| Load Banners Carousel
+|--------------------------------------------------------------------------
+*/
+
+async function loadBanners() {
+    const bannerContainer = document.getElementById("dashboardBannerContainer");
+    const carouselIndicators = document.getElementById("bannerCarouselIndicators");
+    const carouselInner = document.getElementById("bannerCarouselInner");
+
+    if (!bannerContainer || !carouselIndicators || !carouselInner) {
+        return;
+    }
+
+    try {
+        const response = await apiFetch("/banners");
+        const banners = response?.data?.data || response?.data || [];
+
+        if (!Array.isArray(banners) || banners.length === 0) {
+            bannerContainer.classList.add("d-none");
+            return;
+        }
+
+        let indicatorsHtml = "";
+        let slidesHtml = "";
+
+        banners.forEach((banner, index) => {
+            const activeClass = index === 0 ? "active" : "";
+            const ariaCurrent = index === 0 ? 'aria-current="true"' : "";
+
+            indicatorsHtml += `
+                <button type="button" data-bs-target="#dashboardBannerCarousel" data-bs-slide-to="${index}" class="${activeClass}" ${ariaCurrent} aria-label="Slide ${index + 1}"></button>
+            `;
+
+            const imgUrl = banner.image_url || "/images/banner-placeholder.jpg";
+            const redirectAttr = banner.redirect_url ? `href="${escapeAttribute(banner.redirect_url)}" target="_blank"` : "";
+
+            slidesHtml += `
+                <div class="carousel-item ${activeClass}">
+                    <a ${redirectAttr} class="d-block text-decoration-none">
+                        <img src="${escapeAttribute(imgUrl)}" class="d-block w-100 object-fit-cover" style="max-height: 380px; min-height: 200px; border-radius: 1rem;" alt="${escapeHTML(banner.title || 'Banner')}">
+                        ${banner.title ? `<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2 mb-2"><h5>${escapeHTML(banner.title)}</h5></div>` : ''}
+                    </a>
+                </div>
+            `;
+        });
+
+        carouselIndicators.innerHTML = indicatorsHtml;
+        carouselInner.innerHTML = slidesHtml;
+        bannerContainer.classList.remove("d-none");
+
+        const prevControl = bannerContainer.querySelector(".carousel-control-prev");
+        const nextControl = bannerContainer.querySelector(".carousel-control-next");
+        if (prevControl && nextControl) {
+            if (banners.length <= 1) {
+                prevControl.classList.add("d-none");
+                nextControl.classList.add("d-none");
+            } else {
+                prevControl.classList.remove("d-none");
+                nextControl.classList.remove("d-none");
+            }
+        }
+    } catch (err) {
+        console.error("Banner loading error:", err);
+        bannerContainer.classList.add("d-none");
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | Dashboard Initialization
 |--------------------------------------------------------------------------
 */
@@ -1551,6 +1621,7 @@ document.addEventListener(
 
         await Promise.all([
             loadUser(),
+            loadBanners(),
             loadUserWishlist(),
             loadFeaturedCourts(),
             loadUpcomingTournaments()
