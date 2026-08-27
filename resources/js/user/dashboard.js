@@ -451,6 +451,9 @@ async function createCourtCard(court) {
         court.court_type ||
         "Pickleball";
 
+    const avgRating = court.average_rating !== undefined ? Number(court.average_rating).toFixed(1) : "0.0";
+    const revCount = court.reviews_count || 0;
+
 
     /*
     |--------------------------------------------------------------------------
@@ -658,6 +661,13 @@ async function createCourtCard(court) {
 
                         ${escapeHtml(courtType)}
 
+                    </span>
+
+
+                    <!-- RATING BADGE -->
+
+                    <span class="court-rating-badge" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: #ffc107; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 12px; backdrop-filter: blur(4px); z-index: 2;">
+                        <i class="bi bi-star-fill me-1"></i>${avgRating} <span style="color: #fff; font-weight: 400; font-size: 11px;">(${revCount})</span>
                     </span>
 
 
@@ -1606,6 +1616,38 @@ async function loadBanners() {
 
 /*
 |--------------------------------------------------------------------------
+| Load Top Rated Courts
+|--------------------------------------------------------------------------
+*/
+
+async function loadTopRatedCourts() {
+    const container = document.getElementById("topRatedCourts");
+    if (!container) return;
+
+    try {
+        const response = await apiFetch("/courts?sort=top_rated&limit=3");
+        const courts = response?.data?.data || response?.data || [];
+
+        if (!Array.isArray(courts) || courts.length === 0) {
+            container.innerHTML = `<div class="col-12"><div class="empty-state"><p>No top rated courts available yet.</p></div></div>`;
+            return;
+        }
+
+        const courtCards = await Promise.all(
+            courts.map(court => createCourtCard(court))
+        );
+
+        container.innerHTML = courtCards.join("");
+        initializeCourtSliders();
+    } catch (error) {
+        console.error("Top rated court loading error:", error);
+        container.innerHTML = `<div class="col-12"><div class="empty-state"><p>Unable to load top rated courts.</p></div></div>`;
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | Dashboard Initialization
 |--------------------------------------------------------------------------
 */
@@ -1624,6 +1666,7 @@ document.addEventListener(
             loadBanners(),
             loadUserWishlist(),
             loadFeaturedCourts(),
+            loadTopRatedCourts(),
             loadUpcomingTournaments()
         ]);
 

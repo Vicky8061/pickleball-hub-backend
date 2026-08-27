@@ -14,6 +14,14 @@ class CourtResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $avgRating = $this->reviews_avg_rating !== null
+            ? (float) $this->reviews_avg_rating
+            : ($this->relationLoaded('reviews') ? (float) ($this->reviews->avg('rating') ?? 0) : (float) ($this->reviews()->avg('rating') ?? 0));
+
+        $reviewsCount = $this->reviews_count !== null
+            ? (int) $this->reviews_count
+            : ($this->relationLoaded('reviews') ? $this->reviews->count() : $this->reviews()->count());
+
         return [
             'id'=> $this->id,
             'name'=> $this->name,
@@ -26,6 +34,8 @@ class CourtResource extends JsonResource
             'opening_time'=>$this->opening_time,
             'closing_time'=> $this->closing_time,
             'status'=>$this->status,
+            'average_rating' => round($avgRating, 1),
+            'reviews_count' => $reviewsCount,
             'owner'=>new UserResource(
                 $this->whenLoaded('owner')
             ),

@@ -263,6 +263,62 @@
 
 
     <!-- =========================================
+         TOP RATED COURTS
+    ========================================== -->
+
+    <div class="section-header mt-5">
+
+        <div>
+
+            <h3>
+                <i class="bi bi-star-fill text-warning me-1"></i> Top Rated Courts
+            </h3>
+
+            <p>
+                Highest rated courts according to player reviews
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('user.courts') }}"
+            class="view-all">
+
+            View all
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+    <div
+        class="row g-4 mb-4"
+        id="topRatedCourts">
+
+        <!-- Loading -->
+
+        <div class="col-12">
+
+            <div class="empty-state">
+
+                <div class="spinner-border text-success"></div>
+
+                <p>
+                    Loading top rated courts...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
          UPCOMING TOURNAMENTS
     ========================================== -->
 

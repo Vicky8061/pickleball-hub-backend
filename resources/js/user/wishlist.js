@@ -323,6 +323,11 @@ function createWishlistCard(
                     ${escapeHtml(courtType)}
                 </span>
 
+                <!-- RATING BADGE -->
+                <span class="court-rating-badge" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: #ffc107; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 12px; backdrop-filter: blur(4px); z-index: 2;">
+                    <i class="bi bi-star-fill me-1"></i>${(court.average_rating !== undefined ? Number(court.average_rating).toFixed(1) : '0.0')} <span style="color: #fff; font-weight: 400; font-size: 11px;">(${(court.reviews_count || 0)})</span>
+                </span>
+
 
                 <!-- REMOVE HEART -->
 

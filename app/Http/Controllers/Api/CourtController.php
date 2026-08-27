@@ -141,7 +141,7 @@ class CourtController extends Controller
         $query = Court::with([
             'owner',
             'images',
-        ]);
+        ])->withAvg('reviews', 'rating')->withCount('reviews');
 
         //Search by court name
         if ($request->filled('search')) {
@@ -153,9 +153,7 @@ class CourtController extends Controller
             $query->where('court_type', $request->court_type);
         }
 
-
-
-        if ($request->user()->role !== 'admin') {
+        if (!$request->user() || $request->user()->role !== 'admin') {
             $query->where('status', 'active');
         } elseif ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -182,13 +180,29 @@ class CourtController extends Controller
             case 'price_high':
                 $query->orderByDesc('price_per_hour');
                 break;
+            case 'top_rated':
+            case 'most_rated':
+                $query->orderByDesc('reviews_avg_rating')->orderByDesc('reviews_count');
+                break;
             case 'latest':
             default:
                 $query->latest();
                 break;
         }
 
-        $courts = $query->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $limit = $request->input('limit');
+
+        if ($limit) {
+            $courts = $query->take((int)$limit)->get();
+            return response()->json([
+                'success' => true,
+                'message' => 'Courts fetched successfully',
+                'data' => CourtResource::collection($courts),
+            ], 200);
+        }
+
+        $courts = $query->paginate($perPage);
 
         return response()->json([
             'success' => true,
