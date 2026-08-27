@@ -594,3 +594,43 @@
     }
 
 }
+
+
+/* =========================================
+   STAR RATING & REVIEWS
+========================================= */
+
+.star-rating-input .star-btn {
+    transition: color 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.star-rating-input .star-btn:hover {
+    transform: scale(1.15);
+}
+
+.star-rating-input .star-btn.active,
+.star-rating-input .star-btn.hover {
+    color: #ffc107 !important;
+}
+
+.review-card {
+    border-radius: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+.user-avatar-circle {
+    width: 44px;
+    height: 44px;
+    background: #e8f5e9;
+    color: #198754;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

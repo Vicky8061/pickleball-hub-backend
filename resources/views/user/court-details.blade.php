@@ -391,6 +391,144 @@
 
         </div>
 
+
+        <!-- =====================================
+             REVIEWS & RATING SECTION
+        ====================================== -->
+
+        <div class="mt-5 border-top pt-4">
+
+            <h3 class="fw-bold mb-4">
+                <i class="bi bi-star-fill text-warning me-2"></i>Court Reviews & Ratings
+            </h3>
+
+            <div class="row g-4">
+
+                <!-- RATING SUMMARY CARD -->
+                <div class="col-lg-4">
+
+                    <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100 bg-white">
+
+                        <div class="display-4 fw-bold text-dark mb-1" id="averageRatingText">0.0</div>
+
+                        <div class="star-rating-display mb-2 fs-5 text-warning" id="averageRatingStars">
+                            <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                        </div>
+
+                        <p class="text-muted small mb-3" id="totalReviewsCountText">Based on 0 reviews</p>
+
+                        <!-- Rating Distribution Bars -->
+                        <div class="rating-distribution-bars text-start">
+
+                            <div class="d-flex align-items-center mb-1 small">
+                                <span class="me-2 text-muted" style="width: 35px;">5 <i class="bi bi-star-fill text-warning"></i></span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" id="barStar5" style="width: 0%"></div>
+                                </div>
+                                <span class="ms-2 text-muted text-end" style="width: 35px;" id="countStar5">0</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-1 small">
+                                <span class="me-2 text-muted" style="width: 35px;">4 <i class="bi bi-star-fill text-warning"></i></span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" id="barStar4" style="width: 0%"></div>
+                                </div>
+                                <span class="ms-2 text-muted text-end" style="width: 35px;" id="countStar4">0</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-1 small">
+                                <span class="me-2 text-muted" style="width: 35px;">3 <i class="bi bi-star-fill text-warning"></i></span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" id="barStar3" style="width: 0%"></div>
+                                </div>
+                                <span class="ms-2 text-muted text-end" style="width: 35px;" id="countStar3">0</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-1 small">
+                                <span class="me-2 text-muted" style="width: 35px;">2 <i class="bi bi-star-fill text-warning"></i></span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" id="barStar2" style="width: 0%"></div>
+                                </div>
+                                <span class="ms-2 text-muted text-end" style="width: 35px;" id="countStar2">0</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-1 small">
+                                <span class="me-2 text-muted" style="width: 35px;">1 <i class="bi bi-star-fill text-warning"></i></span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" id="barStar1" style="width: 0%"></div>
+                                </div>
+                                <span class="ms-2 text-muted text-end" style="width: 35px;" id="countStar1">0</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- WRITE REVIEW FORM & REVIEWS LIST -->
+                <div class="col-lg-8">
+
+                    <!-- WRITE REVIEW FORM CARD -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="writeReviewCard">
+
+                        <h5 class="fw-bold mb-3" id="reviewFormTitle">Write a Review</h5>
+
+                        <div id="reviewAlert" class="alert d-none"></div>
+
+                        <form id="reviewForm">
+
+                            <input type="hidden" id="editReviewId" value="">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold mb-1">Your Rating</label>
+                                <div class="star-rating-input d-flex gap-1 fs-3 text-secondary" id="starRatingInput">
+                                    <i class="bi bi-star star-btn" data-value="1" style="cursor: pointer;"></i>
+                                    <i class="bi bi-star star-btn" data-value="2" style="cursor: pointer;"></i>
+                                    <i class="bi bi-star star-btn" data-value="3" style="cursor: pointer;"></i>
+                                    <i class="bi bi-star star-btn" data-value="4" style="cursor: pointer;"></i>
+                                    <i class="bi bi-star star-btn" data-value="5" style="cursor: pointer;"></i>
+                                </div>
+                                <input type="hidden" id="reviewRatingValue" name="rating" value="0">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reviewTextInput" class="form-label fw-semibold">Your Review</label>
+                                <textarea class="form-control rounded-3" id="reviewTextInput" rows="3" placeholder="Describe court quality, lighting, facilities..." required></textarea>
+                            </div>
+
+                            <div class="d-flex gap-2">
+
+                                <button type="submit" id="submitReviewBtn" class="btn user-primary-btn px-4">
+                                    <i class="bi bi-send me-1"></i> Submit Review
+                                </button>
+
+                                <button type="button" id="cancelEditReviewBtn" class="btn btn-outline-secondary d-none">
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- REVIEWS LIST CONTAINER -->
+                    <div id="courtReviewsList" class="d-flex flex-column gap-3">
+
+                        <div class="text-center py-4 text-muted">
+                            <div class="spinner-border spinner-border-sm text-success me-2"></div>
+                            Loading reviews...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
