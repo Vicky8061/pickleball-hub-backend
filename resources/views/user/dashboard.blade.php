@@ -238,25 +238,25 @@
         class="row g-4"
         id="featuredCourts">
 
-        <!-- Loading -->
-
-        <div class="col-12">
-
-            <div
-                class="empty-state"
-                id="courtsLoading">
-
-                <div
-                    class="spinner-border text-success"></div>
-
-
-                <p>
-                    Loading courts...
-                </p>
-
+        @for ($i = 0; $i < 3; $i++)
+        <div class="col-md-6 col-xl-4">
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton-card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="skeleton skeleton-badge"></div>
+                        <div class="skeleton skeleton-text w-25 mb-0"></div>
+                    </div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text w-75 mb-3"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                        <div class="skeleton skeleton-text w-50 mb-0"></div>
+                        <div class="skeleton skeleton-badge" style="width: 100px;"></div>
+                    </div>
+                </div>
             </div>
-
         </div>
+        @endfor
 
     </div>
 
@@ -298,21 +298,25 @@
         class="row g-4 mb-4"
         id="topRatedCourts">
 
-        <!-- Loading -->
-
-        <div class="col-12">
-
-            <div class="empty-state">
-
-                <div class="spinner-border text-success"></div>
-
-                <p>
-                    Loading top rated courts...
-                </p>
-
+        @for ($i = 0; $i < 3; $i++)
+        <div class="col-md-6 col-xl-4">
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton-card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="skeleton skeleton-badge"></div>
+                        <div class="skeleton skeleton-text w-25 mb-0"></div>
+                    </div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text w-75 mb-3"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                        <div class="skeleton skeleton-text w-50 mb-0"></div>
+                        <div class="skeleton skeleton-badge" style="width: 100px;"></div>
+                    </div>
+                </div>
             </div>
-
         </div>
+        @endfor
 
     </div>
 
@@ -355,21 +359,22 @@
         class="row g-4"
         id="upcomingTournaments">
 
-        <div class="col-12">
-
-            <div class="empty-state">
-
-                <div
-                    class="spinner-border text-success"></div>
-
-
-                <p>
-                    Loading tournaments...
-                </p>
-
+        @for ($i = 0; $i < 3; $i++)
+        <div class="col-md-6 col-xl-4">
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton-card-body">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text w-100"></div>
+                    <div class="skeleton skeleton-text w-75 mb-4"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                        <div class="skeleton skeleton-text w-50 mb-0"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                </div>
             </div>
-
         </div>
+        @endfor
 
     </div>
 

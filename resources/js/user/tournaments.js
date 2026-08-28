@@ -350,25 +350,24 @@ function getStatusClass(status) {
 */
 
 function showLoading() {
-
-    tournamentsContainer.innerHTML = `
-
-        <div class="col-12">
-
-            <div class="empty-state">
-
-                <div class="spinner-border text-success"></div>
-
-                <p>
-                    Loading tournaments...
-                </p>
-
+    const skeletonCard = `
+        <div class="col-md-6 col-xl-4">
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton-card-body">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text w-100"></div>
+                    <div class="skeleton skeleton-text w-75 mb-4"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                        <div class="skeleton skeleton-text w-50 mb-0"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                </div>
             </div>
-
         </div>
-
     `;
 
+    tournamentsContainer.innerHTML = Array(6).fill(skeletonCard).join('');
 }
 
 
@@ -401,15 +400,23 @@ function showError() {
 
             <div class="empty-state">
 
-                <i class="bi bi-exclamation-circle"></i>
+                <div class="empty-state-icon bg-danger-subtle text-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
 
                 <h5>
                     Unable to load tournaments
                 </h5>
 
                 <p>
-                    Please try again later.
+                    There was a problem fetching the tournaments list. Please check your connection and try again.
                 </p>
+
+                <div class="empty-state-action">
+                    <button class="btn btn-primary-custom" onclick="location.reload()">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Retry
+                    </button>
+                </div>
 
             </div>
 
@@ -423,7 +430,7 @@ function showError() {
 
 /*
 |--------------------------------------------------------------------------
-| Search
+| Search & Filters
 |--------------------------------------------------------------------------
 */
 
@@ -432,17 +439,18 @@ searchInput.addEventListener(
     renderTournaments
 );
 
-
-/*
-|--------------------------------------------------------------------------
-| Status Filter
-|--------------------------------------------------------------------------
-*/
-
 statusFilter.addEventListener(
     'change',
     renderTournaments
 );
+
+document.addEventListener('click', (e) => {
+    if (e.target && e.target.closest('#resetFiltersBtn')) {
+        searchInput.value = '';
+        statusFilter.value = 'all';
+        renderTournaments();
+    }
+});
 
 
 /*

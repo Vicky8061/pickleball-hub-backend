@@ -127,15 +127,23 @@
         id="noTournaments"
         class="empty-state d-none">
 
-        <i class="bi bi-trophy"></i>
+        <div class="empty-state-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
 
         <h5>
-            No tournaments found
+            No Tournaments Found
         </h5>
 
         <p>
-            Try changing your search or filter.
+            We couldn't find any tournaments matching your criteria. Try adjusting your search query or status filter.
         </p>
+
+        <div class="empty-state-action">
+            <button id="resetFiltersBtn" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
+            </button>
+        </div>
 
     </div>
 

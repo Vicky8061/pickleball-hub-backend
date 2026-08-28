@@ -24,14 +24,31 @@
 
 
     {{-- LOADING --}}
-    <div id="bookingsLoading" class="bookings-loading">
-
-        <div class="spinner-border text-success" role="status"></div>
-
-        <p class="text-muted mt-3 mb-0">
-            Loading your bookings...
-        </p>
-
+    <div id="bookingsLoading" class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="skeleton-card p-3">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text w-75"></div>
+                <div class="skeleton skeleton-text w-50 mb-3"></div>
+                <div class="skeleton skeleton-badge mt-auto"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="skeleton-card p-3">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text w-75"></div>
+                <div class="skeleton skeleton-text w-50 mb-3"></div>
+                <div class="skeleton skeleton-badge mt-auto"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="skeleton-card p-3">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text w-75"></div>
+                <div class="skeleton skeleton-text w-50 mb-3"></div>
+                <div class="skeleton skeleton-badge mt-auto"></div>
+            </div>
+        </div>
     </div>
 
 
