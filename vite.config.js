@@ -14,6 +14,8 @@ export default defineConfig({
                 'resources/css/bookings.css',
                 'resources/js/user/wishlist.js',
                 'resources/css/wishlist.css',
+                'resources/css/owner.css',
+                'resources/js/owner/dashboard.js',
             ],
             refresh: true,
         }),

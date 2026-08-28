@@ -234,7 +234,13 @@ class OwnerDashboardController extends Controller
 
         $totalRevenue = (clone $ownerBookings)
             ->where('payment_status', 'paid')
-            ->sum('total_amount');
+            ->sum('owner_payout_amount');
+
+        if (!$totalRevenue) {
+            $totalRevenue = (clone $ownerBookings)
+                ->where('payment_status', 'paid')
+                ->sum('total_amount') * 0.90;
+        }
 
 
         /*

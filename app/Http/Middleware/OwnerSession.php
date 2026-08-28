@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserSession
+class OwnerSession
 {
     public function handle(
         Request $request,
@@ -14,22 +14,16 @@ class UserSession
     ): Response {
 
         if (!session('logged_in')) {
-
             return redirect('/login');
-
         }
 
         $role = session('auth_user.role');
 
-        if ($role === 'owner') {
-            return redirect('/owner/dashboard');
+        if ($role === 'user') {
+            return redirect('/user/dashboard');
         }
 
-        if ($role === 'admin') {
-            return redirect('/admin/dashboard');
-        }
-
-        if ($role !== 'user') {
+        if (!in_array($role, ['owner', 'admin'])) {
             return redirect('/login');
         }
 

@@ -111,6 +111,14 @@ function syncNavbarUserInfo() {
 
         if (userStr) {
             const user = JSON.parse(userStr);
+            if (user && user.role === "owner") {
+                window.location.replace("/owner/dashboard");
+                return;
+            }
+            if (user && user.role === "admin") {
+                window.location.replace("/admin/dashboard");
+                return;
+            }
             if (user && user.name) {
                 navbarUserName.textContent = user.name;
             }

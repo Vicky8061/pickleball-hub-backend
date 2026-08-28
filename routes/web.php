@@ -185,13 +185,19 @@ Route::middleware('user.session')
     });
 
 // =====================================================
-// OWNER DASHBOARD
+// OWNER ROUTES
 // =====================================================
 
-Route::get('/owner/dashboard', function () {
+Route::middleware('owner.session')
+    ->prefix('owner')
+    ->name('owner.')
+    ->group(function () {
 
-    return view('owner.dashboard');
-})->name('owner.dashboard');
+        Route::get('/dashboard', function () {
+            return view('owner.dashboard');
+        })->name('dashboard');
+
+    });
 
 
 // =====================================================

@@ -20,8 +20,10 @@ body {
 }
 
 .user-brand img {
-    width: 120px;
+    width: 180px;
     height: auto;
+    max-height: 60px;
+    object-fit: contain;
 }
 
 .user-nav-links {

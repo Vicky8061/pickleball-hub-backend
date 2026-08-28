@@ -1,0 +1,481 @@
+/* =========================================
+   OWNER PORTAL - DESIGN SYSTEM & LAYOUT
+========================================= */
+
+/* -----------------------------------------
+   NAVBAR
+----------------------------------------- */
+
+.owner-navbar {
+    min-height: 72px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e8ece9;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+}
+
+.owner-navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+}
+
+.owner-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.owner-brand img {
+    width: 180px;
+    height: auto;
+    max-height: 60px;
+    object-fit: contain;
+}
+
+.owner-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.owner-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    color: #5b6660;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.owner-nav-link i {
+    font-size: 16px;
+    color: #7b8680;
+    transition: color 0.2s ease;
+}
+
+.owner-nav-link:hover {
+    color: #198754;
+    background: #f0f7f2;
+}
+
+.owner-nav-link:hover i {
+    color: #198754;
+}
+
+.owner-nav-link.active {
+    color: #198754;
+    background: #eaf5ee;
+    font-weight: 700;
+}
+
+.owner-nav-link.active i {
+    color: #198754;
+}
+
+.owner-profile-btn {
+    border: 1px solid #e2e8e4;
+    border-radius: 30px;
+    padding: 6px 14px 6px 8px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.owner-profile-btn:hover {
+    background: #f8faf8;
+    border-color: #198754;
+}
+
+.owner-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eaf6ef;
+    color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.fs-7 {
+    font-size: 12px;
+}
+
+.fs-8 {
+    font-size: 11px;
+}
+
+.owner-main-content {
+    min-height: calc(100vh - 72px);
+    background: #f5f7f5;
+}
+
+
+/* -----------------------------------------
+   WELCOME HEADER
+----------------------------------------- */
+
+.owner-welcome-banner {
+    background: linear-gradient(135deg, #17251f 0%, #1c3529 100%);
+    border-radius: 20px;
+    padding: 32px 36px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(23, 37, 31, 0.15);
+}
+
+.owner-welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(25, 135, 84, 0.25) 0%, rgba(23, 37, 31, 0) 70%);
+    pointer-events: none;
+}
+
+.owner-welcome-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #20c997;
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.owner-welcome-banner h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 12px 0 6px;
+    letter-spacing: -0.5px;
+}
+
+.owner-welcome-banner p {
+    color: #a8b8b0;
+    font-size: 15px;
+    margin: 0;
+}
+
+
+/* -----------------------------------------
+   KPI STAT CARDS
+----------------------------------------- */
+
+.owner-kpi-card {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.owner-kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.06);
+    border-color: rgba(25, 135, 84, 0.25);
+}
+
+.kpi-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.kpi-icon-box.green {
+    background: #eaf6ef;
+    color: #198754;
+}
+
+.kpi-icon-box.blue {
+    background: #eef5fc;
+    color: #0d6efd;
+}
+
+.kpi-icon-box.purple {
+    background: #f4eefc;
+    color: #6f42c1;
+}
+
+.kpi-icon-box.warning {
+    background: #fff8e6;
+    color: #ffc107;
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: #737b77;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #17251f;
+    line-height: 1.1;
+}
+
+.kpi-subtext {
+    font-size: 12px;
+    color: #929c96;
+    margin-top: 4px;
+}
+
+
+/* -----------------------------------------
+   QUICK ACTION CARDS
+----------------------------------------- */
+
+.owner-action-card {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #17251f;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.owner-action-card:hover {
+    transform: translateY(-3px);
+    border-color: #198754;
+    box-shadow: 0 10px 24px rgba(25, 135, 84, 0.08);
+}
+
+.action-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #f0f7f2;
+    color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.25s ease;
+}
+
+.owner-action-card:hover .action-icon {
+    background: #198754;
+    color: #ffffff;
+}
+
+.owner-action-card h6 {
+    margin: 0 0 2px;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.owner-action-card p {
+    margin: 0;
+    font-size: 12px;
+    color: #7b8680;
+}
+
+
+/* -----------------------------------------
+   TABLE CARD
+----------------------------------------- */
+
+.owner-card {
+    background: #ffffff;
+    border: 1px solid #e8ece9;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+}
+
+.owner-card-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #edf0ee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.owner-card-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #17251f;
+    margin: 0;
+}
+
+.owner-table {
+    margin: 0;
+}
+
+.owner-table th {
+    background: #f8faf8;
+    color: #737b77;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 24px;
+    border-bottom: 1px solid #edf0ee;
+}
+
+.owner-table td {
+    padding: 16px 24px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f2f5f3;
+    font-size: 14px;
+}
+
+.owner-table tbody tr:hover {
+    background: #fcfdfe;
+}
+
+
+/* -----------------------------------------
+   MOBILE NAVIGATION & RESPONSIVE
+----------------------------------------- */
+.owner-menu-btn {
+    background: transparent;
+    border: 1px solid #e2e8e4;
+    border-radius: 10px;
+    color: #17251f;
+    font-size: 22px;
+    padding: 4px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.owner-menu-btn:hover {
+    background: #f0f7f2;
+    color: #198754;
+    border-color: #198754;
+}
+
+.owner-mobile-menu {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #e8ece9;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1020;
+    animation: fadeInDown 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.owner-mobile-menu.active {
+    display: block;
+}
+
+.owner-mobile-menu-inner {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.owner-mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: #5b6660;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.owner-mobile-link i {
+    font-size: 18px;
+    color: #7b8680;
+}
+
+.owner-mobile-link:hover,
+.owner-mobile-link.active {
+    background: #eaf5ee;
+    color: #198754;
+}
+
+.owner-mobile-link.active i {
+    color: #198754;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .owner-navbar .container-fluid {
+        padding: 0 16px;
+    }
+
+    .owner-brand img {
+        width: 140px;
+        max-height: 44px;
+    }
+
+    .owner-welcome-banner {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .owner-welcome-banner h1 {
+        font-size: 22px;
+    }
+
+    .owner-welcome-banner p {
+        font-size: 13px;
+    }
+
+    .kpi-value {
+        font-size: 20px;
+    }
+
+    .kpi-icon-box {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+        border-radius: 12px;
+    }
+
+    .owner-kpi-card {
+        padding: 16px;
+        gap: 12px;
+    }
+}
