@@ -1452,7 +1452,7 @@ body {
     position: relative;
 }
 
-.search-box > i {
+.search-box>i {
     position: absolute;
     left: 15px;
     top: 50%;
@@ -1940,7 +1940,7 @@ body {
     font-size: 11px;
 }
 
-.profile-menu-item > i {
+.profile-menu-item>i {
     color: #9aa39e;
     font-size: 13px;
 }
@@ -2007,7 +2007,7 @@ body {
         font-size: 21px;
     }
 
-    .profile-header > div:last-child {
+    .profile-header>div:last-child {
         margin-top: 15px;
     }
 

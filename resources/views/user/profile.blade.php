@@ -54,6 +54,75 @@
 
 
     <!-- =========================================
+         PLAYER STATS OVERVIEW GRID
+    ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <!-- Total Matches -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 text-success p-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                        <i class="bi bi-calendar2-event-fill"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Total Matches</span>
+                        <h3 class="fw-bold mb-0 text-dark" id="statTotalMatches">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Matches -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Upcoming Games</span>
+                        <h3 class="fw-bold mb-0 text-dark" id="statUpcomingMatches">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tournaments Joined -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-warning bg-opacity-10 text-warning p-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Tournaments</span>
+                        <h3 class="fw-bold mb-0 text-dark" id="statTournamentsJoined">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Written -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-info bg-opacity-10 text-info p-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Reviews Given</span>
+                        <h3 class="fw-bold mb-0 text-dark" id="statReviewsCount">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
          PROFILE CONTENT
     ========================================== -->
 
@@ -312,6 +381,91 @@
                         </div>
 
                     </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 FAVORITE COURT HIGHLIGHT CARD
+            ====================================== -->
+
+            <div class="profile-card mt-4 d-none" id="favoriteCourtContainer">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <h4><i class="bi bi-heart-fill text-danger me-1"></i> Favorite Court</h4>
+
+                        <p>Your #1 most frequently booked court</p>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-card-body" id="favoriteCourtContent">
+
+                    <!-- Populated dynamically by profile.js -->
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 PLAYER ACHIEVEMENT BADGES
+            ====================================== -->
+
+            <div class="profile-card mt-4">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <h4><i class="bi bi-award-fill text-warning me-1"></i> Player Badges & Achievements</h4>
+
+                        <p>Earn badges by playing matches and participating in the community</p>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-card-body">
+
+                    <div class="row g-3" id="playerBadgesGrid">
+
+                        <!-- Populated dynamically by profile.js -->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 RECENT ACTIVITY TIMELINE
+            ====================================== -->
+
+            <div class="profile-card mt-4">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <h4><i class="bi bi-activity text-success me-1"></i> Recent Activity</h4>
+
+                        <p>Your recent match bookings and actions</p>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-card-body" id="recentActivityList">
+
+                    <!-- Populated dynamically by profile.js -->
 
                 </div>
 

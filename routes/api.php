@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\AdminTournamentController;
 use App\Http\Controllers\Api\OwnerApplicationController;
 use App\Http\Controllers\Api\TournamentController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\ProfileStatsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/user/profile-stats', [ProfileStatsController::class, 'show']);
 
 
     // =================================================
