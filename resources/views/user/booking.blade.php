@@ -360,18 +360,25 @@
 
                         <hr>
 
+                        <div class="booking-summary-row">
+                            <span>Court Fee</span>
+                            <strong id="summaryCourtPrice">₹0</strong>
+                        </div>
+
+                        <div class="booking-summary-row">
+                            <span>Platform Fee</span>
+                            <strong id="summaryPlatformFee" class="text-success">+ ₹50</strong>
+                        </div>
+
+                        <hr>
 
                         <div class="booking-total">
-
-                            <span>
-                                Total
-                            </span>
-
-                            <strong id="summaryTotal">
-                                ₹0
-                            </strong>
-
+                            <span>Total Payable</span>
+                            <strong id="summaryTotal">₹0</strong>
                         </div>
+                        <small class="d-block text-muted text-end mb-3" style="font-size: 11px;">
+                            <i class="bi bi-info-circle me-1"></i> Includes ₹50 platform service fee
+                        </small>
 
 
                         <button type="button" id="confirmBookingBtn" class="btn booking-confirm-btn" disabled>

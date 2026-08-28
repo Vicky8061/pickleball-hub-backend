@@ -14,9 +14,23 @@ class Booking extends Model
         'court_id',
         'time_slot_id',
         'booking_date',
+        'court_price',
+        'platform_fee',
+        'admin_commission_rate',
+        'admin_commission_amount',
+        'owner_payout_amount',
         'total_amount',
         'payment_status',
         'booking_status',
+    ];
+
+    protected $casts = [
+        'court_price' => 'float',
+        'platform_fee' => 'float',
+        'admin_commission_rate' => 'float',
+        'admin_commission_amount' => 'float',
+        'owner_payout_amount' => 'float',
+        'total_amount' => 'float',
     ];
 
     public function user()

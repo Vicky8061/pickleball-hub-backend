@@ -231,16 +231,23 @@
 
 
                     <div class="detail-row">
+                        <span>Court Price</span>
+                        <strong id="detailCourtPrice">₹0</strong>
+                    </div>
 
-                        <span>Amount</span>
+                    <div class="detail-row">
+                        <span>Platform Fee</span>
+                        <strong id="detailPlatformFee" class="text-success">+ ₹50</strong>
+                    </div>
 
+                    <div class="detail-row">
+                        <span>Total Paid</span>
                         <strong
                             id="detailBookingAmount"
                             class="text-success"
                         >
                             ₹0
                         </strong>
-
                     </div>
 
 

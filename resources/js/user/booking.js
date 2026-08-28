@@ -72,6 +72,12 @@ const summaryTime =
 const summaryTotal =
     document.getElementById("summaryTotal");
 
+const summaryCourtPrice =
+    document.getElementById("summaryCourtPrice");
+
+const summaryPlatformFee =
+    document.getElementById("summaryPlatformFee");
+
 const confirmBookingBtn =
     document.getElementById("confirmBookingBtn");
 
@@ -637,6 +643,23 @@ function updateSummary() {
             : "Not selected";
 
 
+    const courtPrice =
+        Number(
+            court?.price_per_hour || 0
+        );
+
+    const platformFee = 50;
+
+
+    if (summaryCourtPrice) {
+        summaryCourtPrice.textContent = `₹${formatPrice(courtPrice)}`;
+    }
+
+    if (summaryPlatformFee) {
+        summaryPlatformFee.textContent = `+ ₹${formatPrice(platformFee)}`;
+    }
+
+
     if (!selectedSlot) {
 
         summaryTime.textContent =
@@ -662,14 +685,11 @@ function updateSummary() {
         );
 
 
-    const price =
-        Number(
-            court?.price_per_hour || 0
-        );
+    const totalPrice = courtPrice + platformFee;
 
 
     summaryTotal.textContent =
-        `₹${formatPrice(price)}`;
+        `₹${formatPrice(totalPrice)}`;
 
 
     confirmBookingBtn.disabled =

@@ -199,13 +199,26 @@ class BookingController extends Controller
             ], 400);
         }
 
+        // Calculate financial split (10% admin commission, 90% owner payout + 50 platform fee)
+        $courtPrice = (float) $court->price_per_hour;
+        $platformFee = 50.00;
+        $adminCommissionRate = 10.00; // 10%
+        $adminCommissionAmount = round($courtPrice * ($adminCommissionRate / 100), 2);
+        $ownerPayoutAmount = round($courtPrice - $adminCommissionAmount, 2);
+        $totalAmount = round($courtPrice + $platformFee, 2);
+
         // Create booking
         $booking = Booking::create([
             'user_id' => $request->user()->id,
             'court_id' => $court->id,
             'time_slot_id' => $timeSlot->id,
             'booking_date' => $data['booking_date'],
-            'total_amount' => $court->price_per_hour,
+            'court_price' => $courtPrice,
+            'platform_fee' => $platformFee,
+            'admin_commission_rate' => $adminCommissionRate,
+            'admin_commission_amount' => $adminCommissionAmount,
+            'owner_payout_amount' => $ownerPayoutAmount,
+            'total_amount' => $totalAmount,
             'payment_status' => 'pending',
             'booking_status' => 'pending',
         ]);

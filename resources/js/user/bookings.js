@@ -50,6 +50,12 @@ const detailBookingTime =
 const detailBookingAmount =
     document.getElementById("detailBookingAmount");
 
+const detailCourtPrice =
+    document.getElementById("detailCourtPrice");
+
+const detailPlatformFee =
+    document.getElementById("detailPlatformFee");
+
 const detailPaymentStatus =
     document.getElementById("detailPaymentStatus");
 
@@ -630,6 +636,17 @@ function fillBookingDetails(
             timeSlot
         );
 
+
+    const courtPrice = Number(booking.court_price || (booking.total_amount ? booking.total_amount - (booking.platform_fee || 50) : 0));
+    const platformFee = Number(booking.platform_fee ?? 50);
+
+    if (detailCourtPrice) {
+        detailCourtPrice.textContent = `₹${formatPrice(courtPrice)}`;
+    }
+
+    if (detailPlatformFee) {
+        detailPlatformFee.textContent = `+ ₹${formatPrice(platformFee)}`;
+    }
 
     detailBookingAmount.textContent =
         `₹${formatPrice(
