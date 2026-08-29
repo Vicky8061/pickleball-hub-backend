@@ -197,6 +197,10 @@ Route::middleware('owner.session')
             return view('owner.dashboard');
         })->name('dashboard');
 
+        Route::get('/courts', function () {
+            return view('owner.courts');
+        })->name('courts');
+
     });
 
 

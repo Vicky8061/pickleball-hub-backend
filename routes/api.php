@@ -184,6 +184,11 @@ Route::middleware('auth:sanctum')->group(function () {
             // OWNER COURTS
             // -----------------------------------------
 
+            Route::get(
+                '/courts',
+                [CourtController::class, 'ownerCourts']
+            );
+
             Route::post(
                 '/courts',
                 [CourtController::class, 'store']
@@ -217,6 +222,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete(
                 '/court-images/{courtImage}',
                 [CourtImageController::class, 'destroy']
+            );
+
+            Route::patch(
+                '/court-images/{courtImage}/primary',
+                [CourtImageController::class, 'setPrimary']
             );
 
 

@@ -108,7 +108,7 @@
     ========================================== -->
     <div class="row g-3 mb-4">
         <div class="col-md-3 col-sm-6">
-            <a href="#" class="owner-action-card">
+            <a href="{{ route('owner.courts') }}" class="owner-action-card">
                 <div class="action-icon">
                     <i class="bi bi-plus-square"></i>
                 </div>

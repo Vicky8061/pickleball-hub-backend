@@ -622,4 +622,30 @@ class CourtController extends Controller
             'message' => 'Court deleted Successfuly',
         ], 200);
     }
+
+    /**
+     * Display a listing of courts owned by the authenticated user.
+     */
+    public function ownerCourts(Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can view their courts.'
+            ], 403);
+        }
+
+        $courts = Court::where('owner_id', $request->user()->id)
+            ->with(['images'])
+            ->withAvg('reviews', 'rating')
+            ->withCount(['reviews', 'timeSlots', 'bookings'])
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Owner courts fetched successfully.',
+            'data' => CourtResource::collection($courts),
+        ], 200);
+    }
 }

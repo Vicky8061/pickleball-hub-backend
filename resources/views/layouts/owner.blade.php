@@ -55,7 +55,7 @@
                     <span>Dashboard</span>
                 </a>
 
-                <a href="#" class="owner-nav-link">
+                <a href="{{ route('owner.courts') }}" class="owner-nav-link {{ request()->routeIs('owner.courts') ? 'active' : '' }}">
                     <i class="bi bi-grid-3x3-gap"></i>
                     <span>My Courts</span>
                 </a>
@@ -111,7 +111,7 @@
                 <i class="bi bi-speedometer2"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="owner-mobile-link">
+            <a href="{{ route('owner.courts') }}" class="owner-mobile-link {{ request()->routeIs('owner.courts') ? 'active' : '' }}">
                 <i class="bi bi-grid-3x3-gap"></i>
                 <span>My Courts</span>
             </a>

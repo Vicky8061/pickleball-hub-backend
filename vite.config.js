@@ -16,6 +16,7 @@ export default defineConfig({
                 'resources/css/wishlist.css',
                 'resources/css/owner.css',
                 'resources/js/owner/dashboard.js',
+                'resources/js/owner/courts.js',
             ],
             refresh: true,
         }),

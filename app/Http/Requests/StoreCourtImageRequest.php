@@ -16,6 +16,22 @@ class StoreCourtImageRequest extends FormRequest
     }
 
     /**
+     * Prepare data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->hasFile('image') && !$this->hasFile('images')) {
+            $this->merge([
+                'images' => [$this->file('image')]
+            ]);
+        } elseif ($this->hasFile('images') && !is_array($this->file('images'))) {
+            $this->merge([
+                'images' => [$this->file('images')]
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>

@@ -199,12 +199,20 @@ class CourtImageController extends Controller
 
         $images = $request->file('images');
 
+        if (!$images) {
+            $singleImage = $request->file('image');
+            if ($singleImage) {
+                $images = [$singleImage];
+            }
+        } elseif (!is_array($images)) {
+            $images = [$images];
+        }
 
         // -----------------------------------------
         // 5. Safety check
         // -----------------------------------------
 
-        if (!$images || !is_array($images)) {
+        if (!$images || !is_array($images) || count($images) === 0) {
             return response()->json([
                 'success' => false,
                 'message' => 'Please upload at least one image.',
@@ -395,6 +403,40 @@ class CourtImageController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Image deleted successfully.',
+        ], 200);
+    }
+
+    /**
+     * Set a court image as the primary cover photo.
+     */
+    public function setPrimary(CourtImage $courtImage, Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can set primary court photos.'
+            ], 403);
+        }
+
+        if ($courtImage->court->owner_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to update this court photo.'
+            ], 403);
+        }
+
+        CourtImage::where('court_id', $courtImage->court_id)->update([
+            'is_primary' => false
+        ]);
+
+        $courtImage->update([
+            'is_primary' => true
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Primary cover photo updated successfully.',
+            'data' => new CourtImageResource($courtImage),
         ], 200);
     }
 }
