@@ -38,18 +38,20 @@
 
         <!-- REVENUE -->
         <div class="col-6 col-md-3">
-            <div class="owner-kpi-card">
-                <div class="kpi-icon-box green">
-                    <i class="bi bi-wallet2"></i>
-                </div>
-                <div>
-                    <div class="kpi-label">Net Earnings</div>
-                    <div class="kpi-value" id="kpiRevenue">
-                        <span class="spinner-border spinner-border-sm text-success"></span>
+            <a href="{{ route('owner.earnings') }}" class="text-decoration-none">
+                <div class="owner-kpi-card">
+                    <div class="kpi-icon-box green">
+                        <i class="bi bi-wallet2"></i>
                     </div>
-                    <div class="kpi-subtext">90% net court payout</div>
+                    <div>
+                        <div class="kpi-label">Net Earnings</div>
+                        <div class="kpi-value" id="kpiRevenue">
+                            <span class="spinner-border spinner-border-sm text-success"></span>
+                        </div>
+                        <div class="kpi-subtext">90% net court payout <i class="bi bi-arrow-right me-1"></i></div>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- TODAY BOOKINGS -->

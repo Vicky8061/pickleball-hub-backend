@@ -78,6 +78,11 @@
                     <span>Tournaments</span>
                 </a>
 
+                <a href="{{ route('owner.earnings') }}" class="owner-nav-link {{ request()->routeIs('owner.earnings') ? 'active' : '' }}">
+                    <i class="bi bi-wallet2"></i>
+                    <span>Earnings</span>
+                </a>
+
             </div>
 
             <!-- RIGHT SIDE / USER MENU & MOBILE TOGGLE -->
@@ -134,6 +139,10 @@
             <a href="{{ route('owner.tournaments') }}" class="owner-mobile-link {{ request()->routeIs('owner.tournaments') ? 'active' : '' }}">
                 <i class="bi bi-trophy"></i>
                 <span>Tournaments</span>
+            </a>
+            <a href="{{ route('owner.earnings') }}" class="owner-mobile-link {{ request()->routeIs('owner.earnings') ? 'active' : '' }}">
+                <i class="bi bi-wallet2"></i>
+                <span>Earnings</span>
             </a>
         </div>
     </div>

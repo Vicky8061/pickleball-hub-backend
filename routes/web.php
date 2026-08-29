@@ -213,6 +213,10 @@ Route::middleware('owner.session')
             return view('owner.tournaments');
         })->name('tournaments');
 
+        Route::get('/earnings', function () {
+            return view('owner.earnings');
+        })->name('earnings');
+
     });
 
 

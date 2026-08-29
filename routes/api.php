@@ -164,6 +164,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 [OwnerDashboardController::class, 'index']
             );
 
+            Route::get(
+                '/earnings',
+                [OwnerDashboardController::class, 'earnings']
+            );
+
 
             // -----------------------------------------
             // OWNER BOOKINGS

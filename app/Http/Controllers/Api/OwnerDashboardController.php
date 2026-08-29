@@ -326,4 +326,83 @@ class OwnerDashboardController extends Controller
             ],
         ], 200);
     }
+
+    /**
+     * Display owner earnings & payout reports.
+     */
+    public function earnings(Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can access earnings reports.',
+            ], 403);
+        }
+
+        $ownerId = $request->user()->id;
+
+        $bookings = Booking::with(['court', 'user', 'timeSlot'])
+            ->whereHas('court', function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            })
+            ->latest()
+            ->get();
+
+        $grossVolume = $bookings->whereIn('booking_status', ['confirmed', 'completed'])->sum('total_amount');
+        $netPayout = $bookings->whereIn('booking_status', ['confirmed', 'completed'])->sum('owner_payout_amount');
+        $adminCommission = $bookings->whereIn('booking_status', ['confirmed', 'completed'])->sum('admin_commission_amount');
+        $completedPayout = $bookings->where('booking_status', 'completed')->sum('owner_payout_amount');
+        $pendingSettlements = $bookings->whereIn('booking_status', ['pending', 'confirmed'])->sum('owner_payout_amount');
+
+        // Monthly Breakdown (Last 6 Months)
+        $monthlyBreakdown = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = Carbon::now()->subMonths($i)->startOfMonth();
+            $monthEnd = Carbon::now()->subMonths($i)->endOfMonth();
+
+            $monthBookings = $bookings->filter(function ($b) use ($monthStart, $monthEnd) {
+                $date = Carbon::parse($b->booking_date);
+                return $date->gte($monthStart) && $date->lte($monthEnd) && in_array($b->booking_status, ['confirmed', 'completed']);
+            });
+
+            $monthlyBreakdown[] = [
+                'month' => $monthStart->format('M Y'),
+                'net_payout' => round($monthBookings->sum('owner_payout_amount'), 2),
+                'booking_count' => $monthBookings->count(),
+            ];
+        }
+
+        // Court Breakdown
+        $courtBreakdown = Court::where('owner_id', $ownerId)
+            ->get()
+            ->map(function ($court) use ($bookings) {
+                $courtBookings = $bookings->where('court_id', $court->id)->whereIn('booking_status', ['confirmed', 'completed']);
+                return [
+                    'court_id' => $court->id,
+                    'court_name' => $court->name,
+                    'court_type' => $court->court_type,
+                    'total_bookings' => $courtBookings->count(),
+                    'gross_volume' => round($courtBookings->sum('total_amount'), 2),
+                    'net_payout' => round($courtBookings->sum('owner_payout_amount'), 2),
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Owner earnings report fetched successfully.',
+            'data' => [
+                'summary' => [
+                    'gross_volume' => round($grossVolume, 2),
+                    'net_payout' => round($netPayout, 2),
+                    'admin_commission' => round($adminCommission, 2),
+                    'completed_payout' => round($completedPayout, 2),
+                    'pending_settlements' => round($pendingSettlements, 2),
+                    'total_bookings' => $bookings->count(),
+                ],
+                'monthly_breakdown' => $monthlyBreakdown,
+                'court_breakdown' => $courtBreakdown,
+                'recent_transactions' => \App\Http\Resources\BookingResource::collection($bookings->take(15)),
+            ],
+        ], 200);
+    }
 }

@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/js/owner/time_slots.js',
                 'resources/js/owner/bookings.js',
                 'resources/js/owner/tournaments.js',
+                'resources/js/owner/earnings.js',
             ],
             refresh: true,
         }),
