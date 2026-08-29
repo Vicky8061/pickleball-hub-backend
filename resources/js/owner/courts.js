@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAddCourtForm();
     setupEditCourtForm();
     setupUploadImageForm();
+    setupMapPickers();
 });
 
 /* -----------------------------------------
@@ -126,6 +127,9 @@ function renderCourts(courts) {
                         <div class="mt-auto d-flex gap-2 pt-2 border-top">
                             <button type="button" class="btn btn-outline-success btn-sm w-100 rounded-pill fw-semibold" onclick="openEditCourtModal(${court.id})">
                                 <i class="bi bi-pencil me-1"></i> Edit Details
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-circle px-2" onclick="openViewCourtMapModal(${court.id})" title="View Location Map">
+                                <i class="bi bi-geo-alt"></i>
                             </button>
                             <button type="button" class="btn btn-outline-danger btn-sm rounded-circle px-2" onclick="deleteCourt(${court.id})" title="Delete Court">
                                 <i class="bi bi-trash"></i>
@@ -485,3 +489,168 @@ function escapeHtml(str) {
     div.textContent = str ?? "";
     return div.innerHTML;
 }
+
+
+/* =========================================
+   LEAFLET MAP INITIALIZATION & PIN PICKERS
+========================================= */
+let addMap, addMarker;
+let editMap, editMarker;
+let previewMap, previewMarker;
+
+function setupMapPickers() {
+    const addModalEl = document.getElementById("addCourtModal");
+    if (addModalEl) {
+        addModalEl.addEventListener("shown.bs.modal", () => {
+            initAddCourtMap();
+        });
+    }
+
+    const editModalEl = document.getElementById("editCourtModal");
+    if (editModalEl) {
+        editModalEl.addEventListener("shown.bs.modal", () => {
+            const lat = Number(document.getElementById("editCourtLat").value) || 21.1702;
+            const lng = Number(document.getElementById("editCourtLng").value) || 72.8311;
+            initEditCourtMap(lat, lng);
+        });
+    }
+}
+
+function initAddCourtMap() {
+    const latInput = document.getElementById("addCourtLat");
+    const lngInput = document.getElementById("addCourtLng");
+    const defaultLat = Number(latInput?.value) || 21.1702;
+    const defaultLng = Number(lngInput?.value) || 72.8311;
+
+    if (!window.L) return;
+
+    if (!addMap) {
+        addMap = L.map("addCourtMap").setView([defaultLat, defaultLng], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "© OpenStreetMap"
+        }).addTo(addMap);
+
+        addMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(addMap);
+
+        addMarker.on("dragend", function (e) {
+            const pos = e.target.getLatLng();
+            if (latInput) latInput.value = pos.lat.toFixed(6);
+            if (lngInput) lngInput.value = pos.lng.toFixed(6);
+        });
+
+        addMap.on("click", function (e) {
+            addMarker.setLatLng(e.latlng);
+            if (latInput) latInput.value = e.latlng.lat.toFixed(6);
+            if (lngInput) lngInput.value = e.latlng.lng.toFixed(6);
+        });
+    } else {
+        addMap.invalidateSize();
+        addMap.setView([defaultLat, defaultLng], 14);
+        addMarker.setLatLng([defaultLat, defaultLng]);
+    }
+}
+
+function initEditCourtMap(lat, lng) {
+    const latInput = document.getElementById("editCourtLat");
+    const lngInput = document.getElementById("editCourtLng");
+
+    if (!window.L) return;
+
+    if (!editMap) {
+        editMap = L.map("editCourtMap").setView([lat, lng], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "© OpenStreetMap"
+        }).addTo(editMap);
+
+        editMarker = L.marker([lat, lng], { draggable: true }).addTo(editMap);
+
+        editMarker.on("dragend", function (e) {
+            const pos = e.target.getLatLng();
+            if (latInput) latInput.value = pos.lat.toFixed(6);
+            if (lngInput) lngInput.value = pos.lng.toFixed(6);
+        });
+
+        editMap.on("click", function (e) {
+            editMarker.setLatLng(e.latlng);
+            if (latInput) latInput.value = e.latlng.lat.toFixed(6);
+            if (lngInput) lngInput.value = e.latlng.lng.toFixed(6);
+        });
+    } else {
+        editMap.invalidateSize();
+        editMap.setView([lat, lng], 14);
+        editMarker.setLatLng([lat, lng]);
+    }
+}
+
+window.detectAddCourtLocation = function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            document.getElementById("addCourtLat").value = lat.toFixed(6);
+            document.getElementById("addCourtLng").value = lng.toFixed(6);
+            if (addMap && addMarker) {
+                addMap.setView([lat, lng], 15);
+                addMarker.setLatLng([lat, lng]);
+            }
+        }, err => {
+            alert("Geolocation error: " + err.message);
+        });
+    }
+};
+
+window.detectEditCourtLocation = function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            document.getElementById("editCourtLat").value = lat.toFixed(6);
+            document.getElementById("editCourtLng").value = lng.toFixed(6);
+            if (editMap && editMarker) {
+                editMap.setView([lat, lng], 15);
+                editMarker.setLatLng([lat, lng]);
+            }
+        }, err => {
+            alert("Geolocation error: " + err.message);
+        });
+    }
+};
+
+window.openViewCourtMapModal = function (courtId) {
+    const court = allOwnerCourts.find(c => c.id === courtId);
+    if (!court) return;
+
+    document.getElementById("mapModalCourtTitle").textContent = court.name;
+    document.getElementById("mapModalCourtAddress").textContent = court.address;
+
+    const lat = Number(court.latitude) || 21.1702;
+    const lng = Number(court.longitude) || 72.8311;
+
+    const modal = new bootstrap.Modal(document.getElementById("viewCourtMapModal"));
+    modal.show();
+
+    const modalEl = document.getElementById("viewCourtMapModal");
+    modalEl.addEventListener("shown.bs.modal", function handler() {
+        modalEl.removeEventListener("shown.bs.modal", handler);
+
+        if (!window.L) return;
+
+        if (!previewMap) {
+            previewMap = L.map("previewCourtMap").setView([lat, lng], 15);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "© OpenStreetMap"
+            }).addTo(previewMap);
+
+            previewMarker = L.marker([lat, lng]).addTo(previewMap);
+            previewMarker.bindPopup(`<b>${escapeHtml(court.name)}</b><br>${escapeHtml(court.address)}<br><span class="text-success fw-bold">₹${formatPrice(court.price_per_hour)}/hr</span>`).openPopup();
+        } else {
+            previewMap.invalidateSize();
+            previewMap.setView([lat, lng], 15);
+            previewMarker.setLatLng([lat, lng]);
+            previewMarker.bindPopup(`<b>${escapeHtml(court.name)}</b><br>${escapeHtml(court.address)}<br><span class="text-success fw-bold">₹${formatPrice(court.price_per_hour)}/hr</span>`).openPopup();
+        }
+    });
+};

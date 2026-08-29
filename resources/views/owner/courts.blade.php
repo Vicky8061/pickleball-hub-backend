@@ -126,13 +126,25 @@
                             <input type="time" name="closing_time" class="form-control" value="23:00" required>
                         </div>
 
+                        <div class="col-12">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <label class="form-label fw-semibold small text-muted mb-0">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> Drag Map Pin to Set Court Location
+                                </label>
+                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 fs-8 fw-bold" onclick="detectAddCourtLocation()">
+                                    <i class="bi bi-crosshair me-1"></i> Detect Location
+                                </button>
+                            </div>
+                            <div id="addCourtMap" style="height: 200px;" class="rounded-3 border"></div>
+                        </div>
+
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold small text-muted">Latitude (Map)</label>
-                            <input type="number" step="any" name="latitude" class="form-control" placeholder="21.1702" value="21.1702">
+                            <label class="form-label fw-semibold small text-muted">Latitude</label>
+                            <input type="number" step="any" name="latitude" id="addCourtLat" class="form-control" value="21.1702" readonly>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold small text-muted">Longitude (Map)</label>
-                            <input type="number" step="any" name="longitude" class="form-control" placeholder="72.8311" value="72.8311">
+                            <label class="form-label fw-semibold small text-muted">Longitude</label>
+                            <input type="number" step="any" name="longitude" id="addCourtLng" class="form-control" value="72.8311" readonly>
                         </div>
 
                         <div class="col-12">
@@ -206,12 +218,25 @@
                                 <option value="inactive">Inactive (Temporarily disabled)</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small text-muted">Coordinates</label>
-                            <div class="input-group">
-                                <input type="number" step="any" name="latitude" id="editCourtLat" class="form-control" placeholder="Lat">
-                                <input type="number" step="any" name="longitude" id="editCourtLng" class="form-control" placeholder="Lng">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <label class="form-label fw-semibold small text-muted mb-0">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> Drag Map Pin to Set Court Location
+                                </label>
+                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 fs-8 fw-bold" onclick="detectEditCourtLocation()">
+                                    <i class="bi bi-crosshair me-1"></i> Detect Location
+                                </button>
                             </div>
+                            <div id="editCourtMap" style="height: 200px;" class="rounded-3 border"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Latitude</label>
+                            <input type="number" step="any" name="latitude" id="editCourtLat" class="form-control" placeholder="Lat" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Longitude</label>
+                            <input type="number" step="any" name="longitude" id="editCourtLng" class="form-control" placeholder="Lng" readonly>
                         </div>
 
                         <div class="col-12">
@@ -266,6 +291,27 @@
                     <!-- Photo cards loaded dynamically -->
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================================
+     MODAL 4: VIEW COURT MAP LOCATION MODAL
+========================================== -->
+<div class="modal fade" id="viewCourtMapModal" tabindex="-1" aria-labelledby="viewCourtMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark" id="viewCourtMapModalLabel">
+                    <i class="bi bi-map-fill text-success me-2"></i> Court Location Pin - <span id="mapModalCourtTitle">Court Location</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="text-muted small mb-3"><i class="bi bi-geo-alt me-1 text-danger"></i><span id="mapModalCourtAddress">Address</span></p>
+                <div id="previewCourtMap" style="height: 340px;" class="rounded-3 border"></div>
             </div>
         </div>
     </div>
