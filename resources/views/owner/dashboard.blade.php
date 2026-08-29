@@ -19,11 +19,11 @@
             </div>
             <div class="col-lg-4 text-lg-end">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-                    <a href="#" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
-                        <i class="bi bi-plus-circle-fill text-success me-1"></i> Add Court
+                    <a href="{{route('owner.courts')}}" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+                        <i class="bi bi-plus-circle-fill text-success me-1"></i> Manage Courts
                     </a>
-                    <a href="#" class="btn btn-success rounded-pill px-4 py-2 fw-bold border-0 shadow-sm" style="background-color: #20c997;">
-                        <i class="bi bi-trophy-fill me-1"></i> Create Tournament
+                    <a href="{{route('owner.tournaments')}}" class="btn btn-success rounded-pill px-4 py-2 fw-bold border-0 shadow-sm" style="background-color: #20c997;">
+                        <i class="bi bi-trophy-fill me-1"></i> Manage Tournaments
                     </a>
                 </div>
             </div>
@@ -148,7 +148,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6">
-            <a href="#" class="owner-action-card">
+            <a href="{{route('owner.reviews')}}" class="owner-action-card">
                 <div class="action-icon">
                     <i class="bi bi-star"></i>
                 </div>
