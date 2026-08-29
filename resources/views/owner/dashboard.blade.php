@@ -120,7 +120,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6">
-            <a href="#" class="owner-action-card">
+            <a href="{{ route('owner.time-slots') }}" class="owner-action-card">
                 <div class="action-icon">
                     <i class="bi bi-clock-history"></i>
                 </div>
@@ -132,13 +132,13 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6">
-            <a href="#" class="owner-action-card">
+            <a href="{{ route('owner.bookings') }}" class="owner-action-card">
                 <div class="action-icon">
-                    <i class="bi bi-trophy"></i>
+                    <i class="bi bi-calendar-check"></i>
                 </div>
                 <div>
-                    <h6>Tournaments</h6>
-                    <p>Host leagues & events</p>
+                    <h6>Bookings</h6>
+                    <p>Manage reservations</p>
                 </div>
                 <i class="bi bi-chevron-right ms-auto text-muted small"></i>
             </a>

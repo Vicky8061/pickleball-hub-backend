@@ -572,21 +572,81 @@ class BookingController extends Controller
             ], 403);
         }
 
-        $bookings = Booking::with([
+        $courtId = $request->query('court_id');
+        $status = $request->query('status');
+        $date = $request->query('date');
+
+        $query = Booking::with([
             'user',
             'court',
             'timeSlot',
         ])
-            ->whereHas('court', function ($query) use ($request) {
-                $query->where('owner_id', $request->user()->id);
-            })
-            ->latest()
-            ->get();
+            ->whereHas('court', function ($q) use ($request) {
+                $q->where('owner_id', $request->user()->id);
+            });
+
+        if ($courtId) {
+            $query->where('court_id', $courtId);
+        }
+
+        if ($status) {
+            $query->where('booking_status', $status);
+        }
+
+        if ($date) {
+            $query->where('booking_date', $date);
+        }
+
+        $bookings = $query->latest()->get();
 
         return response()->json([
             'success' => true,
             'message' => 'Owner bookings fetched successfully.',
             'data' => BookingResource::collection($bookings),
+        ], 200);
+    }
+
+    /**
+     * Cancel a booking by owner.
+     */
+    public function cancelByOwner(Booking $booking, Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can cancel bookings.',
+            ], 403);
+        }
+
+        if ($booking->court->owner_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to cancel this booking.',
+            ], 403);
+        }
+
+        if ($booking->booking_status === 'completed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Completed bookings cannot be cancelled.',
+            ], 400);
+        }
+
+        if ($booking->booking_status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking is already cancelled.',
+            ], 400);
+        }
+
+        $booking->update([
+            'booking_status' => 'cancelled',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking cancelled successfully.',
+            'data' => new BookingResource($booking->load(['user', 'court', 'timeSlot'])),
         ], 200);
     }
 }

@@ -205,6 +205,10 @@ Route::middleware('owner.session')
             return view('owner.time_slots');
         })->name('time-slots');
 
+        Route::get('/bookings', function () {
+            return view('owner.bookings');
+        })->name('bookings');
+
     });
 
 

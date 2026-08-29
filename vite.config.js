@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/owner/dashboard.js',
                 'resources/js/owner/courts.js',
                 'resources/js/owner/time_slots.js',
+                'resources/js/owner/bookings.js',
             ],
             refresh: true,
         }),

@@ -179,6 +179,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 [BookingController::class, 'update']
             );
 
+            Route::post(
+                '/bookings/{booking}/cancel',
+                [BookingController::class, 'cancelByOwner']
+            );
+
 
             // -----------------------------------------
             // OWNER COURTS

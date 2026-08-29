@@ -68,7 +68,7 @@
                     <span>Time Slots</span>
                 </a>
 
-                <a href="#" class="owner-nav-link">
+                <a href="{{ route('owner.bookings') }}" class="owner-nav-link {{ request()->routeIs('owner.bookings') ? 'active' : '' }}">
                     <i class="bi bi-calendar-check"></i>
                     <span>Bookings</span>
                 </a>
@@ -127,7 +127,7 @@
                 <i class="bi bi-clock-history"></i>
                 <span>Time Slots</span>
             </a>
-            <a href="#" class="owner-mobile-link">
+            <a href="{{ route('owner.bookings') }}" class="owner-mobile-link {{ request()->routeIs('owner.bookings') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i>
                 <span>Bookings</span>
             </a>
