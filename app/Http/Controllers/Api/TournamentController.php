@@ -582,12 +582,14 @@ class TournamentController extends Controller
             ], 403);
         }
 
+        $perPage = (int) ($request->query('per_page', 10));
+
         $tournaments = Tournament::with([
             'owner',
             'court.owner',
             'court.images',
             'participants.user',
-        ])->where('owner_id', $request->user()->id)->latest()->paginate(10);
+        ])->where('owner_id', $request->user()->id)->latest()->paginate($perPage);
 
         return response()->json([
             'success' => true,

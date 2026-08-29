@@ -73,7 +73,7 @@
                     <span>Bookings</span>
                 </a>
 
-                <a href="#" class="owner-nav-link">
+                <a href="{{ route('owner.tournaments') }}" class="owner-nav-link {{ request()->routeIs('owner.tournaments') ? 'active' : '' }}">
                     <i class="bi bi-trophy"></i>
                     <span>Tournaments</span>
                 </a>
@@ -131,7 +131,7 @@
                 <i class="bi bi-calendar-check"></i>
                 <span>Bookings</span>
             </a>
-            <a href="#" class="owner-mobile-link">
+            <a href="{{ route('owner.tournaments') }}" class="owner-mobile-link {{ request()->routeIs('owner.tournaments') ? 'active' : '' }}">
                 <i class="bi bi-trophy"></i>
                 <span>Tournaments</span>
             </a>
