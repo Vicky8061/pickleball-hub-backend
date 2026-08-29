@@ -63,6 +63,11 @@
                     <span>My Courts</span>
                 </a>
 
+                <a href="{{ route('owner.time-slots') }}" class="owner-nav-link {{ request()->routeIs('owner.time-slots') ? 'active' : '' }}">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Time Slots</span>
+                </a>
+
                 <a href="#" class="owner-nav-link">
                     <i class="bi bi-calendar-check"></i>
                     <span>Bookings</span>
@@ -117,6 +122,10 @@
             <a href="{{ route('owner.courts') }}" class="owner-mobile-link {{ request()->routeIs('owner.courts') ? 'active' : '' }}">
                 <i class="bi bi-grid-3x3-gap"></i>
                 <span>My Courts</span>
+            </a>
+            <a href="{{ route('owner.time-slots') }}" class="owner-mobile-link {{ request()->routeIs('owner.time-slots') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span>Time Slots</span>
             </a>
             <a href="#" class="owner-mobile-link">
                 <i class="bi bi-calendar-check"></i>

@@ -234,9 +234,19 @@ Route::middleware('auth:sanctum')->group(function () {
             // OWNER TIME SLOTS
             // -----------------------------------------
 
+            Route::get(
+                '/time-slots',
+                [TimeSlotController::class, 'ownerTimeSlots']
+            );
+
             Route::post(
                 '/time-slots',
                 [TimeSlotController::class, 'store']
+            );
+
+            Route::post(
+                '/time-slots/bulk',
+                [TimeSlotController::class, 'bulkStore']
             );
 
             Route::put(

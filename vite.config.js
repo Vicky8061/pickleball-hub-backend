@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/css/owner.css',
                 'resources/js/owner/dashboard.js',
                 'resources/js/owner/courts.js',
+                'resources/js/owner/time_slots.js',
             ],
             refresh: true,
         }),

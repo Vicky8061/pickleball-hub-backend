@@ -201,6 +201,10 @@ Route::middleware('owner.session')
             return view('owner.courts');
         })->name('courts');
 
+        Route::get('/time-slots', function () {
+            return view('owner.time_slots');
+        })->name('time-slots');
+
     });
 
 

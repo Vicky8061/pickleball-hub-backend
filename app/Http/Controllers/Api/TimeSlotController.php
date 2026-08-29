@@ -221,17 +221,10 @@ class TimeSlotController extends Controller
             ], 400);
         }
 
-        //overlapping
+        // overlapping (strict interval intersection: start < endB AND end > startB)
         $overlap = TimeSlot::where('court_id', $court->id)
-            ->where(function ($query) use ($data) {
-                $query
-                    ->whereBetween('start_time', [$data['start_time'], $data['end_time']])
-                    ->orWhereBetween('end_time', [$data['start_time'], $data['end_time']])
-                    ->orWhere(function ($q) use ($data) {
-                        $q->where('start_time', '<=', $data['start_time'])
-                            ->where('end_time', '>=', $data['end_time']);
-                    });
-            })
+            ->where('start_time', '<', $data['end_time'])
+            ->where('end_time', '>', $data['start_time'])
             ->exists();
 
         if ($overlap) {
@@ -518,5 +511,114 @@ class TimeSlotController extends Controller
             'success' => true,
             'message' => 'Time Slot deleted successfuly.',
         ], 200);
+    }
+
+    /**
+     * Display all time slots belonging to courts owned by the authenticated owner.
+     */
+    public function ownerTimeSlots(Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can access time slots.'
+            ], 403);
+        }
+
+        $ownerId = $request->user()->id;
+        $courtId = $request->query('court_id');
+
+        $query = TimeSlot::whereHas('court', function ($q) use ($ownerId) {
+            $q->where('owner_id', $ownerId);
+        })->with('court');
+
+        if ($courtId) {
+            $query->where('court_id', $courtId);
+        }
+
+        $timeSlots = $query->orderBy('court_id')->orderBy('start_time')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Owner time slots fetched successfully.',
+            'data' => TimeSlotResource::collection($timeSlots),
+        ], 200);
+    }
+
+    /**
+     * Bulk generate time slots for a court.
+     */
+    public function bulkStore(Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can manage time slots.'
+            ], 403);
+        }
+
+        $request->validate([
+            'court_id' => 'required|exists:courts,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'slot_duration_minutes' => 'nullable|integer|in:30,60,90,120',
+        ]);
+
+        $court = Court::findOrFail($request->court_id);
+
+        if ($court->owner_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to manage time slots for this court.'
+            ], 403);
+        }
+
+        if ($court->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Inactive courts cannot have time slots.'
+            ], 400);
+        }
+
+        $duration = (int) ($request->slot_duration_minutes ?? 60);
+        $start = \Carbon\Carbon::createFromFormat('H:i', $request->start_time);
+        $end = \Carbon\Carbon::createFromFormat('H:i', $request->end_time);
+
+        $createdSlots = [];
+        $skippedCount = 0;
+
+        $current = $start->copy();
+        while ($current->copy()->addMinutes($duration)->lte($end)) {
+            $slotStart = $current->format('H:i:s');
+            $slotEnd = $current->copy()->addMinutes($duration)->format('H:i:s');
+
+            // strict interval intersection: start < endB AND end > startB
+            $exists = TimeSlot::where('court_id', $court->id)
+                ->where('start_time', '<', $slotEnd)
+                ->where('end_time', '>', $slotStart)
+                ->exists();
+
+            if (!$exists) {
+                $timeSlot = TimeSlot::create([
+                    'court_id' => $court->id,
+                    'start_time' => $slotStart,
+                    'end_time' => $slotEnd,
+                    'status' => 'active',
+                ]);
+                $createdSlots[] = new TimeSlotResource($timeSlot->load('court'));
+            } else {
+                $skippedCount++;
+            }
+
+            $current->addMinutes($duration);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => count($createdSlots) . " time slots generated successfully. ($skippedCount skipped due to overlap)",
+            'created_count' => count($createdSlots),
+            'skipped_count' => $skippedCount,
+            'data' => $createdSlots,
+        ], 201);
     }
 }
