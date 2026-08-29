@@ -158,6 +158,17 @@
 
                 </a>
 
+
+                <a
+                    href="{{ route('user.become-owner') }}"
+                    class="user-nav-link text-warning fw-bold">
+
+                    <i class="bi bi-patch-check"></i>
+
+                    <span>Become an Owner</span>
+
+                </a>
+
             </div>
 
 
@@ -299,6 +310,17 @@
             <i class="bi bi-person"></i>
 
             Profile
+
+        </a>
+
+
+        <a
+            href="{{ route('user.become-owner') }}"
+            class="user-mobile-link text-warning fw-bold">
+
+            <i class="bi bi-patch-check"></i>
+
+            Become an Owner
 
         </a>
 

@@ -54,6 +54,23 @@
 
 
     <!-- =========================================
+         BECOME COURT OWNER BANNER CARD
+    ========================================== -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-dark text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%);">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 position-relative" style="z-index: 2;">
+            <div>
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold mb-2">PARTNER WITH US</span>
+                <h4 class="fw-bold mb-1">Host Your Pickleball Courts & Earn 90% Net Revenue</h4>
+                <p class="text-white-50 small mb-0">List your courts, set custom hourly slots, host local tournaments, and manage player bookings seamlessly.</p>
+            </div>
+            <a href="{{ route('user.become-owner') }}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+                <i class="bi bi-patch-check-fill me-1"></i> Become a Court Owner
+            </a>
+        </div>
+    </div>
+
+
+    <!-- =========================================
          PLAYER STATS OVERVIEW GRID
     ========================================== -->
 

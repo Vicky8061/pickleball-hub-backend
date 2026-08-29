@@ -23,6 +23,7 @@ export default defineConfig({
                 'resources/js/owner/earnings.js',
                 'resources/js/owner/reviews.js',
                 'resources/js/owner/profile.js',
+                'resources/js/user/become_owner.js',
             ],
             refresh: true,
         }),

@@ -182,6 +182,14 @@ Route::middleware('user.session')
                 return view('user.profile');
             }
         )->name('profile');
+
+        // Become Court Owner Application
+        Route::get(
+            '/become-owner',
+            function () {
+                return view('user.become_owner');
+            }
+        )->name('become-owner');
     });
 
 // =====================================================
