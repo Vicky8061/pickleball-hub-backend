@@ -105,6 +105,12 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2">
                         <li>
+                            <a href="{{ route('owner.profile') }}" class="dropdown-item py-2 text-dark">
+                                <i class="bi bi-person-gear me-2"></i> Profile & Settings
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
                             <button id="ownerLogoutBtn" class="dropdown-item py-2 text-danger" type="button">
                                 <i class="bi bi-box-arrow-right me-2"></i> Logout
                             </button>
@@ -152,6 +158,10 @@
             <a href="{{ route('owner.reviews') }}" class="owner-mobile-link {{ request()->routeIs('owner.reviews') ? 'active' : '' }}">
                 <i class="bi bi-star"></i>
                 <span>Reviews</span>
+            </a>
+            <a href="{{ route('owner.profile') }}" class="owner-mobile-link {{ request()->routeIs('owner.profile') ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i>
+                <span>Profile & Settings</span>
             </a>
         </div>
     </div>

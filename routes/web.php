@@ -221,6 +221,10 @@ Route::middleware('owner.session')
             return view('owner.reviews');
         })->name('reviews');
 
+        Route::get('/profile', function () {
+            return view('owner.profile');
+        })->name('profile');
+
     });
 
 

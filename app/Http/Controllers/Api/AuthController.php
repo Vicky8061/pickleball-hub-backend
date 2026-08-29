@@ -356,15 +356,106 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        $ownerApp = null;
+        if ($user->role === 'owner') {
+            $ownerApp = \App\Models\OwnerApplication::where('user_id', $user->id)->first();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Profile fetched successfully.',
+            'data' => [
+                'id'         => $user->id,
+                'name'       => $user->name,
+                'email'      => $user->email,
+                'role'       => $user->role,
+                'status'     => $user->status,
+                'created_at' => $user->created_at,
+                'owner_application' => $ownerApp ? [
+                    'business_name' => $ownerApp->business_name,
+                    'phone'         => $ownerApp->phone,
+                    'address'       => $ownerApp->address,
+                    'city'          => $ownerApp->city,
+                    'state'         => $ownerApp->state,
+                    'pincode'       => $ownerApp->pincode,
+                    'description'   => $ownerApp->description,
+                    'status'        => $ownerApp->status,
+                ] : null,
+            ]
+        ], 200);
+    }
+
+    /**
+     * Update Owner Profile & Business Details
+     */
+    public function updateOwnerProfile(Request $request)
+    {
+        $user = $request->user();
+        if ($user->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can update owner profile details.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'name'          => 'required|string|max:255',
+            'phone'         => 'nullable|string|max:20',
+            'business_name' => 'nullable|string|max:255',
+            'address'       => 'nullable|string|max:500',
+            'city'          => 'nullable|string|max:100',
+            'state'         => 'nullable|string|max:100',
+            'pincode'       => 'nullable|string|max:20',
+            'description'   => 'nullable|string|max:1000',
+            'current_password' => 'nullable|string',
+            'new_password'  => 'nullable|string|min:8|confirmed',
+        ]);
+
+        // If password update requested
+        if (!empty($validated['new_password'])) {
+            if (empty($validated['current_password']) || !Hash::check($validated['current_password'], $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Current password does not match.',
+                ], 422);
+            }
+            $user->password = Hash::make($validated['new_password']);
+        }
+
+        $user->name = $validated['name'];
+        $user->save();
+
+        // Update or create OwnerApplication details
+        $ownerApp = \App\Models\OwnerApplication::where('user_id', $user->id)->first();
+
+        $appData = [
+            'business_name' => $validated['business_name'] ?? ($user->name . "'s Venue"),
+            'phone'         => $validated['phone'] ?? '',
+            'address'       => $validated['address'] ?? '',
+            'city'          => $validated['city'] ?? '',
+            'state'         => $validated['state'] ?? '',
+            'pincode'       => $validated['pincode'] ?? '',
+            'description'   => $validated['description'] ?? '',
+        ];
+
+        if ($ownerApp) {
+            $ownerApp->update($appData);
+        } else {
+            $ownerApp = \App\Models\OwnerApplication::create(array_merge([
+                'user_id' => $user->id,
+                'status'  => 'approved',
+            ], $appData));
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully.',
             'data' => [
                 'id'     => $user->id,
                 'name'   => $user->name,
                 'email'  => $user->email,
                 'role'   => $user->role,
-                'status' => $user->status,
+                'owner_application' => $ownerApp,
             ]
         ], 200);
     }

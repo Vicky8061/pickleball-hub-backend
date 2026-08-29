@@ -174,6 +174,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 [ReviewController::class, 'ownerReviews']
             );
 
+            Route::put(
+                '/profile',
+                [AuthController::class, 'updateOwnerProfile']
+            );
+
 
             // -----------------------------------------
             // OWNER BOOKINGS
