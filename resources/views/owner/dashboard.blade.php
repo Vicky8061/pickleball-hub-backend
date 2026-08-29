@@ -88,18 +88,20 @@
 
         <!-- RATING -->
         <div class="col-6 col-md-3">
-            <div class="owner-kpi-card">
-                <div class="kpi-icon-box warning">
-                    <i class="bi bi-star-fill"></i>
-                </div>
-                <div>
-                    <div class="kpi-label">Avg Rating</div>
-                    <div class="kpi-value" id="kpiAverageRating">
-                        <span class="spinner-border spinner-border-sm text-warning"></span>
+            <a href="{{ route('owner.reviews') }}" class="text-decoration-none">
+                <div class="owner-kpi-card">
+                    <div class="kpi-icon-box warning">
+                        <i class="bi bi-star-fill"></i>
                     </div>
-                    <div class="kpi-subtext" id="kpiReviewsSubtext">0 reviews</div>
+                    <div>
+                        <div class="kpi-label">Avg Rating</div>
+                        <div class="kpi-value" id="kpiAverageRating">
+                            <span class="spinner-border spinner-border-sm text-warning"></span>
+                        </div>
+                        <div class="kpi-subtext" id="kpiReviewsSubtext">0 reviews <i class="bi bi-arrow-right me-1"></i></div>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
     </div>

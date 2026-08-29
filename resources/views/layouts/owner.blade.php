@@ -83,6 +83,11 @@
                     <span>Earnings</span>
                 </a>
 
+                <a href="{{ route('owner.reviews') }}" class="owner-nav-link {{ request()->routeIs('owner.reviews') ? 'active' : '' }}">
+                    <i class="bi bi-star flex-shrink-0"></i>
+                    <span>Reviews</span>
+                </a>
+
             </div>
 
             <!-- RIGHT SIDE / USER MENU & MOBILE TOGGLE -->
@@ -143,6 +148,10 @@
             <a href="{{ route('owner.earnings') }}" class="owner-mobile-link {{ request()->routeIs('owner.earnings') ? 'active' : '' }}">
                 <i class="bi bi-wallet2"></i>
                 <span>Earnings</span>
+            </a>
+            <a href="{{ route('owner.reviews') }}" class="owner-mobile-link {{ request()->routeIs('owner.reviews') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Reviews</span>
             </a>
         </div>
     </div>

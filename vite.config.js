@@ -21,6 +21,7 @@ export default defineConfig({
                 'resources/js/owner/bookings.js',
                 'resources/js/owner/tournaments.js',
                 'resources/js/owner/earnings.js',
+                'resources/js/owner/reviews.js',
             ],
             refresh: true,
         }),

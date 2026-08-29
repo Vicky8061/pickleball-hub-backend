@@ -497,4 +497,108 @@ class ReviewController extends Controller
             'message' => 'Review deleted successfuly',
         ], 200);
     }
+
+    /**
+     * Display listing of reviews for court owner.
+     */
+    public function ownerReviews(Request $request)
+    {
+        if ($request->user()->role !== 'owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only owners can access court reviews.',
+            ], 403);
+        }
+
+        $ownerId = $request->user()->id;
+
+        // Base Query
+        $baseQuery = Review::with(['user', 'court'])
+            ->whereHas('court', function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            });
+
+        $allReviews = (clone $baseQuery)->get();
+        $totalCount = $allReviews->count();
+        $avgRating = $totalCount > 0 ? round($allReviews->avg('rating'), 1) : 0;
+
+        $fiveStarCount = $allReviews->where('rating', 5)->count();
+        $fourStarCount = $allReviews->where('rating', 4)->count();
+        $threeStarCount = $allReviews->where('rating', 3)->count();
+        $twoStarCount = $allReviews->where('rating', 2)->count();
+        $oneStarCount = $allReviews->where('rating', 1)->count();
+
+        // Apply filters for listing
+        $filteredQuery = clone $baseQuery;
+
+        if ($request->filled('court_id')) {
+            $filteredQuery->where('court_id', $request->court_id);
+        }
+
+        if ($request->filled('rating')) {
+            $filteredQuery->where('rating', (int) $request->rating);
+        }
+
+        if ($request->filled('search')) {
+            $search = '%' . $request->search . '%';
+            $filteredQuery->where(function ($q) use ($search) {
+                $q->where('review', 'like', $search)
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', $search)->orWhere('email', 'like', $search);
+                  });
+            });
+        }
+
+        $perPage = (int) ($request->query('per_page', 100));
+        $reviews = $filteredQuery->latest()->paginate($perPage);
+
+        // Court-wise rating summaries
+        $courtSummaries = Court::where('owner_id', $ownerId)
+            ->with(['reviews'])
+            ->get()
+            ->map(function ($court) {
+                $reviews = $court->reviews;
+                $count = $reviews->count();
+                $avg = $count > 0 ? round($reviews->avg('rating'), 1) : 0;
+
+                return [
+                    'court_id' => $court->id,
+                    'court_name' => $court->name,
+                    'court_type' => $court->court_type,
+                    'total_reviews' => $count,
+                    'average_rating' => $avg,
+                    'star_counts' => [
+                        '5' => $reviews->where('rating', 5)->count(),
+                        '4' => $reviews->where('rating', 4)->count(),
+                        '3' => $reviews->where('rating', 3)->count(),
+                        '2' => $reviews->where('rating', 2)->count(),
+                        '1' => $reviews->where('rating', 1)->count(),
+                    ],
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Owner reviews fetched successfully.',
+            'summary' => [
+                'total_reviews' => $totalCount,
+                'average_rating' => $avgRating,
+                'star_counts' => [
+                    '5' => $fiveStarCount,
+                    '4' => $fourStarCount,
+                    '3' => $threeStarCount,
+                    '2' => $twoStarCount,
+                    '1' => $oneStarCount,
+                ],
+                'court_summaries' => $courtSummaries,
+            ],
+            'data' => ReviewResource::collection($reviews),
+            'pagination' => [
+                'current_page' => $reviews->currentPage(),
+                'last_page' => $reviews->lastPage(),
+                'per_page' => $reviews->perPage(),
+                'total' => $reviews->total(),
+            ]
+        ], 200);
+    }
 }
