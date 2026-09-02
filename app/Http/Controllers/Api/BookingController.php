@@ -430,9 +430,15 @@ class BookingController extends Controller
             ], 400);
         }
 
-        $booking->update([
+        $updateData = [
             'booking_status' => $data['booking_status'],
-        ]);
+        ];
+
+        if (in_array($data['booking_status'], ['confirmed', 'completed'])) {
+            $updateData['payment_status'] = 'paid';
+        }
+
+        $booking->update($updateData);
 
         $booking->load([
             'user',

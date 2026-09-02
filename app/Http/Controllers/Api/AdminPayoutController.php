@@ -52,9 +52,9 @@ class AdminPayoutController extends Controller
                 ->get();
 
             $totalBookingsCount = $paidBookings->count();
-            $grossRevenue = $paidBookings->sum('total_price') ?: $paidBookings->sum('amount');
+            $grossRevenue = $paidBookings->sum('total_amount') ?: $paidBookings->sum('court_price');
             if ($grossRevenue <= 0) {
-                $grossRevenue = $paidBookings->sum('price');
+                $grossRevenue = $paidBookings->sum('total_amount');
             }
 
             // Calculate 10% platform commission & 90% net owner payout
