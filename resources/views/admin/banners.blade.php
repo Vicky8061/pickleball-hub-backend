@@ -64,7 +64,7 @@
     ========================================== -->
     <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-            <div class="nav nav-pills gap-1 p-1 bg-light rounded-pill d-inline-flex border" id="bannerStatusPillsNav">
+            <div class="nav nav-pills gap-1 p-1 bg-light rounded-pill d-inline-flex w-100 mw-100 border" id="bannerStatusPillsNav">
                 <button class="nav-link active rounded-pill px-3.5 py-1.5 fs-8 fw-bold" data-status="">All Banners</button>
                 <button class="nav-link rounded-pill px-3.5 py-1.5 fs-8 fw-bold text-success" data-status="active">Active Only</button>
                 <button class="nav-link rounded-pill px-3.5 py-1.5 fs-8 fw-bold text-secondary" data-status="inactive">Inactive Only</button>

@@ -229,14 +229,21 @@ body {
 
 /* HORIZONTAL PILLS SCROLL FOR MOBILE FILTERS */
 .nav-pills {
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    white-space: nowrap;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    max-width: 100%;
 }
 
 .nav-pills::-webkit-scrollbar {
     display: none;
+}
+
+.nav-pills .nav-link {
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 /* SEARCH INPUT GROUP FOCUS */

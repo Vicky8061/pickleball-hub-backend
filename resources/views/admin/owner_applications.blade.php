@@ -56,16 +56,16 @@
     <!-- =========================================
          FILTERS & SEARCH BAR
     ========================================== -->
-    <div class="card border-0 shadow-sm rounded-4 p-3.5 mb-4 bg-white">
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
         <div class="row g-3 align-items-center">
 
             <!-- STATUS TABS -->
             <div class="col-lg-6 col-12">
-                <div class="nav nav-pills gap-1 p-1 bg-light rounded-pill d-inline-flex border" id="statusPillsNav">
-                    <button class="nav-link active rounded-pill px-3 py-1.5 fs-8 fw-bold" data-status="">All Applications</button>
-                    <button class="nav-link rounded-pill px-3 py-1.5 fs-8 fw-bold text-warning" data-status="pending">Pending</button>
-                    <button class="nav-link rounded-pill px-3 py-1.5 fs-8 fw-bold text-success" data-status="approved">Approved</button>
-                    <button class="nav-link rounded-pill px-3 py-1.5 fs-8 fw-bold text-danger" data-status="rejected">Rejected</button>
+                <div class="nav nav-pills gap-1 p-1 bg-light rounded-pill d-inline-flex w-100 mw-100 border" id="statusPillsNav">
+                    <button class="nav-link active rounded-pill px-3.5 py-1.5 fs-8 fw-bold" data-status="">All Applications</button>
+                    <button class="nav-link rounded-pill px-3.5 py-1.5 fs-8 fw-bold text-warning" data-status="pending">Pending</button>
+                    <button class="nav-link rounded-pill px-3.5 py-1.5 fs-8 fw-bold text-success" data-status="approved">Approved</button>
+                    <button class="nav-link rounded-pill px-3.5 py-1.5 fs-8 fw-bold text-danger" data-status="rejected">Rejected</button>
                 </div>
             </div>
 
