@@ -31,6 +31,7 @@ export default defineConfig({
                 'resources/js/admin/users.js',
                 'resources/js/admin/banners.js',
                 'resources/js/admin/bookings.js',
+                'resources/js/admin/payouts.js',
             ],
             refresh: true,
         }),

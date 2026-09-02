@@ -269,6 +269,10 @@ Route::middleware('admin.session')
             return view('admin.bookings');
         })->name('bookings');
 
+        Route::get('/payouts', function () {
+            return view('admin.payouts');
+        })->name('payouts');
+
     });
 
 

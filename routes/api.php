@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminOwnerApplicationController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AdminOwnerController;
+use App\Http\Controllers\Api\AdminPayoutController;
 use App\Http\Controllers\Api\AdminReviewController;
 use App\Http\Controllers\Api\AdminTournamentController;
 use App\Http\Controllers\Api\OwnerApplicationController;
@@ -445,4 +446,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         // ---------------------------------------------
         Route::get('/bookings', [AdminBookingController::class, 'index']);
         Route::get('/bookings/{booking}', [AdminBookingController::class, 'show']);
+
+        // ---------------------------------------------
+        // PAYOUT SETTLEMENTS MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/payouts', [AdminPayoutController::class, 'index']);
+        Route::patch('/payouts/{owner}/settle', [AdminPayoutController::class, 'updateStatus']);
     });

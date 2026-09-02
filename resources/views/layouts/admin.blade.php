@@ -61,6 +61,10 @@
                     <i class="bi bi-calendar2-check-fill"></i>
                     <span>Master Bookings</span>
                 </a>
+                <a href="{{ route('admin.payouts') }}" class="admin-nav-link {{ request()->routeIs('admin.payouts') ? 'active' : '' }}">
+                    <i class="bi bi-wallet2"></i>
+                    <span>Payout Settlements</span>
+                </a>
             </div>
 
             <!-- RIGHT PROFILE & LOGOUT -->
