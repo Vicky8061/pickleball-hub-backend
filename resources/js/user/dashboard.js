@@ -1354,103 +1354,78 @@ async function loadUpcomingTournaments() {
 */
 
 function createTournamentCard(tournament) {
+    const title = tournament.title || "Pickleball Championship";
+    const courtName = tournament.court?.name || "Venue Court";
+    const city = tournament.court?.city || "";
+    const prizePool = Number(tournament.prize_pool || tournament.prize || 0);
+    const entryFee = Number(tournament.entry_fee || 0);
+    const status = (tournament.status || "upcoming").toLowerCase();
+    const startDate = formatDateReadable(tournament.start_date || tournament.tournament_date);
+    const coverImg = getTournamentBanner(tournament);
 
     return `
         <div class="col-md-6 col-xl-4">
-
-            <div class="tournament-card">
-
-                <!-- BANNER -->
-                <div class="tournament-card-image">
-
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 card-hover-lift bg-white">
+                <div class="position-relative" style="height: 160px;">
                     <img
-                        src="${tournament.banner || '/assets/images/tournament-placeholder.jpg'}"
-                        alt="${tournament.title}"
-                        class="tournament-banner"
-                        onerror="this.src='/assets/images/tournament-placeholder.jpg'"
+                        src="${escapeAttribute(coverImg)}"
+                        alt="${escapeAttribute(title)}"
+                        class="w-100 h-100 object-fit-cover"
+                        onerror="this.src='https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=600&q=80'"
                     >
-
-                    <span class="tournament-status">
-                        ${tournament.status}
-                    </span>
-
+                    <div class="position-absolute top-0 start-0 m-3">
+                        <span class="badge bg-info text-dark rounded-pill px-3 py-1 fw-bold fs-8 shadow-sm">
+                            <i class="bi bi-calendar-event me-1"></i> ${escapeHtml(status.toUpperCase())}
+                        </span>
+                    </div>
+                    <div class="position-absolute bottom-0 start-0 w-100 p-2.5 text-white bg-dark bg-opacity-75 backdrop-blur d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-warning fw-bold d-block fs-9 text-uppercase">PRIZE POOL</small>
+                            <strong class="fs-6 text-white">₹${prizePool.toLocaleString("en-IN")}</strong>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-white-50 d-block fs-9 text-uppercase">ENTRY FEE</small>
+                            <strong class="fs-7 text-warning">₹${entryFee.toLocaleString("en-IN")}</strong>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="card-body p-3.5 d-flex flex-column justify-content-between">
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1 text-truncate" title="${escapeAttribute(title)}">${escapeHtml(title)}</h6>
+                        <small class="text-muted d-block mb-2 text-truncate"><i class="bi bi-geo-alt me-1 text-primary"></i>${escapeHtml(courtName)} ${city ? '• ' + escapeHtml(city) : ''}</small>
 
-                <!-- CONTENT -->
-                <div class="tournament-card-body">
-
-                    <h5 class="tournament-title">
-                        ${tournament.title}
-                    </h5>
-
-                    <p class="tournament-description">
-                        ${tournament.description ?? ''}
-                    </p>
-
-
-                    <!-- DATE -->
-                    <div class="tournament-info">
-
-                        <div>
-                            <i class="bi bi-calendar-event"></i>
-
-                            <span>
-                                ${tournament.tournament_date}
-                            </span>
+                        <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 mb-3 fs-8">
+                            <span class="text-muted"><i class="bi bi-calendar-check me-1 text-primary"></i> Date:</span>
+                            <strong class="text-dark">${escapeHtml(startDate)}</strong>
                         </div>
-
-                        <div>
-                            <i class="bi bi-clock"></i>
-
-                            <span>
-                                ${tournament.start_time}
-                                -
-                                ${tournament.end_time}
-                            </span>
-                        </div>
-
                     </div>
 
-
-                    <!-- FOOTER -->
-                    <div class="tournament-footer">
-
-                        <div>
-                            <small>Entry Fee</small>
-
-                            <strong>
-                                ₹${tournament.entry_fee}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <small>Prize</small>
-
-                            <strong>
-                                ${tournament.prize}
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <a
-                        href="/user/tournaments/${tournament.id}"
-                        class="btn tournament-btn">
-
-                        View Tournament
-
-                        <i class="bi bi-arrow-right"></i>
-
+                    <a href="/user/tournaments" class="btn btn-warning rounded-pill w-100 fw-bold text-dark fs-8 py-2">
+                        View & Join Event <i class="bi bi-arrow-right ms-1"></i>
                     </a>
-
                 </div>
-
             </div>
-
         </div>
     `;
+}
+
+function getTournamentBanner(t) {
+    if (t.banner_image) {
+        return t.banner_image.startsWith("http") ? t.banner_image : `/storage/${t.banner_image}`;
+    }
+    if (t.banner) {
+        return t.banner.startsWith("http") ? t.banner : `/storage/${t.banner}`;
+    }
+    if (t.court?.cover_image_url) return t.court.cover_image_url;
+    return "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=600&q=80";
+}
+
+function formatDateReadable(dateStr) {
+    if (!dateStr) return "TBD";
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
 /*

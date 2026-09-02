@@ -190,6 +190,14 @@ Route::middleware('user.session')
                 return view('user.become_owner');
             }
         )->name('become-owner');
+
+        // Player Tournaments & Competitions
+        Route::get(
+            '/tournaments',
+            function () {
+                return view('user.tournaments');
+            }
+        )->name('tournaments');
     });
 
 // =====================================================

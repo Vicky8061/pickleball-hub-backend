@@ -25,6 +25,7 @@ export default defineConfig({
                 'resources/js/owner/reviews.js',
                 'resources/js/owner/profile.js',
                 'resources/js/user/become_owner.js',
+                'resources/js/user/tournaments.js',
                 'resources/js/admin/dashboard.js',
                 'resources/js/admin/owner_applications.js',
                 'resources/js/admin/courts.js',
