@@ -452,4 +452,11 @@ Route::middleware(['auth:sanctum', 'admin'])
         // ---------------------------------------------
         Route::get('/payouts', [AdminPayoutController::class, 'index']);
         Route::patch('/payouts/{owner}/settle', [AdminPayoutController::class, 'updateStatus']);
+
+        // ---------------------------------------------
+        // REVIEWS MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/reviews', [AdminReviewController::class, 'index']);
+        Route::get('/reviews/{review}', [AdminReviewController::class, 'show']);
+        Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy']);
     });

@@ -65,6 +65,10 @@
                     <i class="bi bi-wallet2"></i>
                     <span>Payout Settlements</span>
                 </a>
+                <a href="{{ route('admin.reviews') }}" class="admin-nav-link {{ request()->routeIs('admin.reviews') ? 'active' : '' }}">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span>Master Reviews</span>
+                </a>
             </div>
 
             <!-- RIGHT PROFILE & LOGOUT -->

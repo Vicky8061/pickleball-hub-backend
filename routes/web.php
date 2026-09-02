@@ -273,6 +273,10 @@ Route::middleware('admin.session')
             return view('admin.payouts');
         })->name('payouts');
 
+        Route::get('/reviews', function () {
+            return view('admin.reviews');
+        })->name('reviews');
+
     });
 
 
