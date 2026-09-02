@@ -33,6 +33,7 @@ export default defineConfig({
                 'resources/js/admin/bookings.js',
                 'resources/js/admin/payouts.js',
                 'resources/js/admin/reviews.js',
+                'resources/js/admin/tournaments.js',
             ],
             refresh: true,
         }),

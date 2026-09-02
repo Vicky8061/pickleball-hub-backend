@@ -28,6 +28,7 @@ function renderKPIs(data) {
     const courtsEl = document.getElementById("kpiActiveCourts");
     const bookingsEl = document.getElementById("kpiTotalBookings");
     const navBadge = document.getElementById("navPendingBadge");
+    const mobileNavBadge = document.getElementById("mobileNavPendingBadge");
 
     if (commissionEl) commissionEl.textContent = `₹${formatPrice(rev.commission_revenue || 0)}`;
     if (pendingEl) pendingEl.textContent = app.pending_count || 0;
@@ -40,6 +41,15 @@ function renderKPIs(data) {
             navBadge.classList.remove("d-none");
         } else {
             navBadge.classList.add("d-none");
+        }
+    }
+
+    if (mobileNavBadge) {
+        if (app.pending_count > 0) {
+            mobileNavBadge.textContent = app.pending_count;
+            mobileNavBadge.classList.remove("d-none");
+        } else {
+            mobileNavBadge.classList.add("d-none");
         }
     }
 }

@@ -277,6 +277,10 @@ Route::middleware('admin.session')
             return view('admin.reviews');
         })->name('reviews');
 
+        Route::get('/tournaments', function () {
+            return view('admin.tournaments');
+        })->name('tournaments');
+
     });
 
 

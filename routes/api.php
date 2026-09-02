@@ -335,28 +335,6 @@ Route::middleware(['auth:sanctum', 'admin'])
             [AdminDashboardController::class, 'index']
         );
 
-
-        // ---------------------------------------------
-        // USER MANAGEMENT
-        // ---------------------------------------------
-
-        Route::get('/users', [AdminUserController::class, 'index']);
-        Route::get('/users/{user}', [AdminUserController::class, 'show']);
-        Route::put('/users/{user}', [AdminUserController::class, 'update']);
-        Route::patch('/users/{user}/block', [AdminUserController::class, 'block']);
-
-
-        // ---------------------------------------------
-        // OWNER MANAGEMENT
-        // ---------------------------------------------
-
-        Route::apiResource(
-            'owners',
-            AdminOwnerController::class
-        );
-        Route::patch('/owners/{owner}/block', [AdminOwnerController::class, 'block']);
-
-
         // ---------------------------------------------
         // COURT MANAGEMENT
         // ---------------------------------------------
@@ -386,18 +364,6 @@ Route::middleware(['auth:sanctum', 'admin'])
         ]);
 
 
-        // ---------------------------------------------
-        // REVIEW MANAGEMENT
-        // ---------------------------------------------
-
-        Route::apiResource(
-            'reviews',
-            AdminReviewController::class
-        )->only([
-            'index',
-            'show',
-            'destroy'
-        ]);
         // ---------------------------------------------
         // Owner Application MANAGEMENT
         // ---------------------------------------------
@@ -459,4 +425,12 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/reviews', [AdminReviewController::class, 'index']);
         Route::get('/reviews/{review}', [AdminReviewController::class, 'show']);
         Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy']);
+
+        // ---------------------------------------------
+        // TOURNAMENTS MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/tournaments', [AdminTournamentController::class, 'index']);
+        Route::get('/tournaments/{tournament}', [AdminTournamentController::class, 'show']);
+        Route::put('/tournaments/{tournament}', [AdminTournamentController::class, 'update']);
+        Route::delete('/tournaments/{tournament}', [AdminTournamentController::class, 'destroy']);
     });
