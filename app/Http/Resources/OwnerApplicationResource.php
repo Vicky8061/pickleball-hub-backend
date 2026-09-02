@@ -30,6 +30,7 @@ class OwnerApplicationResource extends JsonResource
             'description' => $this->description,
 
             'document' => $this->document,
+            'document_url' => $this->document ? (str_starts_with($this->document, 'http') ? $this->document : asset('storage/' . $this->document)) : null,
 
             'status' => $this->status,
             'admin_note' => $this->admin_note,

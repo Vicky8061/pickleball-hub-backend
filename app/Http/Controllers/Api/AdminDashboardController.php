@@ -111,6 +111,20 @@ class AdminDashboardController extends Controller
             'cancelled'
         )->count();
 
+        // Owner Applications
+        $pendingOwnerApplications = \App\Models\OwnerApplication::where('status', 'pending')->count();
+        $recentOwnerApplications = \App\Models\OwnerApplication::with('user')->latest()->take(5)->get();
+
+        // Platform Commission Revenue
+        $paidBookings = Booking::where('payment_status', 'paid')->get();
+        $platformCommissionRevenue = $paidBookings->sum('admin_commission_amount');
+        if ($platformCommissionRevenue <= 0) {
+            $platformCommissionRevenue = $totalRevenue * 0.10;
+        }
+
+        // Recent Bookings
+        $recentBookings = Booking::with(['court', 'user'])->latest()->take(5)->get();
+
         return response()->json([
             'success' => true,
             'message' => 'Admin dashboard fetched successfully.',
@@ -137,7 +151,13 @@ class AdminDashboardController extends Controller
                 ],
 
                 'revenue' => [
-                    'total_revenue' => $totalRevenue,
+                    'gross_revenue' => round($totalRevenue, 2),
+                    'commission_revenue' => round($platformCommissionRevenue, 2),
+                ],
+
+                'owner_applications' => [
+                    'pending_count' => $pendingOwnerApplications,
+                    'total_count' => \App\Models\OwnerApplication::count(),
                 ],
 
                 'reviews' => [
@@ -154,6 +174,9 @@ class AdminDashboardController extends Controller
                     'completed_tournaments' => $completedTournaments,
                     'cancelled_tournaments' => $cancelledTournaments,
                 ],
+
+                'recent_owner_applications' => $recentOwnerApplications,
+                'recent_bookings' => \App\Http\Resources\BookingResource::collection($recentBookings),
             ],
         ], 200);
     }

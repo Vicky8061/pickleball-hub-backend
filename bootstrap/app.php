@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'owner' => App\Http\Middleware\OwnerMiddleware::class,
             'user.session' => App\Http\Middleware\UserSession::class,
             'owner.session' => App\Http\Middleware\OwnerSession::class,
+            'admin.session' => App\Http\Middleware\AdminSession::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

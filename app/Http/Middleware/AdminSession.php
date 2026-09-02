@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OwnerSession
+class AdminSession
 {
     public function handle(
         Request $request,
@@ -23,11 +23,11 @@ class OwnerSession
             return redirect('/user/dashboard');
         }
 
-        if ($role === 'admin') {
-            return redirect('/admin/dashboard');
+        if ($role === 'owner') {
+            return redirect('/owner/dashboard');
         }
 
-        if ($role !== 'owner') {
+        if ($role !== 'admin') {
             return redirect('/login');
         }
 

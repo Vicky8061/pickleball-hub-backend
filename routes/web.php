@@ -237,13 +237,27 @@ Route::middleware('owner.session')
 
 
 // =====================================================
-// ADMIN DASHBOARD
+// ADMIN ROUTES
 // =====================================================
 
-Route::get('/admin/dashboard', function () {
+Route::middleware('admin.session')
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        Route::get('/owner-applications', function () {
+            return view('admin.owner_applications');
+        })->name('owner-applications');
+
+        Route::get('/courts', function () {
+            return view('admin.courts');
+        })->name('courts');
+
+    });
 
 
 // =====================================================

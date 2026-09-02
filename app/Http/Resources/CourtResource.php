@@ -36,6 +36,9 @@ class CourtResource extends JsonResource
             'status'=>$this->status,
             'average_rating' => round($avgRating, 1),
             'reviews_count' => $reviewsCount,
+            'cover_image_url' => $this->relationLoaded('images') && $this->images->count() > 0
+                ? (optional($this->images->firstWhere('is_primary', true))->image_url ?? optional($this->images->first())->image_url)
+                : null,
             'owner'=>new UserResource(
                 $this->whenLoaded('owner')
             ),

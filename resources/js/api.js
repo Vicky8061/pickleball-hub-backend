@@ -76,18 +76,18 @@ async function apiFetch(endpoint, options = {}) {
         endpoint.startsWith("http://") || endpoint.startsWith("https://")
             ? endpoint
             : endpoint.startsWith("/api")
-            ? endpoint
-            : endpoint.startsWith("/")
-            ? `${API_BASE_URL}${endpoint}`
-            : `${API_BASE_URL}/${endpoint}`;
+                ? endpoint
+                : endpoint.startsWith("/")
+                    ? `${API_BASE_URL}${endpoint}`
+                    : `${API_BASE_URL}/${endpoint}`;
 
     const isFormData = options.body instanceof FormData;
     const defaultHeaders = isFormData
         ? getHeaders(options.headers || {})
         : getHeaders({
-              "Content-Type": "application/json",
-              ...(options.headers || {}),
-          });
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+        });
 
     if (isFormData && defaultHeaders["Content-Type"]) {
         delete defaultHeaders["Content-Type"];
@@ -134,8 +134,52 @@ async function apiFetch(endpoint, options = {}) {
             throw err;
         }
         console.error(`API Fetch Error [${url}]:`, err);
-        throw err;
     }
+}
+
+/**
+ * Global Logout Handler - Clears tokens, API logout & web session invalidate
+ */
+async function handleGlobalLogout() {
+    try {
+        const token = getToken();
+        if (token) {
+            await fetch("/api/auth/logout", {
+                method: "POST",
+                headers: getHeaders(),
+            }).catch(() => { });
+        }
+    } catch (e) {
+        console.warn("API Logout warning:", e);
+    } finally {
+        localStorage.clear();
+        sessionStorage.clear();
+
+        try {
+            await fetch("/auth/logout", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": getCsrfToken(),
+                },
+            });
+        } catch (e) {
+            console.warn("Web Session Logout warning:", e);
+        }
+
+        window.location.href = "/login";
+    }
+}
+
+// Automatic Logout Event Delegation
+if (typeof document !== "undefined") {
+    document.addEventListener("click", (e) => {
+        const logoutBtn = e.target.closest("#adminLogoutBtn, #logoutBtn, #mobileLogoutBtn, #profileLogoutBtn, .btn-logout");
+        if (logoutBtn) {
+            e.preventDefault();
+            handleGlobalLogout();
+        }
+    });
 }
 
 // Make globally available on window object
@@ -144,5 +188,6 @@ window.getToken = getToken;
 window.getHeaders = getHeaders;
 window.apiFetch = apiFetch;
 window.handleUnauthorized = handleUnauthorized;
+window.handleGlobalLogout = handleGlobalLogout;
 
-export { API_BASE_URL, getToken, getHeaders, apiFetch, handleUnauthorized };
+export { API_BASE_URL, getToken, getHeaders, apiFetch, handleUnauthorized, handleGlobalLogout };

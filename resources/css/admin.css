@@ -1,0 +1,170 @@
+/* =========================================
+   ADMIN PANEL - DESIGN SYSTEM & STYLES
+========================================= */
+
+:root {
+    --admin-nav-bg: rgba(255, 255, 255, 0.98);
+    --admin-accent: #dc2626;
+    --admin-accent-hover: #b91c1c;
+    --admin-link-active: #dc2626;
+    --admin-bg-light: #f8fafc;
+    --admin-card-border: #e2e8f0;
+}
+
+/* -----------------------------------------
+   ADMIN NAVBAR (Matching User & Owner Layout)
+----------------------------------------- */
+
+.admin-navbar {
+    min-height: 72px;
+    background: var(--admin-nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.admin-navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.admin-brand img {
+    width: 180px;
+    height: auto;
+    max-height: 52px;
+    object-fit: contain;
+}
+
+.admin-brand-badge {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.admin-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.92rem;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-nav-link i {
+    font-size: 1.1rem;
+    color: #64748b;
+    transition: color 0.2s ease;
+}
+
+.admin-nav-link:hover {
+    color: #0f172a;
+    background: #f1f5f9;
+}
+
+.admin-nav-link:hover i {
+    color: var(--admin-accent);
+}
+
+.admin-nav-link.active {
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    font-weight: 600;
+}
+
+.admin-nav-link.active i {
+    color: #dc2626;
+}
+
+/* -----------------------------------------
+   PROFILE BUTTON & DROPDOWN
+----------------------------------------- */
+
+.admin-profile-btn {
+    border: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    border-radius: 999px !important;
+    padding: 5px 14px 5px 6px !important;
+    color: #1e293b !important;
+    transition: all 0.2s ease;
+}
+
+.admin-profile-btn:hover {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.admin-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+/* -----------------------------------------
+   DASHBOARD CARD ELEVATIONS & UI ENHANCEMENTS
+----------------------------------------- */
+
+.card-hover-lift {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.08), 0 4px 12px -4px rgba(15, 23, 42, 0.04) !important;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+.fw-extrabold {
+    font-weight: 800;
+}
+
+/* -----------------------------------------
+   RESPONSIVE MEDIA QUERIES
+----------------------------------------- */
+
+@media (max-width: 991.98px) {
+    .admin-navbar .container-fluid {
+        padding: 0 20px;
+    }
+}
