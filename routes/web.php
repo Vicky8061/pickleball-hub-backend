@@ -261,6 +261,10 @@ Route::middleware('admin.session')
             return view('admin.users');
         })->name('users');
 
+        Route::get('/banners', function () {
+            return view('admin.banners');
+        })->name('banners');
+
     });
 
 

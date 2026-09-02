@@ -53,6 +53,10 @@
                     <i class="bi bi-people-fill"></i>
                     <span>Users & Owners</span>
                 </a>
+                <a href="{{ route('admin.banners') }}" class="admin-nav-link {{ request()->routeIs('admin.banners') ? 'active' : '' }}">
+                    <i class="bi bi-images"></i>
+                    <span>Banners & Promos</span>
+                </a>
             </div>
 
             <!-- RIGHT PROFILE & LOGOUT -->
