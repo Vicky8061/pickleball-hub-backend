@@ -30,6 +30,7 @@ export default defineConfig({
                 'resources/js/admin/courts.js',
                 'resources/js/admin/users.js',
                 'resources/js/admin/banners.js',
+                'resources/js/admin/bookings.js',
             ],
             refresh: true,
         }),

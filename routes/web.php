@@ -265,6 +265,10 @@ Route::middleware('admin.session')
             return view('admin.banners');
         })->name('banners');
 
+        Route::get('/bookings', function () {
+            return view('admin.bookings');
+        })->name('bookings');
+
     });
 
 

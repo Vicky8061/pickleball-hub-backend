@@ -57,6 +57,10 @@
                     <i class="bi bi-images"></i>
                     <span>Banners & Promos</span>
                 </a>
+                <a href="{{ route('admin.bookings') }}" class="admin-nav-link {{ request()->routeIs('admin.bookings') ? 'active' : '' }}">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                    <span>Master Bookings</span>
+                </a>
             </div>
 
             <!-- RIGHT PROFILE & LOGOUT -->

@@ -369,21 +369,7 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/courts/{court}/status',
             [AdminCourtController::class, 'updateStatus']
         );
-
-
-        // ---------------------------------------------
-        // BOOKING MANAGEMENT
-        // ---------------------------------------------
-
-        Route::apiResource(
-            'bookings',
-            AdminBookingController::class
-        )->only([
-            'index',
-            'show'
-        ]);
-
-
+        
         // ---------------------------------------------
         // TOURNAMENT MANAGEMENT
         // ---------------------------------------------
@@ -453,4 +439,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::post('/banners', [BannerController::class, 'store']);
         Route::post('/banners/{banner}', [BannerController::class, 'update']);
         Route::delete('/banners/{banner}', [BannerController::class, 'destroy']);
+
+        // ---------------------------------------------
+        // BOOKINGS MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/bookings', [AdminBookingController::class, 'index']);
+        Route::get('/bookings/{booking}', [AdminBookingController::class, 'show']);
     });
