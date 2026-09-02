@@ -257,6 +257,10 @@ Route::middleware('admin.session')
             return view('admin.courts');
         })->name('courts');
 
+        Route::get('/users', function () {
+            return view('admin.users');
+        })->name('users');
+
     });
 
 

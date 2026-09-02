@@ -28,6 +28,7 @@ export default defineConfig({
                 'resources/js/admin/dashboard.js',
                 'resources/js/admin/owner_applications.js',
                 'resources/js/admin/courts.js',
+                'resources/js/admin/users.js',
             ],
             refresh: true,
         }),

@@ -49,6 +49,10 @@
                     <i class="bi bi-grid-3x3-gap-fill"></i>
                     <span>Master Courts</span>
                 </a>
+                <a href="{{ route('admin.users') }}" class="admin-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Users & Owners</span>
+                </a>
             </div>
 
             <!-- RIGHT PROFILE & LOGOUT -->

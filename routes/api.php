@@ -433,6 +433,19 @@ Route::middleware(['auth:sanctum', 'admin'])
         );
 
         // ---------------------------------------------
+        // USER & OWNER MANAGEMENT
+        // ---------------------------------------------
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::get('/users/{user}', [AdminUserController::class, 'show']);
+        Route::patch('/users/{user}/block', [AdminUserController::class, 'block']);
+        Route::patch('/users/{user}/unblock', [AdminUserController::class, 'unblock']);
+
+        Route::get('/owners', [AdminOwnerController::class, 'index']);
+        Route::get('/owners/{owner}', [AdminOwnerController::class, 'show']);
+        Route::patch('/owners/{owner}/block', [AdminOwnerController::class, 'block']);
+        Route::patch('/owners/{owner}/unblock', [AdminOwnerController::class, 'unblock']);
+
+        // ---------------------------------------------
         // BANNER MANAGEMENT
         // ---------------------------------------------
         Route::get('/banners', [BannerController::class, 'index']);
