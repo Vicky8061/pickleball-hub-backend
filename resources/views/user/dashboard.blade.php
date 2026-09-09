@@ -206,7 +206,5 @@
 @endsection
 
 @push('scripts')
-<script type="module">
-    import "{{ Vite::asset('resources/js/user/dashboard.js') }}";
-</script>
+    @vite('resources/js/user/dashboard.js')
 @endpush

@@ -420,6 +420,8 @@ class AdminUserController extends Controller
             'status' => 'blocked',
         ]);
 
+        $user->tokens()->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'User blocked successfully.',

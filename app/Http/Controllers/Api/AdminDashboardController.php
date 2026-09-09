@@ -116,10 +116,9 @@ class AdminDashboardController extends Controller
         $recentOwnerApplications = \App\Models\OwnerApplication::with('user')->latest()->take(5)->get();
 
         // Platform Commission Revenue
-        $paidBookings = Booking::where('payment_status', 'paid')->get();
-        $platformCommissionRevenue = $paidBookings->sum('admin_commission_amount');
+        $platformCommissionRevenue = (float) Booking::where('payment_status', 'paid')->sum('admin_commission_amount');
         if ($platformCommissionRevenue <= 0) {
-            $platformCommissionRevenue = $totalRevenue * 0.10;
+            $platformCommissionRevenue = (float) $totalRevenue * 0.10;
         }
 
         // Recent Bookings

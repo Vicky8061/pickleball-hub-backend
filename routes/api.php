@@ -29,9 +29,10 @@ use Illuminate\Support\Facades\Route;
 // PUBLIC ROUTES
 // =====================================================
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/banners/{banner}', [BannerController::class, 'show']);
 Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
 
 
@@ -39,7 +40,7 @@ Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
 // AUTHENTICATED ROUTES
 // =====================================================
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
 
     // -------------------------------------------------
     // USER / PROFILE
@@ -50,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/user/profile-stats', [ProfileStatsController::class, 'show']);
 
@@ -342,7 +344,7 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::apiResource(
             'courts',
             AdminCourtController::class
-        );
+        )->except(['store']);
 
         Route::patch(
             '/courts/{court}/status',
@@ -404,7 +406,7 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/banners', [BannerController::class, 'index']);
         Route::get('/banners/{banner}', [BannerController::class, 'show']);
         Route::post('/banners', [BannerController::class, 'store']);
-        Route::post('/banners/{banner}', [BannerController::class, 'update']);
+        Route::match(['put', 'post', 'patch'], '/banners/{banner}', [BannerController::class, 'update']);
         Route::delete('/banners/{banner}', [BannerController::class, 'destroy']);
 
         // ---------------------------------------------
@@ -425,12 +427,4 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/reviews', [AdminReviewController::class, 'index']);
         Route::get('/reviews/{review}', [AdminReviewController::class, 'show']);
         Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy']);
-
-        // ---------------------------------------------
-        // TOURNAMENTS MANAGEMENT
-        // ---------------------------------------------
-        Route::get('/tournaments', [AdminTournamentController::class, 'index']);
-        Route::get('/tournaments/{tournament}', [AdminTournamentController::class, 'show']);
-        Route::put('/tournaments/{tournament}', [AdminTournamentController::class, 'update']);
-        Route::delete('/tournaments/{tournament}', [AdminTournamentController::class, 'destroy']);
     });

@@ -181,66 +181,46 @@ class OwnerDashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalCourts = Court::where('owner_id', $ownerId)
-            ->count();
+        $courtStats = Court::where('owner_id', $ownerId)
+            ->selectRaw("
+                COUNT(id) as total_courts,
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_courts,
+                SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive_courts
+            ")
+            ->first();
 
-        $activeCourts = Court::where('owner_id', $ownerId)
-            ->where('status', 'active')
-            ->count();
-
-        $inactiveCourts = Court::where('owner_id', $ownerId)
-            ->where('status', 'inactive')
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Bookings
-        |--------------------------------------------------------------------------
-        */
-
-        $ownerBookings = Booking::whereHas('court', function ($query) use ($ownerId) {
-            $query->where('owner_id', $ownerId);
-        });
-
-        $totalBookings = (clone $ownerBookings)->count();
-
-        $todayBookings = (clone $ownerBookings)
-            ->whereDate('booking_date', Carbon::today())
-            ->count();
-
-        $pendingBookings = (clone $ownerBookings)
-            ->where('booking_status', 'pending')
-            ->count();
-
-        $confirmedBookings = (clone $ownerBookings)
-            ->where('booking_status', 'confirmed')
-            ->count();
-
-        $completedBookings = (clone $ownerBookings)
-            ->where('booking_status', 'completed')
-            ->count();
-
-        $cancelledBookings = (clone $ownerBookings)
-            ->where('booking_status', 'cancelled')
-            ->count();
+        $totalCourts = (int) ($courtStats->total_courts ?? 0);
+        $activeCourts = (int) ($courtStats->active_courts ?? 0);
+        $inactiveCourts = (int) ($courtStats->inactive_courts ?? 0);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Revenue
+        | Bookings & Revenue
         |--------------------------------------------------------------------------
         */
 
-        $totalRevenue = (clone $ownerBookings)
-            ->where('payment_status', 'paid')
-            ->sum('owner_payout_amount');
+        $todayStr = Carbon::today()->toDateString();
+        $bookingStats = Booking::join('courts', 'bookings.court_id', '=', 'courts.id')
+            ->where('courts.owner_id', $ownerId)
+            ->selectRaw("
+                COUNT(bookings.id) as total_bookings,
+                SUM(CASE WHEN DATE(bookings.booking_date) = '{$todayStr}' THEN 1 ELSE 0 END) as today_bookings,
+                SUM(CASE WHEN bookings.booking_status = 'pending' THEN 1 ELSE 0 END) as pending_bookings,
+                SUM(CASE WHEN bookings.booking_status = 'confirmed' THEN 1 ELSE 0 END) as confirmed_bookings,
+                SUM(CASE WHEN bookings.booking_status = 'completed' THEN 1 ELSE 0 END) as completed_bookings,
+                SUM(CASE WHEN bookings.booking_status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_bookings,
+                SUM(CASE WHEN bookings.payment_status = 'paid' THEN COALESCE(bookings.owner_payout_amount, bookings.total_amount * 0.90, 0) ELSE 0 END) as total_revenue
+            ")
+            ->first();
 
-        if (!$totalRevenue) {
-            $totalRevenue = (clone $ownerBookings)
-                ->where('payment_status', 'paid')
-                ->sum('total_amount') * 0.90;
-        }
+        $totalBookings = (int) ($bookingStats->total_bookings ?? 0);
+        $todayBookings = (int) ($bookingStats->today_bookings ?? 0);
+        $pendingBookings = (int) ($bookingStats->pending_bookings ?? 0);
+        $confirmedBookings = (int) ($bookingStats->confirmed_bookings ?? 0);
+        $completedBookings = (int) ($bookingStats->completed_bookings ?? 0);
+        $cancelledBookings = (int) ($bookingStats->cancelled_bookings ?? 0);
+        $totalRevenue = (float) ($bookingStats->total_revenue ?? 0.0);
 
 
         /*
@@ -249,24 +229,21 @@ class OwnerDashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalTournaments = Tournament::where('owner_id', $ownerId)
-            ->count();
+        $tournamentStats = Tournament::where('owner_id', $ownerId)
+            ->selectRaw("
+                COUNT(id) as total_tournaments,
+                SUM(CASE WHEN status = 'upcoming' THEN 1 ELSE 0 END) as upcoming_tournaments,
+                SUM(CASE WHEN status = 'ongoing' THEN 1 ELSE 0 END) as ongoing_tournaments,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_tournaments,
+                SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_tournaments
+            ")
+            ->first();
 
-        $upcomingTournaments = Tournament::where('owner_id', $ownerId)
-            ->where('status', 'upcoming')
-            ->count();
-
-        $ongoingTournaments = Tournament::where('owner_id', $ownerId)
-            ->where('status', 'ongoing')
-            ->count();
-
-        $completedTournaments = Tournament::where('owner_id', $ownerId)
-            ->where('status', 'completed')
-            ->count();
-
-        $cancelledTournaments = Tournament::where('owner_id', $ownerId)
-            ->where('status', 'cancelled')
-            ->count();
+        $totalTournaments = (int) ($tournamentStats->total_tournaments ?? 0);
+        $upcomingTournaments = (int) ($tournamentStats->upcoming_tournaments ?? 0);
+        $ongoingTournaments = (int) ($tournamentStats->ongoing_tournaments ?? 0);
+        $completedTournaments = (int) ($tournamentStats->completed_tournaments ?? 0);
+        $cancelledTournaments = (int) ($tournamentStats->cancelled_tournaments ?? 0);
 
 
         /*

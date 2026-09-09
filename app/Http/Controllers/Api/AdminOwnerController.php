@@ -379,6 +379,8 @@ class AdminOwnerController extends Controller
             'status' => 'blocked',
         ]);
 
+        $owner->tokens()->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Owner blocked successfully',

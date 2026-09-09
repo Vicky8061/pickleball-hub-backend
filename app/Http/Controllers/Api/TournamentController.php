@@ -12,6 +12,7 @@ use App\Http\Resources\TournamentParticipantResource;
 use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OA;
 
 class TournamentController extends Controller
@@ -696,48 +697,53 @@ class TournamentController extends Controller
             ], 400);
         }
 
-        // Check if user already joined
-        $exists = TournamentParticipant::where('tournament_id', $tournament->id)
-            ->where('user_id', $request->user()->id)
-            ->exists();
+        return DB::transaction(function () use ($tournament, $request) {
+            // Lock tournament record for update
+            $lockedTournament = Tournament::where('id', $tournament->id)->lockForUpdate()->first();
 
-        if ($exists) {
+            // Check if user already joined
+            $exists = TournamentParticipant::where('tournament_id', $lockedTournament->id)
+                ->where('user_id', $request->user()->id)
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already joined this tournament.',
+                ], 400);
+            }
+
+            // Check tournament capacity
+            $participantCount = TournamentParticipant::where(
+                'tournament_id',
+                $lockedTournament->id
+            )->lockForUpdate()->count();
+
+            if ($participantCount >= $lockedTournament->max_participants) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tournament is full.',
+                ], 400);
+            }
+
+            // Create participant
+            $participant = TournamentParticipant::create([
+                'tournament_id' => $lockedTournament->id,
+                'user_id' => $request->user()->id,
+                'payment_status' => 'pending',
+            ]);
+
+            $participant->load([
+                'user',
+                'tournament',
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'You have already joined this tournament.',
-            ], 400);
-        }
-
-        // Check tournament capacity
-        $participantCount = TournamentParticipant::where(
-            'tournament_id',
-            $tournament->id
-        )->count();
-
-        if ($participantCount >= $tournament->max_participants) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tournament is full.',
-            ], 400);
-        }
-
-        // Create participant
-        $participant = TournamentParticipant::create([
-            'tournament_id' => $tournament->id,
-            'user_id' => $request->user()->id,
-            'payment_status' => 'pending',
-        ]);
-
-        $participant->load([
-            'user',
-            'tournament',
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'You have successfully joined the tournament.',
-            'data' => new TournamentParticipantResource($participant),
-        ], 201);
+                'success' => true,
+                'message' => 'You have successfully joined the tournament.',
+                'data' => new TournamentParticipantResource($participant),
+            ], 201);
+        });
     }
     #[OA\Delete(
         path: '/api/tournaments/{tournament}/leave',

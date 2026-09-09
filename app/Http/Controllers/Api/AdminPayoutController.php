@@ -37,6 +37,15 @@ class AdminPayoutController extends Controller
 
         $owners = $query->latest()->get();
 
+        $ownerIds = $owners->pluck('id');
+        $ownerBookingStats = Booking::join('courts', 'bookings.court_id', '=', 'courts.id')
+            ->where('bookings.payment_status', 'paid')
+            ->whereIn('courts.owner_id', $ownerIds)
+            ->groupBy('courts.owner_id')
+            ->selectRaw('courts.owner_id, COUNT(bookings.id) as total_bookings, SUM(COALESCE(bookings.total_amount, bookings.court_price, 0)) as gross_revenue, SUM(COALESCE(bookings.admin_commission_amount, 0)) as platform_commission')
+            ->get()
+            ->keyBy('owner_id');
+
         $ownersList = [];
         $totalGrossVolume = 0;
         $totalRetainedCommission = 0;
@@ -44,22 +53,13 @@ class AdminPayoutController extends Controller
         $totalPendingPayouts = 0;
 
         foreach ($owners as $owner) {
-            $courtIds = $owner->courts->pluck('id')->toArray();
-            
-            // Paid bookings for this owner
-            $paidBookings = Booking::whereIn('court_id', $courtIds)
-                ->where('payment_status', 'paid')
-                ->get();
+            $courtCount = $owner->courts->count();
+            $stats = $ownerBookingStats->get($owner->id);
 
-            $totalBookingsCount = $paidBookings->count();
-            $grossRevenue = $paidBookings->sum('total_amount') ?: $paidBookings->sum('court_price');
-            if ($grossRevenue <= 0) {
-                $grossRevenue = $paidBookings->sum('total_amount');
-            }
-
-            // Calculate 10% platform commission & 90% net owner payout
-            $platformCommission = $paidBookings->sum('admin_commission_amount');
-            if ($platformCommission <= 0) {
+            $totalBookingsCount = $stats ? (int) $stats->total_bookings : 0;
+            $grossRevenue = $stats ? (float) $stats->gross_revenue : 0.0;
+            $platformCommission = $stats ? (float) $stats->platform_commission : 0.0;
+            if ($platformCommission <= 0 && $grossRevenue > 0) {
                 $platformCommission = $grossRevenue * 0.10;
             }
             $netOwnerPayout = max(0, $grossRevenue - $platformCommission);
@@ -87,7 +87,7 @@ class AdminPayoutController extends Controller
                 'name' => $owner->name,
                 'email' => $owner->email,
                 'phone' => $owner->phone ?? $owner->phone_number ?? 'N/A',
-                'total_venues' => count($courtIds),
+                'total_venues' => $courtCount,
                 'total_bookings' => $totalBookingsCount,
                 'gross_revenue' => round($grossRevenue, 2),
                 'platform_commission' => round($platformCommission, 2),

@@ -290,26 +290,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                 method: 'POST',
 
                                 headers: {
-
-                                    'Content-Type':
-                                        'application/json',
-
-                                    'Accept':
-                                        'application/json',
-
-                                    'X-CSRF-TOKEN':
-                                        csrfToken
-
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Authorization': `Bearer ${token}`
                                 },
-
                                 credentials: 'same-origin',
-
                                 body: JSON.stringify({
-
+                                    token: token,
                                     user: user
-
                                 })
-
                             }
                         );
 

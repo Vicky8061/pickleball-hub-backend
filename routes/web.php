@@ -12,8 +12,12 @@ use Illuminate\Http\Request;
 
 
 // =====================================================
-// AUTH
+// AUTH & ROOT
 // =====================================================
+
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 Route::get('/login', function () {
 
@@ -50,40 +54,54 @@ Route::get('/register', function () {
 // =====================================================
 
 Route::post('/auth/session', function (Request $request) {
+    $token = $request->input('token') ?? $request->bearerToken();
 
-    $request->validate([
+    if (!$token) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Authentication token required.',
+        ], 401);
+    }
 
-        'user' => 'required|array',
+    $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
 
-        'user.id' => 'required|integer',
+    if (!$accessToken || !$accessToken->tokenable) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid or expired authentication token.',
+        ], 401);
+    }
 
-        'user.name' => 'required|string',
+    /** @var \App\Models\User $user */
+    $user = $accessToken->tokenable;
 
-        'user.email' => 'required|email',
+    if ($user->status !== 'active') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Your account is blocked or inactive.',
+        ], 403);
+    }
 
-        'user.role' => 'required|string',
+    \Illuminate\Support\Facades\Auth::login($user);
 
-    ]);
-
+    $userData = [
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'role' => $user->role,
+        'status' => $user->status,
+    ];
 
     session([
-
-        'user_id' => $request->user['id'],
-
-        'auth_user' => $request->user,
-
+        'user_id' => $user->id,
+        'auth_user' => $userData,
         'logged_in' => true,
-
     ]);
 
-
     return response()->json([
-
         'success' => true,
-
-        'message' =>
-        'Session created successfully.',
-
+        'message' => 'Session created successfully.',
+        'user' => $userData,
     ]);
 });
 

@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use Illuminate\Support\Facades\Hash;
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -15,11 +17,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin User
+        User::updateOrCreate(
+            ['email' => 'admin@pickleball.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+                'status' => 'active',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Court Owner
+        User::updateOrCreate(
+            ['email' => 'owner@pickleball.com'],
+            [
+                'name' => 'Court Owner',
+                'password' => Hash::make('password123'),
+                'role' => 'owner',
+                'status' => 'active',
+            ]
+        );
+
+        // Regular Player / User
+        User::updateOrCreate(
+            ['email' => 'user@pickleball.com'],
+            [
+                'name' => 'Player One',
+                'password' => Hash::make('password123'),
+                'role' => 'user',
+                'status' => 'active',
+            ]
+        );
     }
 }

@@ -320,7 +320,5 @@
 @endsection
 
 @push('scripts')
-<script type="module">
-    import "{{ Vite::asset('resources/js/owner/courts.js') }}";
-</script>
+    @vite('resources/js/owner/courts.js')
 @endpush

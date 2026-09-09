@@ -124,7 +124,7 @@ class ReviewController extends Controller
         ])->where('court_id', $court->id)->latest()->get();
         return response()->json([
             'success' => true,
-            'message' => 'Reviews fetched successfuly',
+            'message' => 'Reviews fetched successfully',
             'data' => ReviewResource::collection($reviews)
         ], 200);
     }
@@ -206,16 +206,16 @@ class ReviewController extends Controller
             ], 400);
         }
 
-        // User must have a booking for this court
+        // User must have a completed booking for this court
         $hasBooking = Booking::where('user_id', $request->user()->id)
             ->where('court_id', $court->id)
-            ->where('booking_status', '!=', 'cancelled')
+            ->where('booking_status', 'completed')
             ->exists();
 
         if (!$hasBooking) {
             return response()->json([
                 'success' => false,
-                'message' => 'You can only review courts that you have booked.'
+                'message' => 'You can only review courts that you have completed a booking for.'
             ], 403);
         }
 
@@ -440,7 +440,7 @@ class ReviewController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Review updated successfuly',
+            'message' => 'Review updated successfully',
             'data' => new ReviewResource($review)
 
         ], 200);
@@ -494,7 +494,7 @@ class ReviewController extends Controller
         $review->delete();
         return response()->json([
             'success' => true,
-            'message' => 'Review deleted successfuly',
+            'message' => 'Review deleted successfully',
         ], 200);
     }
 

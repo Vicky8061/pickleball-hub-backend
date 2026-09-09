@@ -653,9 +653,5 @@
 
 
 @push('scripts')
-
-<script type="module">
-    import "{{ Vite::asset('resources/js/user/profile.js') }}";
-</script>
-
+    @vite('resources/js/user/profile.js')
 @endpush

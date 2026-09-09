@@ -18,6 +18,11 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'payout_status',
+        'payout_tx_reference',
+        'payout_method',
+        'payout_notes',
+        'payout_settlement_date',
     ];
 
     protected $hidden = [
@@ -30,6 +35,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'payout_settlement_date' => 'datetime',
         ];
     }
 

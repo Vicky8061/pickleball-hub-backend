@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookingRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Court;
 use App\Models\TimeSlot;
 use App\Models\Booking;
@@ -56,8 +57,6 @@ class BookingController extends Controller
             'user',
             'court.images',
             'court.owner',
-            'court.timeSlots',
-            'court.reviews',
             'timeSlot'
         ])
             ->where('user_id', $request->user()->id)
@@ -155,85 +154,89 @@ class BookingController extends Controller
 
         $data = $request->validated();
 
-        // Find court
-        $court = Court::findOrFail($data['court_id']);
+        return DB::transaction(function () use ($request, $data) {
+            // Find court
+            $court = Court::findOrFail($data['court_id']);
 
-        // Check court status
-        if ($court->status !== 'active') {
+            // Check court status
+            if ($court->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Court is not available for booking.',
+                ], 400);
+            }
+
+            // Find time slot
+            $timeSlot = TimeSlot::findOrFail($data['time_slot_id']);
+
+            // Check time slot belongs to selected court
+            if ($timeSlot->court_id !== $court->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid time slot for the selected court.',
+                ], 400);
+            }
+
+            // Check time slot status
+            if ($timeSlot->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Time slot is inactive.',
+                ], 400);
+            }
+
+            // Check duplicate booking with pessimistic locking
+            $alreadyBooked = Booking::where('court_id', $court->id)
+                ->where('time_slot_id', $timeSlot->id)
+                ->where('booking_date', $data['booking_date'])
+                ->whereIn('booking_status', ['pending', 'confirmed'])
+                ->lockForUpdate()
+                ->exists();
+
+            if ($alreadyBooked) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This time slot is already booked for the selected date.',
+                ], 400);
+            }
+
+            // Calculate financial split (10% admin commission, 90% owner payout + 50 platform fee)
+            $courtPrice = (float) $court->price_per_hour;
+            $platformFee = 50.00;
+            $adminCommissionRate = 10.00; // 10%
+            $adminCommissionAmount = round($courtPrice * ($adminCommissionRate / 100), 2);
+            $ownerPayoutAmount = round($courtPrice - $adminCommissionAmount, 2);
+            $totalAmount = round($courtPrice + $platformFee, 2);
+
+            // Create booking
+            $booking = Booking::create([
+                'user_id' => $request->user()->id,
+                'court_id' => $court->id,
+                'time_slot_id' => $timeSlot->id,
+                'booking_date' => $data['booking_date'],
+                'court_price' => $courtPrice,
+                'platform_fee' => $platformFee,
+                'admin_commission_rate' => $adminCommissionRate,
+                'admin_commission_amount' => $adminCommissionAmount,
+                'owner_payout_amount' => $ownerPayoutAmount,
+                'total_amount' => $totalAmount,
+                'payment_status' => 'pending',
+                'booking_status' => 'pending',
+            ]);
+
+            $booking->load([
+                'user',
+                'court.images',
+                'court.owner',
+                'timeSlot',
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Court is not available for booking.',
-            ], 400);
-        }
-
-        // Find time slot
-        $timeSlot = TimeSlot::findOrFail($data['time_slot_id']);
-
-        // Check time slot belongs to selected court
-        if ($timeSlot->court_id !== $court->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid time slot for the selected court.',
-            ], 400);
-        }
-
-        // Check time slot status
-        if ($timeSlot->status !== 'active') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Time slot is inactive.',
-            ], 400);
-        }
-
-        // Check duplicate booking
-        $alreadyBooked = Booking::where('court_id', $court->id)
-            ->where('time_slot_id', $timeSlot->id)
-            ->where('booking_date', $data['booking_date'])
-            ->whereIn('booking_status', ['pending', 'confirmed'])
-            ->exists();
-
-        if ($alreadyBooked) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This time slot is already booked for the selected date.',
-            ], 400);
-        }
-
-        // Calculate financial split (10% admin commission, 90% owner payout + 50 platform fee)
-        $courtPrice = (float) $court->price_per_hour;
-        $platformFee = 50.00;
-        $adminCommissionRate = 10.00; // 10%
-        $adminCommissionAmount = round($courtPrice * ($adminCommissionRate / 100), 2);
-        $ownerPayoutAmount = round($courtPrice - $adminCommissionAmount, 2);
-        $totalAmount = round($courtPrice + $platformFee, 2);
-
-        // Create booking
-        $booking = Booking::create([
-            'user_id' => $request->user()->id,
-            'court_id' => $court->id,
-            'time_slot_id' => $timeSlot->id,
-            'booking_date' => $data['booking_date'],
-            'court_price' => $courtPrice,
-            'platform_fee' => $platformFee,
-            'admin_commission_rate' => $adminCommissionRate,
-            'admin_commission_amount' => $adminCommissionAmount,
-            'owner_payout_amount' => $ownerPayoutAmount,
-            'total_amount' => $totalAmount,
-            'payment_status' => 'pending',
-            'booking_status' => 'pending',
-        ]);
-
-        $booking->load([
-            'user',
-            'court',
-            'timeSlot',
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking created successfully.',
-            'data' => new BookingResource($booking),
-        ], 201);
+                'success' => true,
+                'message' => 'Booking created successfully.',
+                'data' => new BookingResource($booking),
+            ], 201);
+        });
     }
 
     /**

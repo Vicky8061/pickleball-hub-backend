@@ -546,15 +546,7 @@
 @push('scripts')
 
 <script>
-
     window.COURT_ID = @json($id);
-
 </script>
-
-<script type="module">
-
-    import "{{ Vite::asset('resources/js/user/court-details.js') }}";
-
-</script>
-
+@vite('resources/js/user/court-details.js')
 @endpush

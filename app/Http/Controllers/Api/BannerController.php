@@ -163,7 +163,7 @@ class BannerController extends Controller
     )]
     public function update(UpdateBannerRequest $request, Banner $banner)
     {
-        $data = $request->only(['title', 'redirect_url', 'status']);
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -171,6 +171,8 @@ class BannerController extends Controller
                 Storage::disk('public')->delete($banner->image);
             }
             $data['image'] = $request->file('image')->store('banners', 'public');
+        } else {
+            unset($data['image']);
         }
 
         $banner->update($data);

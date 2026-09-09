@@ -417,7 +417,7 @@ class CourtController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Court details fetchec successfuly',
+            'message' => 'Court details fetched successfully',
             'data' => new CourtResource($court),
         ], 200);
     }

@@ -526,20 +526,9 @@
     <script>
 
         window.BOOKING_COURT_ID = @json($id);
-
+        window.MY_BOOKINGS_URL = "{{ route('user.bookings') }}";
     </script>
 
-    <script>
-        window.BOOKING_COURT_ID = @json($id);
-
-        window.MY_BOOKINGS_URL =
-            "{{ route('user.bookings') }}";
-    </script>
-
-    <script type="module">
-
-        import "{{ Vite::asset('resources/js/user/booking.js') }}";
-
-    </script>
+    @vite('resources/js/user/booking.js')
 
 @endpush
