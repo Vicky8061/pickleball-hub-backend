@@ -217,10 +217,16 @@
                         <div class="p-3 rounded-3 border bg-opacity-10" id="modalStatusContainer">
                             <small class="text-muted d-block mb-1">Reservation Status:</small>
                             <span class="badge rounded-pill px-3 py-1 fs-7" id="modalStatusBadge">Pending</span>
-                        </div>
                     </div>
                 </div>
 
+            </div>
+
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-outline-success fw-bold btn-sm" id="modalDownloadInvoiceBtn">
+                    <i class="bi bi-file-earmark-pdf me-1"></i> Download Invoice (PDF)
+                </button>
+                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

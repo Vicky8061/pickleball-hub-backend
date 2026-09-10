@@ -283,12 +283,67 @@ async function inspectBooking(bookingId) {
                         </div>
                     </div>
 
+                    <!-- INVOICE ACTION -->
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-outline-success fw-bold py-2 px-3 rounded-pill admin-download-invoice-btn" data-id="${booking.id}">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> Download Official PDF Invoice
+                        </button>
+                    </div>
+
                 </div>
             `;
+
+            const invoiceBtn = modalBody.querySelector(".admin-download-invoice-btn");
+            if (invoiceBtn) {
+                invoiceBtn.addEventListener("click", () => {
+                    downloadAdminBookingInvoice(booking.id, invoiceBtn);
+                });
+            }
         }
     } catch (error) {
         console.error("Inspect Booking Error:", error);
         modalBody.innerHTML = `<div class="text-center py-4 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Failed to fetch booking details.</div>`;
+    }
+}
+
+async function downloadAdminBookingInvoice(bookingId, triggerBtn) {
+    const originalHTML = triggerBtn ? triggerBtn.innerHTML : "";
+    if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Preparing PDF...`;
+    }
+
+    try {
+        const token = getToken();
+        const resp = await fetch(`/api/bookings/${bookingId}/invoice?download=1`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+        });
+
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to download invoice.");
+        }
+
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `pickleball-invoice-${String(bookingId).padStart(5, '0')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        alert(err.message || "Could not download invoice.");
+    } finally {
+        if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = originalHTML;
+        }
     }
 }
 

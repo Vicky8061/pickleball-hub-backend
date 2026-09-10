@@ -1174,9 +1174,17 @@ function startHoldCountdown(booking, modal) {
     const noteEl = modal.querySelector("#bookingHoldNote");
     const payBtn = modal.querySelector("#payNowModalBtn");
     const viewBtn = modal.querySelector("#viewMyBookingsBtn");
+    const downloadInvoiceBtn = modal.querySelector("#downloadInvoiceModalBtn");
     const modalTitle = modal.querySelector("#bookingSuccessModalLabel");
     const modalMsg = modal.querySelector("#bookingSuccessMessage");
     const modalIcon = modal.querySelector("#bookingModalIcon");
+
+    if (downloadInvoiceBtn) {
+        downloadInvoiceBtn.classList.add("d-none");
+        downloadInvoiceBtn.onclick = () => {
+            downloadBookingInvoice(booking.id);
+        };
+    }
 
     if (!timerEl) return;
 
@@ -1316,6 +1324,7 @@ function startHoldCountdown(booking, modal) {
             }
 
             payBtn.classList.add("d-none");
+            if (downloadInvoiceBtn) downloadInvoiceBtn.classList.remove("d-none");
             if (viewBtn) viewBtn.classList.remove("d-none");
 
             loadTimeSlots();
@@ -1437,6 +1446,49 @@ function openPaymentSimulator(bookingId, orderData, onSuccess) {
         simModal.hide();
         alert("Payment cancelled. Your temporary court reservation hold remains active until the timer reaches zero.");
     };
+}
+
+/* =========================================
+   DOWNLOAD BOOKING INVOICE (PDF)
+========================================= */
+
+async function downloadBookingInvoice(bookingId) {
+    const downloadBtn = document.getElementById("downloadInvoiceModalBtn");
+    const originalHTML = downloadBtn ? downloadBtn.innerHTML : "";
+
+    if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Preparing PDF...`;
+    }
+
+    try {
+        const resp = await fetch(`${API_BASE_URL}/bookings/${bookingId}/invoice?download=1`, {
+            method: "GET",
+            headers: getHeaders()
+        });
+
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to download invoice.");
+        }
+
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `pickleball-invoice-${String(bookingId).padStart(5, '0')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        alert(err.message || "Could not download invoice.");
+    } finally {
+        if (downloadBtn) {
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = originalHTML || `<i class="bi bi-file-earmark-pdf me-1"></i> Download Invoice (PDF)`;
+        }
+    }
 }
 
 

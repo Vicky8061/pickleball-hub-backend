@@ -95,6 +95,7 @@ Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
     Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay']);
     Route::post('/bookings/{booking}/create-order', [BookingController::class, 'createPaymentOrder']);
     Route::post('/bookings/{booking}/verify-payment', [BookingController::class, 'verifyPayment']);
+    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'downloadInvoice']);
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
 
 

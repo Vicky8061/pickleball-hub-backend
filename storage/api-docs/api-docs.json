@@ -2382,6 +2382,64 @@
                 ]
             }
         },
+        "/api/bookings/{booking}/invoice": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Download or view booking invoice PDF",
+                "description": "Generates and downloads or streams the official PDF invoice for a confirmed court booking.",
+                "operationId": "fbf9606e93be69dcbac8109ea0a20fad",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "download",
+                        "in": "query",
+                        "description": "Set to 1 to force file download attachment.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invoice PDF generated successfully.",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Booking not paid or confirmed."
+                    },
+                    "403": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Booking not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/courts": {
             "get": {
                 "tags": [

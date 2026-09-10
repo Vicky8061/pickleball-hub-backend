@@ -12,6 +12,10 @@ use App\Models\Booking;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\UpdateBookingRequest;
 use App\Services\Payment\RazorpayService;
+use App\Services\Invoice\InvoiceService;
+use App\Mail\BookingConfirmedMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use OpenApi\Attributes as OA;
 
@@ -681,10 +685,20 @@ class BookingController extends Controller
         $booking->update([
             'booking_status' => 'confirmed',
             'payment_status' => 'paid',
+            'paid_at' => Carbon::now(),
             'expires_at' => null,
         ]);
 
         $booking->load(['user', 'court', 'timeSlot']);
+
+        // Dispatch confirmation email with attached PDF invoice
+        try {
+            if ($booking->user && $booking->user->email) {
+                Mail::to($booking->user->email)->send(new BookingConfirmedMail($booking));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to send booking confirmation email: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
@@ -904,6 +918,15 @@ class BookingController extends Controller
 
         $booking->load(['user', 'court', 'timeSlot']);
 
+        // Dispatch confirmation email with attached PDF invoice
+        try {
+            if ($booking->user && $booking->user->email) {
+                Mail::to($booking->user->email)->send(new BookingConfirmedMail($booking));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to send booking confirmation email: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Payment verified successfully! Your court booking is confirmed.',
@@ -1021,5 +1044,72 @@ class BookingController extends Controller
             'message' => 'Booking cancelled successfully.',
             'data' => new BookingResource($booking->load(['user', 'court', 'timeSlot'])),
         ], 200);
+    }
+
+    #[OA\Get(
+        path: '/api/bookings/{booking}/invoice',
+        summary: 'Download or view booking invoice PDF',
+        description: 'Generates and downloads or streams the official PDF invoice for a confirmed court booking.',
+        tags: ['Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+            new OA\Parameter(
+                name: 'download',
+                in: 'query',
+                required: false,
+                description: 'Set to 1 to force file download attachment.',
+                schema: new OA\Schema(type: 'integer', enum: [0, 1]),
+                example: 1
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Invoice PDF generated successfully.', content: new OA\MediaType(mediaType: 'application/pdf')),
+            new OA\Response(response: 400, description: 'Booking not paid or confirmed.'),
+            new OA\Response(response: 403, description: 'Unauthorized.'),
+            new OA\Response(response: 404, description: 'Booking not found.'),
+        ]
+    )]
+    public function downloadInvoice(Booking $booking, Request $request, InvoiceService $invoiceService)
+    {
+        $user = $request->user();
+
+        // Ensure relations are loaded
+        $booking->loadMissing(['user', 'court.owner', 'timeSlot']);
+
+        // Authorization check: Player who booked, Court Owner, or Admin
+        $isPlayer = $booking->user_id === $user->id;
+        $isAdmin = $user->role === 'admin';
+        $isCourtOwner = $user->role === 'owner' && $booking->court && $booking->court->owner_id === $user->id;
+
+        if (!$isPlayer && !$isAdmin && !$isCourtOwner) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to access this invoice.',
+            ], 403);
+        }
+
+        // Must be paid or confirmed
+        if ($booking->payment_status !== 'paid' && $booking->booking_status !== 'confirmed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invoice is only available for confirmed and paid court bookings.',
+            ], 400);
+        }
+
+        if ($request->query('download') === '1') {
+            return $invoiceService->download($booking);
+        }
+
+        return $invoiceService->stream($booking);
     }
 }

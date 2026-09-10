@@ -507,6 +507,11 @@
                             Pay & Confirm Booking
                         </button>
 
+                        <button type="button" class="btn btn-outline-success fw-bold py-2 d-none" id="downloadInvoiceModalBtn">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                            Download Invoice (PDF)
+                        </button>
+
                         <button type="button" class="btn booking-view-btn d-none" id="viewMyBookingsBtn">
                             <i class="bi bi-calendar-check me-1"></i>
                             View My Bookings

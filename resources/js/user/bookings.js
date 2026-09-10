@@ -425,6 +425,20 @@ function createBookingCard(
                             View
                         </button>
 
+                        ${(booking.payment_status === "paid" || booking.booking_status === "confirmed")
+                            ? `
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary btn-sm invoice-booking-btn"
+                                    data-booking-id="${booking.id}"
+                                    title="Download PDF Invoice"
+                                >
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                                    Invoice
+                                </button>
+                            `
+                            : ""
+                        }
 
                         ${canCancelBooking(
             bookingStatus
@@ -490,6 +504,30 @@ function createBookingCard(
                     viewButton.dataset.bookingId;
 
                 viewBooking(id);
+
+            }
+        );
+
+    }
+
+
+    /* Invoice button */
+
+    const invoiceButton =
+        wrapper.querySelector(
+            ".invoice-booking-btn"
+        );
+
+    if (invoiceButton) {
+
+        invoiceButton.addEventListener(
+            "click",
+            () => {
+
+                downloadBookingInvoice(
+                    booking.id,
+                    invoiceButton
+                );
 
             }
         );
@@ -717,6 +755,22 @@ function fillBookingDetails(
             };
         } else {
             detailPayNowBtn.classList.add("d-none");
+        }
+    }
+
+    const detailDownloadInvoiceBtn =
+        document.getElementById(
+            "detailDownloadInvoiceBtn"
+        );
+
+    if (detailDownloadInvoiceBtn) {
+        if (booking.payment_status === "paid" || booking.booking_status === "confirmed") {
+            detailDownloadInvoiceBtn.classList.remove("d-none");
+            detailDownloadInvoiceBtn.onclick = () => {
+                downloadBookingInvoice(booking.id, detailDownloadInvoiceBtn);
+            };
+        } else {
+            detailDownloadInvoiceBtn.classList.add("d-none");
         }
     }
 
@@ -1099,6 +1153,49 @@ function openPaymentSimulator(bookingId, orderData, onSuccess) {
         alert("Payment cancelled. Your temporary court reservation hold remains active until the timer reaches zero.");
     };
 }
+
+/* =========================================
+   DOWNLOAD BOOKING INVOICE (PDF)
+========================================= */
+
+async function downloadBookingInvoice(bookingId, triggerBtn) {
+    const originalHTML = triggerBtn ? triggerBtn.innerHTML : "";
+
+    if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Preparing PDF...`;
+    }
+
+    try {
+        const resp = await fetch(`${API_BASE_URL}/bookings/${bookingId}/invoice?download=1`, {
+            method: "GET",
+            headers: getHeaders()
+        });
+
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to download invoice.");
+        }
+
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `pickleball-invoice-${String(bookingId).padStart(5, '0')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        alert(err.message || "Could not download invoice.");
+    } finally {
+        if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = originalHTML || `<i class="bi bi-file-earmark-pdf me-1"></i> Invoice`;
+        }
+    }
+}
+
 
 /* =========================================
    CAN PAY?

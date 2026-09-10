@@ -309,6 +309,18 @@ window.openBookingDetailsModal = function (bookingId) {
     document.getElementById("modalAdminCommission").textContent = `-₹${formatPrice(booking.admin_commission_amount)}`;
     document.getElementById("modalOwnerPayout").textContent = `₹${formatPrice(booking.owner_payout_amount)}`;
 
+    const downloadInvoiceBtn = document.getElementById("modalDownloadInvoiceBtn");
+    if (downloadInvoiceBtn) {
+        if ((booking.booking_status || "").toLowerCase() === "confirmed" || (booking.payment_status || "").toLowerCase() === "paid") {
+            downloadInvoiceBtn.classList.remove("d-none");
+            downloadInvoiceBtn.onclick = () => {
+                downloadOwnerBookingInvoice(booking.id, downloadInvoiceBtn);
+            };
+        } else {
+            downloadInvoiceBtn.classList.add("d-none");
+        }
+    }
+
     const statusBadge = document.getElementById("modalStatusBadge");
     if (statusBadge) {
         statusBadge.outerHTML = renderStatusBadge((booking.booking_status || "").toLowerCase());
@@ -317,6 +329,47 @@ window.openBookingDetailsModal = function (bookingId) {
     const modal = new bootstrap.Modal(document.getElementById("bookingDetailsModal"));
     modal.show();
 };
+
+async function downloadOwnerBookingInvoice(bookingId, triggerBtn) {
+    const originalHTML = triggerBtn ? triggerBtn.innerHTML : "";
+    if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Preparing PDF...`;
+    }
+
+    try {
+        const token = getToken();
+        const resp = await fetch(`/api/bookings/${bookingId}/invoice?download=1`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+        });
+
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to download invoice.");
+        }
+
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `pickleball-invoice-${String(bookingId).padStart(5, '0')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        alert(err.message || "Could not download invoice.");
+    } finally {
+        if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = originalHTML;
+        }
+    }
+}
 
 /**
  * Helpers

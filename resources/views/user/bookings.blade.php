@@ -289,6 +289,15 @@
 
                 <button
                     type="button"
+                    id="detailDownloadInvoiceBtn"
+                    class="btn btn-outline-success d-none"
+                >
+                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                    Download Invoice
+                </button>
+
+                <button
+                    type="button"
                     class="btn btn-light"
                     data-bs-dismiss="modal"
                 >
