@@ -278,6 +278,14 @@
 
 
             <div class="modal-footer">
+                <button
+                    type="button"
+                    id="detailPayNowBtn"
+                    class="btn btn-success d-none"
+                >
+                    <i class="bi bi-credit-card me-1"></i>
+                    Pay Now
+                </button>
 
                 <button
                     type="button"
@@ -362,6 +370,11 @@
 </div>
 
 
+{{-- =========================================
+     PAYMENT SIMULATOR MODAL (SANDBOX)
+========================================= --}}
+@include('user.partials.payment-simulator-modal')
+
 @endsection
 
 
@@ -369,9 +382,11 @@
 
 @vite('resources/css/bookings.css')
 
-
+@endpush
 
 @push('scripts')
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 @vite('resources/js/user/bookings.js')
 

@@ -464,35 +464,8 @@ function createBookingCard(
 
         payButton.addEventListener(
             "click",
-            async () => {
-
-                if (!confirm("Proceed with payment for this court booking?")) {
-                    return;
-                }
-
-                payButton.disabled = true;
-                payButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Paying...`;
-
-                try {
-                    const response = await fetch(`${API_BASE_URL}/bookings/${booking.id}/pay`, {
-                        method: "POST",
-                        headers: getHeaders()
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok || !result.success) {
-                        throw new Error(result.message || "Payment could not be processed.");
-                    }
-
-                    alert("Payment successful! Your court booking has been confirmed.");
-                    await loadBookings();
-                } catch (err) {
-                    alert(err.message || "Payment could not be completed.");
-                    payButton.disabled = false;
-                    payButton.innerHTML = `<i class="bi bi-credit-card me-1"></i> Pay Now`;
-                }
-
+            () => {
+                startBookingPayment(booking, payButton);
             }
         );
 
@@ -727,6 +700,26 @@ function fillBookingDetails(
             booking
         );
 
+    const detailPayNowBtn =
+        document.getElementById(
+            "detailPayNowBtn"
+        );
+
+    if (detailPayNowBtn) {
+        if (canPayBooking(booking)) {
+            detailPayNowBtn.classList.remove("d-none");
+            detailPayNowBtn.onclick = () => {
+                const modal = bootstrap.Modal.getInstance(bookingDetailsModal);
+                if (modal) {
+                    modal.hide();
+                }
+                startBookingPayment(booking, detailPayNowBtn);
+            };
+        } else {
+            detailPayNowBtn.classList.add("d-none");
+        }
+    }
+
 }
 
 
@@ -911,6 +904,201 @@ function canCancelBooking(
 
 }
 
+
+/* =========================================
+   START BOOKING PAYMENT (RAZORPAY / SIMULATOR)
+========================================= */
+
+async function startBookingPayment(booking, triggerBtn) {
+    if (!canPayBooking(booking)) {
+        alert("This reservation hold has expired. Please make a new court booking.");
+        await loadBookings();
+        return;
+    }
+
+    const originalHTML = triggerBtn ? triggerBtn.innerHTML : "";
+    if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Initializing Gateway...`;
+    }
+
+    try {
+        // Step 1: Create Payment Order on backend
+        const orderResp = await fetch(`${API_BASE_URL}/bookings/${booking.id}/create-order`, {
+            method: "POST",
+            headers: getHeaders()
+        });
+
+        const orderResult = await orderResp.json();
+
+        if (!orderResp.ok || !orderResult.success) {
+            throw new Error(orderResult.message || "Failed to initialize payment gateway order.");
+        }
+
+        const orderData = orderResult.data;
+
+        // Step 2: Handle Simulator vs Official Razorpay Checkout
+        if (orderData.is_mock) {
+            if (triggerBtn) {
+                triggerBtn.disabled = false;
+                triggerBtn.innerHTML = originalHTML;
+            }
+            openPaymentSimulator(booking.id, orderData, async () => {
+                showBookingAlert("Payment successful! Your court booking has been confirmed.", "success");
+                await loadBookings();
+            });
+            return;
+        }
+
+        // Step 3: Official Razorpay Checkout SDK
+        if (typeof window.Razorpay === "undefined") {
+            throw new Error("Razorpay Checkout SDK is still loading. Please try again in a few seconds.");
+        }
+
+        const rzpOptions = {
+            key: orderData.key_id,
+            amount: orderData.amount,
+            currency: orderData.currency || "INR",
+            name: "Pickleball Hub",
+            description: `Court Booking Fee for ${orderData.court_name || 'Court'}`,
+            order_id: orderData.order_id,
+            prefill: {
+                name: orderData.customer?.name || "",
+                email: orderData.customer?.email || "",
+            },
+            theme: {
+                color: "#198754"
+            },
+            handler: async function (response) {
+                if (triggerBtn) {
+                    triggerBtn.disabled = true;
+                    triggerBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Verifying...`;
+                }
+
+                try {
+                    const verifyResp = await fetch(`${API_BASE_URL}/bookings/${booking.id}/verify-payment`, {
+                        method: "POST",
+                        headers: getHeaders(),
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            payment_method: "razorpay"
+                        })
+                    });
+
+                    const verifyResult = await verifyResp.json();
+
+                    if (!verifyResp.ok || !verifyResult.success) {
+                        throw new Error(verifyResult.message || "Payment verification failed.");
+                    }
+
+                    showBookingAlert("Payment successful! Your court booking has been confirmed.", "success");
+                    await loadBookings();
+                } catch (err) {
+                    alert(err.message || "Payment verification failed.");
+                } finally {
+                    if (triggerBtn) {
+                        triggerBtn.disabled = false;
+                        triggerBtn.innerHTML = originalHTML;
+                    }
+                }
+            },
+            modal: {
+                ondismiss: function () {
+                    if (triggerBtn) {
+                        triggerBtn.disabled = false;
+                        triggerBtn.innerHTML = originalHTML;
+                    }
+                }
+            }
+        };
+
+        const rzp = new window.Razorpay(rzpOptions);
+        rzp.on('payment.failed', function (resp) {
+            alert("Payment Failed: " + (resp.error?.description || "Transaction failed."));
+            if (triggerBtn) {
+                triggerBtn.disabled = false;
+                triggerBtn.innerHTML = originalHTML;
+            }
+        });
+        rzp.open();
+
+    } catch (err) {
+        console.error("Payment error:", err);
+        alert(err.message || "Payment could not be completed.");
+    } finally {
+        if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = originalHTML;
+        }
+    }
+}
+
+/* =========================================
+   PAYMENT GATEWAY SIMULATOR (LEARNING)
+========================================= */
+
+function openPaymentSimulator(bookingId, orderData, onSuccess) {
+    const simModalEl = document.getElementById("paymentSimulatorModal");
+    if (!simModalEl) {
+        alert("Payment simulator modal not found.");
+        return;
+    }
+
+    const simAmountEl = simModalEl.querySelector("#simModalAmount");
+    const simOrderEl = simModalEl.querySelector("#simModalOrderId");
+    const successBtn = simModalEl.querySelector("#simSuccessBtn");
+    const failBtn = simModalEl.querySelector("#simFailBtn");
+
+    const amountDisplay = orderData.amount_in_rupees || (orderData.amount / 100);
+    if (simAmountEl) simAmountEl.textContent = `₹${formatPrice(amountDisplay)}`;
+    if (simOrderEl) simOrderEl.textContent = `Order ID: ${orderData.order_id}`;
+
+    const simModal = bootstrap.Modal.getOrCreateInstance(simModalEl);
+    simModal.show();
+
+    successBtn.onclick = async () => {
+        successBtn.disabled = true;
+        successBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Verifying Payment...`;
+
+        const selectedMethod = simModalEl.querySelector('input[name="simPaymentMethod"]:checked')?.value || "upi";
+
+        try {
+            const resp = await fetch(`${API_BASE_URL}/bookings/${bookingId}/verify-payment`, {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    razorpay_order_id: orderData.order_id,
+                    razorpay_payment_id: "pay_sim_" + Date.now(),
+                    razorpay_signature: "sim_signature_success",
+                    payment_method: selectedMethod
+                })
+            });
+
+            const result = await resp.json();
+
+            if (!resp.ok || !result.success) {
+                throw new Error(result.message || "Simulated payment verification failed.");
+            }
+
+            simModal.hide();
+            if (typeof onSuccess === "function") {
+                onSuccess();
+            }
+        } catch (err) {
+            alert(err.message || "Simulated payment failed.");
+        } finally {
+            successBtn.disabled = false;
+            successBtn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Simulate Successful Payment`;
+        }
+    };
+
+    failBtn.onclick = () => {
+        simModal.hide();
+        alert("Payment cancelled. Your temporary court reservation hold remains active until the timer reaches zero.");
+    };
+}
 
 /* =========================================
    CAN PAY?
