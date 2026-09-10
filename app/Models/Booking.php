@@ -21,8 +21,13 @@ class Booking extends Model
         'owner_payout_amount',
         'total_amount',
         'payment_status',
+        'payment_method',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature',
         'booking_status',
         'expires_at',
+        'paid_at',
     ];
 
     protected $casts = [
@@ -33,6 +38,7 @@ class Booking extends Model
         'owner_payout_amount' => 'float',
         'total_amount' => 'float',
         'expires_at' => 'datetime',
+        'paid_at' => 'datetime',
     ];
 
     public function user()

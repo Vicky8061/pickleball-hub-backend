@@ -2244,6 +2244,118 @@
                 ]
             }
         },
+        "/api/bookings/{booking}/create-order": {
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Create payment order for booking",
+                "description": "Generates a payment order (Razorpay or Sandbox Simulator) for a held court reservation.",
+                "operationId": "6757c698b7d6da393586837b34ca3beb",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order created successfully."
+                    },
+                    "400": {
+                        "description": "Hold expired or slot started."
+                    },
+                    "403": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Booking not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/bookings/{booking}/verify-payment": {
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Verify payment signature & confirm booking",
+                "description": "Validates HMAC-SHA256 signature and confirms court reservation.",
+                "operationId": "12dcf4fb325bab77d0bccc0f6421d6fc",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "razorpay_order_id",
+                                    "razorpay_payment_id",
+                                    "razorpay_signature"
+                                ],
+                                "properties": {
+                                    "razorpay_order_id": {
+                                        "type": "string"
+                                    },
+                                    "razorpay_payment_id": {
+                                        "type": "string"
+                                    },
+                                    "razorpay_signature": {
+                                        "type": "string"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "example": "upi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment verified and booking confirmed."
+                    },
+                    "400": {
+                        "description": "Invalid signature or expired hold."
+                    },
+                    "403": {
+                        "description": "Unauthorized."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/owner/bookings": {
             "get": {
                 "tags": [

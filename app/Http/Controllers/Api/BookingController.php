@@ -11,6 +11,7 @@ use App\Models\TimeSlot;
 use App\Models\Booking;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\UpdateBookingRequest;
+use App\Services\Payment\RazorpayService;
 use Carbon\Carbon;
 use OpenApi\Attributes as OA;
 
@@ -688,6 +689,224 @@ class BookingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Payment successful! Your court booking is confirmed.',
+            'data' => new BookingResource($booking),
+        ], 200);
+    }
+
+    #[OA\Post(
+        path: '/api/bookings/{booking}/create-order',
+        summary: 'Create payment order for booking',
+        description: 'Generates a payment order (Razorpay or Sandbox Simulator) for a held court reservation.',
+        tags: ['Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Order created successfully.'),
+            new OA\Response(response: 400, description: 'Hold expired or slot started.'),
+            new OA\Response(response: 403, description: 'Unauthorized.'),
+            new OA\Response(response: 404, description: 'Booking not found.'),
+        ]
+    )]
+    public function createPaymentOrder(Booking $booking, Request $request, RazorpayService $razorpayService)
+    {
+        if ($request->user()->role !== 'user') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only players can pay for court bookings.',
+            ], 403);
+        }
+
+        if ($booking->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to pay for this booking.',
+            ], 403);
+        }
+
+        if ($booking->booking_status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This booking is already ' . $booking->booking_status . '.',
+            ], 400);
+        }
+
+        // Check hold expiry
+        if ($booking->expires_at && $booking->expires_at->isPast()) {
+            $booking->update([
+                'booking_status' => 'cancelled',
+                'payment_status' => 'failed',
+                'expires_at' => null,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your reservation hold has expired. The court slot has been released.',
+            ], 400);
+        }
+
+        // Check slot start time
+        $bookingDateStr = is_string($booking->booking_date) ? $booking->booking_date : $booking->booking_date->format('Y-m-d');
+        $slotStart = Carbon::parse($bookingDateStr . ' ' . $booking->timeSlot->start_time);
+        if ($slotStart->isPast()) {
+            $booking->update([
+                'booking_status' => 'cancelled',
+                'payment_status' => 'failed',
+                'expires_at' => null,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'The time slot for this booking has already started.',
+            ], 400);
+        }
+
+        $orderData = $razorpayService->createOrder((float) $booking->total_amount, $booking->id);
+
+        $booking->update([
+            'razorpay_order_id' => $orderData['order_id'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment order created successfully.',
+            'data' => [
+                'order_id' => $orderData['order_id'],
+                'amount' => $orderData['amount'],
+                'amount_in_rupees' => $orderData['amount_in_rupees'],
+                'currency' => $orderData['currency'],
+                'key_id' => $orderData['key_id'],
+                'is_mock' => $orderData['is_mock'],
+                'booking_id' => $booking->id,
+                'court_name' => $booking->court->name ?? 'Pickleball Court',
+                'customer' => [
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                ],
+            ],
+        ], 200);
+    }
+
+    #[OA\Post(
+        path: '/api/bookings/{booking}/verify-payment',
+        summary: 'Verify payment signature & confirm booking',
+        description: 'Validates HMAC-SHA256 signature and confirms court reservation.',
+        tags: ['Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'],
+                properties: [
+                    new OA\Property(property: 'razorpay_order_id', type: 'string'),
+                    new OA\Property(property: 'razorpay_payment_id', type: 'string'),
+                    new OA\Property(property: 'razorpay_signature', type: 'string'),
+                    new OA\Property(property: 'payment_method', type: 'string', example: 'upi'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Payment verified and booking confirmed.'),
+            new OA\Response(response: 400, description: 'Invalid signature or expired hold.'),
+            new OA\Response(response: 403, description: 'Unauthorized.'),
+            new OA\Response(response: 422, description: 'Validation error.'),
+        ]
+    )]
+    public function verifyPayment(Booking $booking, Request $request, RazorpayService $razorpayService)
+    {
+        if ($request->user()->role !== 'user') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only players can complete payment.',
+            ], 403);
+        }
+
+        if ($booking->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to complete this payment.',
+            ], 403);
+        }
+
+        if ($booking->booking_status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This booking is already ' . $booking->booking_status . '.',
+            ], 400);
+        }
+
+        // Check hold expiry
+        if ($booking->expires_at && $booking->expires_at->isPast()) {
+            $booking->update([
+                'booking_status' => 'cancelled',
+                'payment_status' => 'failed',
+                'expires_at' => null,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your reservation hold has expired. The court slot has been released.',
+            ], 400);
+        }
+
+        $validated = $request->validate([
+            'razorpay_order_id' => 'required|string',
+            'razorpay_payment_id' => 'required|string',
+            'razorpay_signature' => 'required|string',
+            'payment_method' => 'nullable|string',
+        ]);
+
+        $isValid = $razorpayService->verifySignature(
+            $validated['razorpay_order_id'],
+            $validated['razorpay_payment_id'],
+            $validated['razorpay_signature']
+        );
+
+        if (!$isValid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment signature verification failed. Tampered or invalid transaction.',
+            ], 400);
+        }
+
+        $booking->update([
+            'booking_status' => 'confirmed',
+            'payment_status' => 'paid',
+            'payment_method' => $validated['payment_method'] ?? 'razorpay',
+            'razorpay_order_id' => $validated['razorpay_order_id'],
+            'razorpay_payment_id' => $validated['razorpay_payment_id'],
+            'razorpay_signature' => $validated['razorpay_signature'],
+            'paid_at' => Carbon::now(),
+            'expires_at' => null,
+        ]);
+
+        $booking->load(['user', 'court', 'timeSlot']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment verified successfully! Your court booking is confirmed.',
             'data' => new BookingResource($booking),
         ], 200);
     }

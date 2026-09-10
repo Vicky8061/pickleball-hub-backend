@@ -24,9 +24,12 @@ class BookingResource extends JsonResource
             'owner_payout_amount' => $this->owner_payout_amount ?? round(($this->total_amount ?? 0) * 0.90, 2),
             'total_amount'=>  $this->total_amount,
             'payment_status'=>  $this->payment_status,
+            'payment_method' => $this->payment_method,
+            'razorpay_order_id' => $this->razorpay_order_id,
             'booking_status'=>  $this->booking_status,
             'expires_at' => $this->expires_at,
             'expires_in_seconds' => $this->expires_at ? max(0, \Carbon\Carbon::now()->diffInSeconds($this->expires_at, false)) : null,
+            'paid_at' => $this->paid_at,
             'user'=> new UserResource(
                 $this->whenLoaded('user')
             ),
