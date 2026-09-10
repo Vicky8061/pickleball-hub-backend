@@ -419,20 +419,33 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content booking-success-modal">
 
-                <!-- Success Icon -->
-                <div class="booking-success-icon">
-                    <i class="bi bi-check-lg"></i>
+                <!-- Status Icon -->
+                <div class="booking-success-icon" id="bookingModalIcon">
+                    <i class="bi bi-clock-history"></i>
                 </div>
 
                 <div class="modal-body text-center">
 
                     <h3 id="bookingSuccessModalLabel">
-                        Booking Confirmed!
+                        Court Slot Held!
                     </h3>
 
-                    <p class="booking-success-message">
-                        Your court has been booked successfully.
+                    <p class="booking-success-message" id="bookingSuccessMessage">
+                        Your court slot is held. Complete payment before the timer expires to confirm your reservation.
                     </p>
+
+                    <!-- HOLD COUNTDOWN BANNER -->
+                    <div id="bookingHoldBanner" class="booking-hold-banner mb-3">
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                            <span class="hold-countdown-timer">
+                                <i class="bi bi-stopwatch"></i>
+                                <span id="bookingHoldTimer">10:00</span>
+                            </span>
+                        </div>
+                        <small class="text-muted d-block mt-2" id="bookingHoldNote">
+                            <i class="bi bi-shield-lock me-1"></i> Slot reserved exclusively for you during this countdown.
+                        </small>
+                    </div>
 
                     <!-- Booking ID -->
                     <div class="booking-success-id">
@@ -489,18 +502,18 @@
                     <!-- Buttons -->
                     <div class="booking-success-actions">
 
-                        <button type="button" class="btn booking-view-btn" id="viewMyBookingsBtn">
+                        <button type="button" class="btn btn-success fw-bold py-2" id="payNowModalBtn">
+                            <i class="bi bi-credit-card me-1"></i>
+                            Pay & Confirm Booking
+                        </button>
 
-                            <i class="bi bi-calendar-check"></i>
-
+                        <button type="button" class="btn booking-view-btn d-none" id="viewMyBookingsBtn">
+                            <i class="bi bi-calendar-check me-1"></i>
                             View My Bookings
-
                         </button>
 
                         <button type="button" class="btn booking-close-btn" data-bs-dismiss="modal">
-
                             Close
-
                         </button>
 
                     </div>

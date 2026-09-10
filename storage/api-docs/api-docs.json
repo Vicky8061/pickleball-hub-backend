@@ -1828,6 +1828,139 @@
                 ]
             }
         },
+        "/api/banners": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get active banners",
+                "description": "Returns a list of active banners for the user dashboard carousel.",
+                "operationId": "9f718c7db0d13e4b5be26b80595f4cf1",
+                "responses": {
+                    "200": {
+                        "description": "Banners fetched successfully"
+                    }
+                }
+            }
+        },
+        "/api/banners/{banner}": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get banner details",
+                "description": "Returns details of a specific banner.",
+                "operationId": "98f72bb96abbc5b69f4382b0d35611dd",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner details fetched successfully"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                }
+            }
+        },
+        "/api/admin/banners": {
+            "post": {
+                "tags": [
+                    "Admin Banners"
+                ],
+                "summary": "Create a new banner",
+                "description": "Allows an administrator to upload a new banner for the carousel.",
+                "operationId": "0987f78621133ffb8269747fa142287d",
+                "responses": {
+                    "201": {
+                        "description": "Banner created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banners/{banner}": {
+            "post": {
+                "tags": [
+                    "Admin Banners"
+                ],
+                "summary": "Update a banner",
+                "description": "Allows an administrator to update a banner title, image, URL, or status.",
+                "operationId": "8e1f2f0f0d20500743360b5825797e9f",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner updated successfully"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Banners"
+                ],
+                "summary": "Delete a banner",
+                "description": "Allows an administrator to delete a banner.",
+                "operationId": "5307ee6883533ee6e856b7e6f6b5bb52",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner deleted successfully"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/bookings": {
             "get": {
                 "tags": [
@@ -2055,6 +2188,50 @@
                     },
                     "403": {
                         "description": "Unauthorized or user is not an owner."
+                    },
+                    "404": {
+                        "description": "Booking not found."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/bookings/{booking}/pay": {
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Pay and confirm a held booking",
+                "description": "Allows an authenticated user to complete payment for their pending court booking hold.",
+                "operationId": "cf3f9ce41bbbc6b751110ce129070ad3",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking ID.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment successful and booking confirmed."
+                    },
+                    "400": {
+                        "description": "Hold expired or booking is not pending."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Unauthorized to pay for this booking."
                     },
                     "404": {
                         "description": "Booking not found."
@@ -2872,6 +3049,29 @@
                     },
                     "403": {
                         "description": "Only owners can access the dashboard."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/profile-stats": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get player profile statistics",
+                "description": "Returns player stats, favorite court, unlocked badges, and recent activity timeline.",
+                "operationId": "be4f89aa9bbfe58fe3dab2d8b127574a",
+                "responses": {
+                    "200": {
+                        "description": "Profile stats retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -4144,6 +4344,14 @@
             "description": "Authentication"
         },
         {
+            "name": "Banners",
+            "description": "Banners"
+        },
+        {
+            "name": "Admin Banners",
+            "description": "Admin Banners"
+        },
+        {
             "name": "Bookings",
             "description": "Bookings"
         },
@@ -4174,6 +4382,10 @@
         {
             "name": "Owner Dashboard",
             "description": "Owner Dashboard"
+        },
+        {
+            "name": "User Profile",
+            "description": "User Profile"
         },
         {
             "name": "Reviews",

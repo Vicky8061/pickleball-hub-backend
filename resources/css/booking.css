@@ -664,3 +664,40 @@
     }
 
 }
+
+/* =========================================
+   HOLD RESERVATION BANNER & COUNTDOWN
+========================================= */
+.booking-hold-banner {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.booking-hold-banner.expired {
+    background: #f8d7da;
+    border-color: #f5c2c7;
+    color: #842029;
+}
+
+.hold-countdown-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: #ffecb3;
+    color: #856404;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+}
+
+.booking-hold-banner.expired .hold-countdown-timer {
+    background: #f5c2c7;
+    color: #842029;
+}

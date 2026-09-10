@@ -1113,6 +1113,11 @@ function showBookingSuccessModal(
 
 
     /*
+     * Start Hold Countdown & Payment handler
+     */
+    startHoldCountdown(booking, modal);
+
+    /*
      * Bootstrap modal
      */
 
@@ -1155,6 +1160,143 @@ function showBookingSuccessModal(
     }
 
 }
+
+let holdCountdownTimerInterval = null;
+
+function startHoldCountdown(booking, modal) {
+    if (holdCountdownTimerInterval) {
+        clearInterval(holdCountdownTimerInterval);
+        holdCountdownTimerInterval = null;
+    }
+
+    const banner = modal.querySelector("#bookingHoldBanner");
+    const timerEl = modal.querySelector("#bookingHoldTimer");
+    const noteEl = modal.querySelector("#bookingHoldNote");
+    const payBtn = modal.querySelector("#payNowModalBtn");
+    const viewBtn = modal.querySelector("#viewMyBookingsBtn");
+    const modalTitle = modal.querySelector("#bookingSuccessModalLabel");
+    const modalMsg = modal.querySelector("#bookingSuccessMessage");
+    const modalIcon = modal.querySelector("#bookingModalIcon");
+
+    if (!timerEl) return;
+
+    if (banner) {
+        banner.classList.remove("expired", "d-none");
+    }
+
+    if (modalTitle) modalTitle.textContent = "Court Slot Held!";
+    if (modalMsg) modalMsg.textContent = "Your court slot is held. Complete payment before the timer expires to confirm your reservation.";
+    if (modalIcon) {
+        modalIcon.innerHTML = `<i class="bi bi-clock-history"></i>`;
+        modalIcon.style.background = "#fff3cd";
+        modalIcon.style.color = "#856404";
+    }
+
+    if (payBtn) {
+        payBtn.classList.remove("d-none", "btn-secondary");
+        payBtn.classList.add("btn-success");
+        payBtn.disabled = false;
+        payBtn.innerHTML = `<i class="bi bi-credit-card me-1"></i> Pay & Confirm Booking`;
+
+        payBtn.onclick = async () => {
+            payBtn.disabled = true;
+            payBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Processing Payment...`;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/${booking.id}/pay`, {
+                    method: "POST",
+                    headers: getHeaders()
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Payment could not be processed.");
+                }
+
+                // Payment Success!
+                if (holdCountdownTimerInterval) {
+                    clearInterval(holdCountdownTimerInterval);
+                    holdCountdownTimerInterval = null;
+                }
+
+                if (banner) banner.classList.add("d-none");
+                if (modalTitle) modalTitle.textContent = "Booking Confirmed!";
+                if (modalMsg) modalMsg.textContent = "Payment successful! Your court booking has been confirmed.";
+                if (modalIcon) {
+                    modalIcon.innerHTML = `<i class="bi bi-check-lg"></i>`;
+                    modalIcon.style.background = "#e8f5ee";
+                    modalIcon.style.color = "#198754";
+                }
+
+                payBtn.classList.add("d-none");
+                if (viewBtn) viewBtn.classList.remove("d-none");
+
+                // Refresh slots
+                loadTimeSlots();
+            } catch (err) {
+                console.error("Payment error:", err);
+                alert(err.message || "Payment could not be completed.");
+                payBtn.disabled = false;
+                payBtn.innerHTML = `<i class="bi bi-credit-card me-1"></i> Try Payment Again`;
+            }
+        };
+    }
+
+    if (viewBtn) {
+        viewBtn.classList.add("d-none");
+        viewBtn.onclick = () => {
+            window.location.href = window.MY_BOOKINGS_URL || "/user/bookings";
+        };
+    }
+
+    // Determine target expiration
+    let targetTime = null;
+    if (booking.expires_at) {
+        targetTime = new Date(booking.expires_at).getTime();
+    } else if (booking.expires_in_seconds) {
+        targetTime = Date.now() + (booking.expires_in_seconds * 1000);
+    } else {
+        targetTime = Date.now() + (600 * 1000);
+    }
+
+    function tick() {
+        const remaining = Math.max(0, Math.floor((targetTime - Date.now()) / 1000));
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+        if (remaining <= 0) {
+            clearInterval(holdCountdownTimerInterval);
+            holdCountdownTimerInterval = null;
+
+            if (banner) banner.classList.add("expired");
+            if (noteEl) {
+                noteEl.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> Hold expired. The court slot has been released.`;
+            }
+            if (modalTitle) modalTitle.textContent = "Reservation Expired";
+            if (modalMsg) modalMsg.textContent = "Your reservation hold has expired. Please select another slot.";
+            if (modalIcon) {
+                modalIcon.innerHTML = `<i class="bi bi-x-circle"></i>`;
+                modalIcon.style.background = "#f8d7da";
+                modalIcon.style.color = "#842029";
+            }
+            if (payBtn) {
+                payBtn.disabled = true;
+                payBtn.classList.remove("btn-success");
+                payBtn.classList.add("btn-secondary");
+                payBtn.innerHTML = `<i class="bi bi-x-circle me-1"></i> Hold Expired`;
+            }
+            if (viewBtn) viewBtn.classList.remove("d-none");
+
+            loadTimeSlots();
+        }
+    }
+
+    tick();
+    holdCountdownTimerInterval = setInterval(tick, 1000);
+}
+
 
 
 /* =========================================

@@ -11,6 +11,7 @@ use App\Models\TimeSlot;
 use App\Models\Booking;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\UpdateBookingRequest;
+use Carbon\Carbon;
 use OpenApi\Attributes as OA;
 
 class BookingController extends Controller
@@ -185,19 +186,46 @@ class BookingController extends Controller
                 ], 400);
             }
 
-            // Check duplicate booking with pessimistic locking
+            $now = \Carbon\Carbon::now();
+            $slotStartDateTime = \Carbon\Carbon::parse("{$data['booking_date']} {$timeSlot->start_time}");
+
+            // Cannot book a slot that has already started or passed
+            if ($slotStartDateTime->isPast()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot book a time slot that has already started or passed.',
+                ], 400);
+            }
+
+            // Check duplicate booking with pessimistic locking:
+            // A slot is taken only if confirmed OR currently on active pending hold
             $alreadyBooked = Booking::where('court_id', $court->id)
                 ->where('time_slot_id', $timeSlot->id)
                 ->where('booking_date', $data['booking_date'])
-                ->whereIn('booking_status', ['pending', 'confirmed'])
+                ->where(function ($q) use ($now) {
+                    $q->where('booking_status', 'confirmed')
+                      ->orWhere(function ($sub) use ($now) {
+                          $sub->where('booking_status', 'pending')
+                              ->where(function ($hold) use ($now) {
+                                  $hold->whereNull('expires_at')
+                                       ->orWhere('expires_at', '>', $now);
+                              });
+                      });
+                })
                 ->lockForUpdate()
                 ->exists();
 
             if ($alreadyBooked) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'This time slot is already booked for the selected date.',
+                    'message' => 'This time slot is already booked or currently on hold by another player.',
                 ], 400);
+            }
+
+            // Calculate hold expiry (standard 10-minute hold, capped at match start time)
+            $expiresAt = $now->copy()->addMinutes(10);
+            if ($expiresAt->gt($slotStartDateTime)) {
+                $expiresAt = $slotStartDateTime;
             }
 
             // Calculate financial split (10% admin commission, 90% owner payout + 50 platform fee)
@@ -208,7 +236,7 @@ class BookingController extends Controller
             $ownerPayoutAmount = round($courtPrice - $adminCommissionAmount, 2);
             $totalAmount = round($courtPrice + $platformFee, 2);
 
-            // Create booking
+            // Create booking with temporary reservation hold
             $booking = Booking::create([
                 'user_id' => $request->user()->id,
                 'court_id' => $court->id,
@@ -222,6 +250,7 @@ class BookingController extends Controller
                 'total_amount' => $totalAmount,
                 'payment_status' => 'pending',
                 'booking_status' => 'pending',
+                'expires_at' => $expiresAt,
             ]);
 
             $booking->load([
@@ -439,6 +468,7 @@ class BookingController extends Controller
 
         if (in_array($data['booking_status'], ['confirmed', 'completed'])) {
             $updateData['payment_status'] = 'paid';
+            $updateData['expires_at'] = null;
         }
 
         $booking->update($updateData);
@@ -540,6 +570,7 @@ class BookingController extends Controller
 
         $booking->update([
             'booking_status' => 'cancelled',
+            'expires_at' => null,
         ]);
 
         return response()->json([
@@ -547,6 +578,120 @@ class BookingController extends Controller
             'message' => 'Booking cancelled successfully.',
         ], 200);
     }
+
+    #[OA\Post(
+        path: '/api/bookings/{booking}/pay',
+        summary: 'Pay and confirm a held booking',
+        description: 'Allows an authenticated user to complete payment for their pending court booking hold.',
+        tags: ['Bookings'],
+        security: [
+            ['sanctum' => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: 'booking',
+                in: 'path',
+                required: true,
+                description: 'Booking ID.',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Payment successful and booking confirmed.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Hold expired or booking is not pending.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unauthorized to pay for this booking.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Booking not found.'
+            ),
+        ]
+    )]
+    public function pay(Booking $booking, Request $request)
+    {
+        // Only users can pay for their bookings
+        if ($request->user()->role !== 'user') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only players can pay for their bookings.',
+            ], 403);
+        }
+
+        // Check booking ownership
+        if ($booking->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to complete payment for this booking.',
+            ], 403);
+        }
+
+        // Check booking status
+        if ($booking->booking_status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This booking is already ' . $booking->booking_status . '.',
+            ], 400);
+        }
+
+        // Check hold expiry
+        if ($booking->expires_at && $booking->expires_at->isPast()) {
+            $booking->update([
+                'booking_status' => 'cancelled',
+                'payment_status' => 'failed',
+                'expires_at' => null,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your reservation hold has expired. The court slot has been released for other players.',
+            ], 400);
+        }
+
+        // Check if match start time has already passed
+        $bookingDateStr = is_string($booking->booking_date) ? $booking->booking_date : $booking->booking_date->format('Y-m-d');
+        $slotStart = Carbon::parse($bookingDateStr . ' ' . $booking->timeSlot->start_time);
+        if ($slotStart->isPast()) {
+            $booking->update([
+                'booking_status' => 'cancelled',
+                'payment_status' => 'failed',
+                'expires_at' => null,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'The time slot for this booking has already started or passed.',
+            ], 400);
+        }
+
+        // Confirm booking and mark paid
+        $booking->update([
+            'booking_status' => 'confirmed',
+            'payment_status' => 'paid',
+            'expires_at' => null,
+        ]);
+
+        $booking->load(['user', 'court', 'timeSlot']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment successful! Your court booking is confirmed.',
+            'data' => new BookingResource($booking),
+        ], 200);
+    }
+
     #[OA\Get(
         path: '/api/owner/bookings',
         summary: 'Get owner bookings',

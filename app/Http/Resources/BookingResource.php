@@ -25,6 +25,8 @@ class BookingResource extends JsonResource
             'total_amount'=>  $this->total_amount,
             'payment_status'=>  $this->payment_status,
             'booking_status'=>  $this->booking_status,
+            'expires_at' => $this->expires_at,
+            'expires_in_seconds' => $this->expires_at ? max(0, \Carbon\Carbon::now()->diffInSeconds($this->expires_at, false)) : null,
             'user'=> new UserResource(
                 $this->whenLoaded('user')
             ),

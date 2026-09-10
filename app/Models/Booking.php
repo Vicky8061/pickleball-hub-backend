@@ -22,6 +22,7 @@ class Booking extends Model
         'total_amount',
         'payment_status',
         'booking_status',
+        'expires_at',
     ];
 
     protected $casts = [
@@ -31,6 +32,7 @@ class Booking extends Model
         'admin_commission_amount' => 'float',
         'owner_payout_amount' => 'float',
         'total_amount' => 'float',
+        'expires_at' => 'datetime',
     ];
 
     public function user()

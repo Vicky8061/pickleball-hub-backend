@@ -73,14 +73,29 @@ class TimeSlotController extends Controller
             ->orderBy('start_time')
             ->get();
 
-        // Get booked time slot IDs for selected date
+        // Get booked or actively held time slot IDs for selected date
+        $now = \Carbon\Carbon::now();
+        $todayStr = $now->toDateString();
+        $currentTimeStr = $now->toTimeString();
+
         $bookedSlotIds = Booking::where('court_id', $court->id)
             ->where('booking_date', $date)
-            ->whereIn('booking_status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($now) {
+                $q->where('booking_status', 'confirmed')
+                  ->orWhere(function ($sub) use ($now) {
+                      $sub->where('booking_status', 'pending')
+                          ->where(function ($hold) use ($now) {
+                              $hold->whereNull('expires_at')
+                                   ->orWhere('expires_at', '>', $now);
+                          });
+                  });
+            })
             ->pluck('time_slot_id')
             ->toArray();
 
-        $data = $timeSlots->map(function ($slot) use ($bookedSlotIds) {
+        $data = $timeSlots->map(function ($slot) use ($bookedSlotIds, $date, $todayStr, $currentTimeStr) {
+            $isBooked = in_array($slot->id, $bookedSlotIds);
+            $isPast = ($date === $todayStr && $slot->start_time <= $currentTimeStr) || ($date < $todayStr);
 
             return [
                 'id' => $slot->id,
@@ -88,16 +103,9 @@ class TimeSlotController extends Controller
                 'start_time' => $slot->start_time,
                 'end_time' => $slot->end_time,
                 'status' => $slot->status,
-
-                'is_booked' => in_array(
-                    $slot->id,
-                    $bookedSlotIds
-                ),
-
-                'is_available' => !in_array(
-                    $slot->id,
-                    $bookedSlotIds
-                ),
+                'is_booked' => $isBooked,
+                'is_available' => !$isBooked && !$isPast,
+                'is_past' => $isPast,
             ];
         });
 

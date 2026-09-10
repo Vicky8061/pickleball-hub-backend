@@ -331,7 +331,8 @@ function createBookingCard(
 
 
                     ${getBookingStatusBadge(
-            bookingStatus
+            bookingStatus,
+            booking
         )}
 
                 </div>
@@ -401,6 +402,20 @@ function createBookingCard(
 
                     <div class="d-flex gap-2">
 
+                        ${canPayBooking(booking)
+            ? `
+                                    <button
+                                        type="button"
+                                        class="btn btn-success btn-sm pay-booking-btn"
+                                        data-booking-id="${booking.id}"
+                                    >
+                                        <i class="bi bi-credit-card me-1"></i>
+                                        Pay Now
+                                    </button>
+                                `
+            : ""
+        }
+
                         <button
                             type="button"
                             class="btn btn-outline-success btn-sm view-booking-btn"
@@ -436,6 +451,52 @@ function createBookingCard(
         </div>
 
     `;
+
+
+    /* Pay button */
+
+    const payButton =
+        wrapper.querySelector(
+            ".pay-booking-btn"
+        );
+
+    if (payButton) {
+
+        payButton.addEventListener(
+            "click",
+            async () => {
+
+                if (!confirm("Proceed with payment for this court booking?")) {
+                    return;
+                }
+
+                payButton.disabled = true;
+                payButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Paying...`;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/bookings/${booking.id}/pay`, {
+                        method: "POST",
+                        headers: getHeaders()
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || "Payment could not be processed.");
+                    }
+
+                    alert("Payment successful! Your court booking has been confirmed.");
+                    await loadBookings();
+                } catch (err) {
+                    alert(err.message || "Payment could not be completed.");
+                    payButton.disabled = false;
+                    payButton.innerHTML = `<i class="bi bi-credit-card me-1"></i> Pay Now`;
+                }
+
+            }
+        );
+
+    }
 
 
     /* View button */
@@ -662,7 +723,8 @@ function fillBookingDetails(
 
     detailBookingStatus.innerHTML =
         getBookingStatusBadge(
-            booking.booking_status
+            booking.booking_status,
+            booking
         );
 
 }
@@ -851,17 +913,49 @@ function canCancelBooking(
 
 
 /* =========================================
+   CAN PAY?
+========================================= */
+
+function canPayBooking(booking) {
+    if (!booking) return false;
+    if (booking.booking_status !== "pending") return false;
+    if (!booking.expires_at) return true;
+    return new Date(booking.expires_at).getTime() > Date.now();
+}
+
+
+/* =========================================
    BOOKING STATUS BADGE
 ========================================= */
 
 function getBookingStatusBadge(
-    status
+    status,
+    booking = null
 ) {
 
     const normalized =
         String(
             status || "unknown"
         ).toLowerCase();
+
+    if (normalized === "pending" && booking && booking.expires_at) {
+        const remaining = Math.max(0, Math.floor((new Date(booking.expires_at).getTime() - Date.now()) / 1000));
+        if (remaining > 0) {
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            return `
+                <span class="booking-status status-pending" title="Hold expires in ${m}m ${s}s">
+                    <i class="bi bi-stopwatch me-1"></i>Hold (${m}m left)
+                </span>
+            `;
+        } else {
+            return `
+                <span class="booking-status status-cancelled">
+                    <i class="bi bi-x-circle me-1"></i>Hold Expired
+                </span>
+            `;
+        }
+    }
 
 
     const labels = {
@@ -893,6 +987,7 @@ function getBookingStatusBadge(
     `;
 
 }
+
 
 
 /* =========================================
