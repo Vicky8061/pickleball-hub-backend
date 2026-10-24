@@ -1,0 +1,11 @@
+/node_modules
+/vendor
+/public/hot
+/public/storage
+/storage/*.key
+/storage/logs/*
+.env
+.env.*
+.git
+.gitignore
+README.md

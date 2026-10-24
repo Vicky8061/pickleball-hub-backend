@@ -35,6 +35,20 @@ Route::get('/banners', [BannerController::class, 'index']);
 Route::get('/banners/{banner}', [BannerController::class, 'show']);
 Route::get('/courts/{court}/reviews', [ReviewController::class, 'index']);
 
+// Free Cloud Cron Trigger (e.g. cron-job.org)
+Route::get('/cron/run', function (\Illuminate\Http\Request $request) {
+    $secret = env('CRON_SECRET');
+    if (empty($secret) || $request->query('key') !== $secret) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+    \Illuminate\Support\Facades\Artisan::call('schedule:run');
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Scheduler executed',
+        'output' => trim(\Illuminate\Support\Facades\Artisan::output())
+    ]);
+});
+
 
 // =====================================================
 // AUTHENTICATED ROUTES
