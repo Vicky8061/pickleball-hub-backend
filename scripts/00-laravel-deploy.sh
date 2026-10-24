@@ -3,6 +3,13 @@ set -e
 
 echo "==> Running production startup tasks..."
 
+# Ensure custom Nginx configuration with Laravel routing is active
+if [ -f "/var/www/html/conf/nginx/nginx-site.conf" ]; then
+    echo "==> Applying Laravel Nginx configuration..."
+    cp /var/www/html/conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
+    cp /var/www/html/conf/nginx/nginx-site.conf /etc/nginx/sites-enabled/default.conf
+fi
+
 # Install Composer dependencies if not already cached
 if [ ! -d "/var/www/html/vendor" ]; then
     echo "==> Installing Composer dependencies..."

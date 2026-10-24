@@ -22,6 +22,10 @@ COPY . .
 # Copy compiled frontend assets from Node build stage
 COPY --from=node_builder /app/public/build ./public/build
 
+# Copy custom Nginx configuration to enable Laravel routing
+COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
+COPY conf/nginx/nginx-site.conf /etc/nginx/sites-enabled/default.conf
+
 # Ensure deployment script is executable
 RUN chmod +x ./scripts/00-laravel-deploy.sh
 
