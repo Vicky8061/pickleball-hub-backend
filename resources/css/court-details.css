@@ -351,98 +351,76 @@
 
 .court-details-location {
     display: flex;
-
     align-items: flex-start;
-
     gap: 8px;
-
-    color: #737b77;
-
-    font-size: 13px;
-
+    color: #334155;
+    font-size: 14px;
     line-height: 1.5;
 }
 
 .court-details-location i {
     color: #198754;
-
+    font-size: 16px;
     margin-top: 2px;
 }
-
 
 /* =========================================
    PRICE
 ========================================= */
 
 .court-details-price-box {
-    margin-top: 22px;
-
-    padding: 18px;
-
-    background: #f7faf8;
-
-    border: 1px solid #edf0ee;
-
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: #f1f8f4;
+    border: 1px solid #d1e7dd;
     border-radius: 12px;
 }
 
 .court-details-price-box span {
     display: block;
-
-    color: #8a938e;
-
-    font-size: 11px;
-
-    margin-bottom: 3px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .court-details-price-box strong {
     color: #198754;
-
-    font-size: 27px;
-
+    font-size: 28px;
     font-weight: 800;
 }
 
 .court-details-price-box small {
-    color: #8a938e;
-
-    font-size: 12px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
 }
-
 
 /* =========================================
    SECTION
 ========================================= */
 
 .court-details-section {
-    margin-top: 25px;
-
-    padding-top: 22px;
-
+    margin-top: 22px;
+    padding-top: 20px;
     border-top: 1px solid #edf0ee;
 }
 
 .court-details-section h4 {
     margin: 0 0 10px;
-
-    color: #17251f;
-
-    font-size: 15px;
-
+    color: #0f172a;
+    font-size: 16px;
     font-weight: 800;
 }
 
 .court-details-section p {
     margin: 0;
-
-    color: #737b77;
-
-    font-size: 13px;
-
+    color: #334155;
+    font-size: 14px;
     line-height: 1.7;
 }
-
 
 /* =========================================
    INFO GRID
@@ -450,63 +428,45 @@
 
 .court-info-grid {
     display: grid;
-
     grid-template-columns: repeat(2, 1fr);
-
-    gap: 10px;
+    gap: 12px;
 }
 
 .court-info-item {
     display: flex;
-
     align-items: center;
-
-    gap: 10px;
-
-    padding: 12px;
-
-    background: #f8faf9;
-
-    border: 1px solid #edf0ee;
-
-    border-radius: 9px;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
 }
 
 .court-info-icon {
-    width: 34px;
-    height: 34px;
-
+    width: 38px;
+    height: 38px;
     flex-shrink: 0;
-
     border-radius: 8px;
-
     background: #eaf6ef;
-
     color: #198754;
-
+    font-size: 18px;
     display: flex;
-
     align-items: center;
     justify-content: center;
 }
 
 .court-info-item span {
     display: block;
-
-    color: #8a938e;
-
-    font-size: 10px;
-
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
     margin-bottom: 2px;
 }
 
 .court-info-item strong {
     display: block;
-
-    color: #27332e;
-
-    font-size: 12px;
-
+    color: #0f172a;
+    font-size: 14px;
     font-weight: 700;
 }
 

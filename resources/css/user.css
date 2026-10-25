@@ -20,9 +20,9 @@ body {
 }
 
 .user-brand img {
-    width: 180px;
-    height: auto;
-    max-height: 60px;
+    height: 42px;
+    width: auto;
+    max-width: 170px;
     object-fit: contain;
 }
 
@@ -128,19 +128,44 @@ body {
     display: none;
 }
 
+@keyframes mobileMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* =========================================
-   TABLET
+   TABLET & MOBILE NAVIGATION (<= 991px)
 ========================================= */
 
 @media (max-width: 991px) {
 
     .user-nav-links {
-        display: none;
+        display: none !important;
     }
 
     .user-menu-btn {
-        display: block;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #dfe5e1;
+        background: #ffffff;
+        border-radius: 8px;
+        font-size: 22px;
+        color: #17251f;
+        cursor: pointer;
+    }
+
+    .user-menu-btn:hover {
+        background: #f1f8f4;
+        color: #198754;
     }
 
     .user-profile-info {
@@ -148,24 +173,80 @@ body {
     }
 
     .user-navbar .container-fluid {
-        padding: 0 20px;
+        padding: 0 16px;
+    }
+
+    .user-mobile-menu {
+        display: none;
+        background: #ffffff;
+        border-bottom: 2px solid #198754;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+        padding: 10px 16px;
+        position: sticky;
+        top: 72px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1050;
+    }
+
+    .user-mobile-menu.active {
+        display: block !important;
+        animation: mobileMenuFadeIn 0.2s ease-out;
+    }
+
+    .user-mobile-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        text-align: left;
+        transition: all 0.15s ease;
+    }
+
+    .user-mobile-link:hover,
+    .user-mobile-link:active {
+        color: #198754;
+        background: #eef8f3;
+    }
+
+    .user-mobile-link i {
+        width: 22px;
+        font-size: 18px;
+        color: #198754;
+    }
+
+    .user-logout {
+        color: #dc3545 !important;
+    }
+
+    .user-logout i {
+        color: #dc3545 !important;
     }
 
 }
 
-
 /* =========================================
-   MOBILE
+   SMALL MOBILE (<= 576px)
 ========================================= */
 
 @media (max-width: 576px) {
 
     .user-navbar {
-        min-height: 65px;
+        min-height: 60px;
     }
 
     .user-brand img {
-        width: 100px;
+        height: 34px;
+        max-width: 130px;
     }
 
     .user-icon-btn {
@@ -174,46 +255,9 @@ body {
     }
 
     .user-menu-btn {
-        font-size: 23px;
-    }
-
-    .user-mobile-menu {
-        background: #ffffff;
-        border-bottom: 1px solid #e8ece9;
-        padding: 10px 15px;
-    }
-
-    .user-mobile-menu.active {
-        display: block;
-    }
-
-    .user-mobile-link {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 13px 10px;
-        border: none;
-        background: transparent;
-        color: #4e5954;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-        text-align: left;
-    }
-
-    .user-mobile-link:hover {
-        color: #198754;
-        background: #f1f8f4;
-    }
-
-    .user-mobile-link i {
-        width: 20px;
-        font-size: 17px;
-    }
-
-    .user-logout {
-        color: #dc3545;
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
     }
 
 }
@@ -593,9 +637,9 @@ body {
 
     gap: 7px;
 
-    color: #7b8580;
+    color: #475569;
 
-    font-size: 12px;
+    font-size: 13px;
 
     margin-bottom: 18px;
 }
@@ -641,9 +685,9 @@ body {
 }
 
 .court-price span {
-    color: #8a938e;
+    color: #64748b;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 

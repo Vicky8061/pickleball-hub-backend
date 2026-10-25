@@ -3,24 +3,24 @@
 @section('title', 'Dashboard | Pickleball Hub')
 
 @section('content')
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-2 px-sm-3 px-md-4 py-3 py-md-4">
 
     <!-- =========================================
          HERO DASHBOARD HEADER
     ========================================== -->
-    <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mb-4 text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="card border-0 shadow-lg rounded-4 p-3 p-sm-4 p-md-5 mb-4 text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
         <div class="row align-items-center position-relative" style="z-index: 2;">
             <div class="col-lg-8 col-12">
-                <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold fs-8 shadow-sm">
                         <i class="bi bi-controller me-1"></i> PLAYER DASHBOARD
                     </span>
-                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fw-semibold fs-8">
-                        <i class="bi bi-circle-fill text-success fs-9 me-1"></i> Active Session
+                    <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-40 rounded-pill px-3 py-1 fw-semibold fs-8">
+                        <i class="bi bi-circle-fill text-warning me-1" style="font-size: 8px;"></i> Active Session
                     </span>
                 </div>
-                <h1 class="display-6 fw-bold text-white mb-2" id="dashboardUserName">Ready to play?</h1>
-                <p class="fs-6 text-slate-300 mb-0">Discover top pickleball courts near you, reserve time slots, compete in local tournaments, and manage your match bookings.</p>
+                <h1 class="fw-bold text-white mb-2" style="font-size: clamp(1.5rem, 4vw, 2.3rem);" id="dashboardUserName">Ready to play?</h1>
+                <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.88) !important; font-size: 15px; line-height: 1.6;">Discover top pickleball courts near you, reserve time slots, compete in local tournaments, and manage your match bookings.</p>
             </div>
             <div class="col-lg-4 col-12 text-center text-lg-end mt-3 mt-lg-0 d-flex flex-column flex-sm-row justify-content-lg-end gap-2">
                 <a href="{{ route('user.courts') }}" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold shadow-sm text-dark">

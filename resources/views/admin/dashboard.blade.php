@@ -15,12 +15,12 @@
                     <span class="badge bg-danger rounded-pill px-3 py-1 fw-bold fs-8 shadow-sm">
                         <i class="bi bi-shield-check me-1"></i> MASTER CONTROL PANEL
                     </span>
-                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fw-semibold fs-8">
-                        <i class="bi bi-circle-fill text-success fs-9 me-1"></i> System Online & Operations Active
+                    <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-40 rounded-pill px-3 py-1 fw-semibold fs-8">
+                        <i class="bi bi-circle-fill text-warning me-1" style="font-size: 8px;"></i> System Online & Operations Active
                     </span>
                 </div>
-                <h1 class="display-6 fw-bold text-white mb-2">Platform Master Dashboard</h1>
-                <p class="fs-6 text-slate-300 mb-0">Monitor platform commission revenues, approve partner venue applications, inspect court bookings, and oversee global system performance.</p>
+                <h1 class="fw-bold text-white mb-2" style="font-size: clamp(1.5rem, 4vw, 2.3rem);">Platform Master Dashboard</h1>
+                <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.88) !important; font-size: 15px; line-height: 1.6;">Monitor platform commission revenues, approve partner venue applications, inspect court bookings, and oversee global system performance.</p>
             </div>
             <div class="col-lg-4 col-12 text-center text-lg-end mt-3 mt-lg-0">
                 <a href="{{ route('admin.owner-applications') }}" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold shadow-sm text-dark">

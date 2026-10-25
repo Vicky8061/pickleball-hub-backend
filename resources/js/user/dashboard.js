@@ -719,13 +719,13 @@ async function createCourtCard(court) {
 
                     <!-- COURT NAME & RATING -->
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
 
-                        <h5 class="court-name text-truncate mb-0" style="max-width: 70%;" title="${escapeAttribute(courtName)}">
+                        <h5 class="court-name text-truncate mb-0 flex-grow-1" title="${escapeAttribute(courtName)}">
                             ${escapeHtml(courtName)}
                         </h5>
 
-                        <div class="badge bg-warning bg-opacity-10 text-dark border border-warning-subtle rounded-pill px-2 py-1 flex-shrink-0 ms-2" style="font-size: 12px;">
+                        <div class="badge bg-warning bg-opacity-15 text-dark border border-warning-subtle rounded-pill px-2 py-1 flex-shrink-0" style="font-size: 12px;">
                             <i class="bi bi-star-fill text-warning me-1"></i><strong>${avgRating}</strong> <span class="text-muted">(${revCount})</span>
                         </div>
 

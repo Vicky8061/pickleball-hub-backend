@@ -370,7 +370,7 @@
 
 
 .detail-row span:first-child {
-    color: #6c757d;
+    color: #475569;
 
     font-size: 14px;
 }
@@ -409,8 +409,12 @@
 
 @media (max-width: 767px) {
 
+    .bookings-header {
+        padding: 18px 16px;
+    }
+
     .bookings-header h2 {
-        font-size: 24px;
+        font-size: 22px;
     }
 
 

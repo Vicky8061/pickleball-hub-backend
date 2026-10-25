@@ -3,24 +3,24 @@
 @section('title', 'Tournaments & Competitions | Pickleball Hub')
 
 @section('content')
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-2 px-sm-3 px-md-4 py-3 py-md-4">
 
     <!-- =========================================
          HERO DASHBOARD HEADER
     ========================================== -->
-    <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mb-4 text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="card border-0 shadow-lg rounded-4 p-3 p-sm-4 p-md-5 mb-4 text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
         <div class="row align-items-center position-relative" style="z-index: 2;">
             <div class="col-lg-8 col-12">
-                <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold fs-8 shadow-sm">
                         <i class="bi bi-trophy-fill me-1"></i> PLAYER COMPETITIONS
                     </span>
-                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fw-semibold fs-8">
+                    <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-40 rounded-pill px-3 py-1 fw-semibold fs-8">
                         <i class="bi bi-fire text-warning me-1"></i> Live Registration
                     </span>
                 </div>
-                <h1 class="display-6 fw-bold text-white mb-2">Pickleball Tournaments</h1>
-                <p class="fs-6 text-slate-300 mb-0">Browse upcoming venue tournaments, compete for lucrative prize pools, register your entry pass, and track your active competition passes.</p>
+                <h1 class="fw-bold text-white mb-2" style="font-size: clamp(1.5rem, 4vw, 2.3rem);">Pickleball Tournaments</h1>
+                <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.88) !important; font-size: 15px; line-height: 1.6;">Browse upcoming venue tournaments, compete for lucrative prize pools, register your entry pass, and track your active competition passes.</p>
             </div>
         </div>
     </div>

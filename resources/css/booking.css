@@ -635,9 +635,58 @@
 }
 
 
-/* MOBILE */
+/* MOBILE & TABLET */
+
+@media (max-width: 768px) {
+    .booking-header {
+        padding: 20px 16px;
+    }
+
+    .booking-header h1 {
+        font-size: 24px;
+    }
+
+    .booking-court-card {
+        flex-direction: column;
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .booking-court-image {
+        width: 100%;
+        height: 180px;
+    }
+
+    .booking-section-card {
+        padding: 16px;
+    }
+
+    .time-slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+    }
+
+    .time-slot {
+        padding: 11px 8px;
+        font-size: 13px;
+    }
+
+    .booking-summary-card {
+        padding: 18px;
+    }
+}
 
 @media (max-width: 576px) {
+
+    .time-slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .time-slot {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
 
     .booking-success-modal {
         margin: 15px;
@@ -649,17 +698,13 @@
 
     .booking-success-detail {
         display: flex;
-
         align-items: center;
-
         gap: 12px;
-
         text-align: left;
     }
 
     .booking-success-detail-icon {
         margin: 0;
-
         flex-shrink: 0;
     }
 
