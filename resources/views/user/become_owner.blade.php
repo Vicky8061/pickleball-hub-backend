@@ -18,18 +18,21 @@
                 <p class="fs-6 mb-0" style="color: rgba(255, 255, 255, 0.92);">Join India's premier pickleball network. List your indoor/outdoor courts, set hourly slots, host official leagues, and manage player bookings seamlessly.</p>
             </div>
             <div class="col-lg-4 col-12 text-center text-lg-end mt-3 mt-lg-0">
-                <div class="bg-white bg-opacity-20 backdrop-blur rounded-4 p-3 d-inline-block text-start border border-white border-opacity-25 w-100 w-sm-auto" style="max-width: 100%;">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-check-circle-fill text-warning fs-5"></i>
-                        <span class="fw-semibold">90% Direct Net Owner Fee</span>
+                <div class="bg-white rounded-4 p-3 p-sm-4 d-inline-block text-start shadow-sm w-100 w-sm-auto text-dark" style="border: 1px solid rgba(255, 255, 255, 0.9);">
+                    <div class="text-uppercase fw-bold text-success mb-2 small" style="font-size: 11px; letter-spacing: 0.5px;">
+                        <i class="bi bi-shield-check me-1"></i> Partner Benefits
                     </div>
                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-check-circle-fill text-warning fs-5"></i>
-                        <span class="fw-semibold">Automated Time Scheduler</span>
+                        <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+                        <span class="fw-bold text-dark" style="font-size: 14px;">90% Direct Net Owner Fee</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+                        <span class="fw-bold text-dark" style="font-size: 14px;">Automated Time Scheduler</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-check-circle-fill text-warning fs-5"></i>
-                        <span class="fw-semibold">League & Tournament Host</span>
+                        <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+                        <span class="fw-bold text-dark" style="font-size: 14px;">League & Tournament Host</span>
                     </div>
                 </div>
             </div>
