@@ -49,6 +49,20 @@ Route::get('/cron/run', function (\Illuminate\Http\Request $request) {
     ]);
 });
 
+// On-demand database seed trigger
+Route::get('/cron/seed', function (\Illuminate\Http\Request $request) {
+    $secret = env('CRON_SECRET');
+    if (empty($secret) || $request->query('key') !== $secret) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Database seeded successfully with demo courts, slots, banners, and users',
+        'output' => trim(\Illuminate\Support\Facades\Artisan::output())
+    ]);
+});
+
 
 // =====================================================
 // AUTHENTICATED ROUTES

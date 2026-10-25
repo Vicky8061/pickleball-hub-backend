@@ -35,4 +35,8 @@ php artisan view:cache
 echo "==> Running database migrations..."
 php artisan migrate --force || true
 
+# Seed default demo data (courts, slots, banners, users)
+echo "==> Seeding database..."
+php artisan db:seed --force || true
+
 echo "==> Production initialization complete."

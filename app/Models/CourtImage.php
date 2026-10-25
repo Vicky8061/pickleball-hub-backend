@@ -40,6 +40,9 @@ class CourtImage extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
+            if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+                return $this->image;
+            }
             return Storage::url($this->image);
         }
 
